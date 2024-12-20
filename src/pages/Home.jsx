@@ -6,10 +6,10 @@ const Home = () => {
   return (
     <div>
       <div className="navigation">
-        <Link to="/cnf_to_dnf" className="nav-button">CNF to DNF</Link>
-        <Link to="/recurrence_relations" className="nav-button">Recurrence Relations</Link>
-        <Link to="/solving_recurrence_relations" className="nav-button">Solving Recr. Relations</Link>
-        <Link to="/number_theory" className="nav-button">Number Theory</Link>
+        {/* <Link to="/cnf_to_dnf" className="nav-button">CNF to DNF</Link> */}
+        {/* <Link to="/recurrence_relations" className="nav-button">Recurrence Relations</Link> */}
+        {/* <Link to="/solving_recurrence_relations" className="nav-button">Solving Recr. Relations</Link> */}
+        {/* <Link to="/number_theory" className="nav-button">Number Theory</Link> */}
         <Link to="/sets" className="nav-button">Sets</Link>
         <Link to="/decrypt" className="nav-button">Decrypt Message</Link>
         <Link to="/hamming" className="nav-button">Hamming Code</Link>
