@@ -1,0 +1,105 @@
+/*The box-sizing CSS property sets how the total width and height of an element is calculated.*/
+/* Id know how its work in this project, but it fix object size.*/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* General color variables for consistency */
+/* === Глобальні змінні кольорів === */
+:root {
+  /* Темна тема */
+  --header-color: #272833;
+  --nav-button: #424A4E;
+  --subject-item: #28292c;
+  --text-color: #cfd2e1;
+  --secondary-text-color: rgb(255, 255, 255);
+  --highlight-color: #0384c0;
+  --container-bg: #1e1e1e;
+  --button-bg: #007acc;
+  --button-hover-bg: #005a9e;
+  --error-bg: #f6d1d1;
+  --error-border: #a12626;
+  --form-bg: #1e1e1e;
+  --form-border: #3c3c3c;
+  --result-bg: #1e1e1e;
+  --result-text: #b5cea8;
+}
+
+
+/* === Основні стилі сторінки === */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--container-bg);
+  
+}
+
+
+/* Header styles */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: var(--header-color);
+  color: var(--text-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+h4 {
+  color: var(--highlight-color);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.home-icon {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+  gap: 5px;
+}
+
+.home-icon:hover {
+  color: var(--highlight-color);
+}
+
+.header-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.material-icons {
+  font-size: 2rem;
+  margin-right: 8px;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  text-align: center;
+  flex: 2;
+  margin: 0;
+}
+
+/* === Група: Контейнер === */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}

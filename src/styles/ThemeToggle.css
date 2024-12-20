@@ -1,0 +1,112 @@
+/* Import Google Material Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+/* Тема за замовчуванням */
+body.dark-theme {
+  --header-color: #272833;
+  --text-color: #cfd2e1;
+  --background-color: #1e1e1e;
+  --SwitchButton: rgb(240, 240, 240);
+  --s-text-color: black;
+}
+
+/* Світла тема */
+body.light-theme {
+  /* Світла тема */
+  --SwitchButton: rgb(26, 26, 26);
+  --nav-button:#28292c;
+  --text-color: #ffffff;
+  --secondary-text-color: black;
+  --highlight-color: #059bff;
+  --subject-item: #f3f3f3;
+  --container-bg: #E7E9EF;
+  --button-bg: #007acc;
+  --button-hover-bg: #005a9e;
+  --error-bg: #ffebee;
+  --error-border: #ce2525;
+  --form-bg: #ffffff;
+  --form-border: #979797;
+  --result-bg: #ffffff;
+  --result-text: #2e7d32;
+}
+
+/* Анімація плавного переходу */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Основний контейнер для перемикача з текстом */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+/* Текст для теми */
+.theme-text {
+  font-weight: bold;
+  font-size: 1.35rem;
+}
+
+/* Зменшений toggle-switch */
+.toggle-switch {
+  position: relative;
+  width: 60px; /* 60% від попереднього 100px */
+  height: 30px; /* Пропорційне зменшення */
+  --light: #d8dbe0;
+  --dark: #28292c;
+}
+
+.switch-label {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dark);
+  border-radius: 25px;
+  cursor: pointer;
+  border: 2px solid var(--light);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+
+.checkbox {
+  position: absolute;
+  display: none;
+}
+
+
+.slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  -webkit-box-shadow: inset 12px -4px 0px 0px var(--light);
+  box-shadow: inset 8px -2px 0px 0px var(--light);
+  background-color: var(--dark);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.checkbox:checked + .switch-label {
+  border-color: rgb(223, 255, 159);
+  transition: border-color 0.3s ease;
+}
+
+
+.checkbox:checked + .switch-label .slider::before {
+  transform: translateX(30px);
+  background-color: var(--light);
+  box-shadow: none;
+}

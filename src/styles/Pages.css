@@ -1,0 +1,196 @@
+h3 {
+    color: var(--highlight-color);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.formGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--secondary-text-color);
+}
+
+label.math {
+    font-size: 1.2rem;
+    color: var(--secondary-text-color);
+}
+
+input[type="text"] {
+    background-color: var(--form-bg);
+    border: 1px solid var(--form-border);
+    color: var(--secondary-text-color);
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 1rem;
+}
+
+input[type="text"].short {
+    width: 50px;
+}
+
+input[type="text"]:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+/* Pages.css */
+.result {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--result-bg);
+    color: var(--result-text);
+    border: 1px solid var(--form-border);
+    border-radius: 3px;
+}
+
+
+
+
+/* Pages.css */
+.flashMessage {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background-color: var(--error-bg);
+    color: var(--error-border);
+}
+
+
+.formContainer {
+    background-color: var(--subject-item);
+    border: 1px solid var(--form-border);
+    padding: 5px 20px 30px;
+    margin-top: 20px;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.solving-recurrence-relations {
+    background-color: var(--subject-item);
+    border: 1px solid var(--form-border);
+    padding: 5px 20px 30px;
+    margin-top: 20px;
+    border-radius: 2px;
+}
+
+.inputGroup {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--secondary-text-color);
+}
+
+.inputGroup input {
+    width: 150px;
+    padding: 5px;
+    text-align: center;
+}
+
+.inputGroup span {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+input[type="submit"],
+button {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: var(--button-hover-bg);
+}
+
+button.clear {
+    background-color: var(--error-border);
+    color: var(--text-color);
+}
+
+button.clear:hover {
+    background-color: #c9302c;
+}
+
+.counts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    margin-top: 10px;
+  }
+
+  /* Кожен елемент count має label та input */
+  .count-field {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Задаємо стилі для лейблу */
+  .count-field label {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+  }
+  
+  /* Стилі для інпуту */
+  .count-field input[type="number"] {
+    width: 4rem;
+    text-align: center;
+    padding: 5px;
+    background-color: var(--form-bg);
+    border: 1px solid var(--form-border);
+    color: var(--secondary-text-color);
+    font-size: 1rem;
+  }
+  
+  .count-field input[type="number"]:focus {
+    border-color: var(--button-bg);
+    outline: none;
+  }
+  
+  /* Кнопка "+" за останнім полем */
+  .add-count-button {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: normal;
+    align-self: center; /* Вирівнювання по центру по вертикалі відносно input */
+  }
+  
+  .add-count-button:hover {
+    background-color: var(--button-hover-bg);
+  }
+  
+
+  /* Результат більш зручний для читання */
+  .result p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-top: 10px;
+    white-space: pre-wrap; /* Якщо потрібно форматувати текст по кількох рядках */
+  }
+  
