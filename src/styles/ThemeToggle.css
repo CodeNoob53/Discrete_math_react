@@ -36,6 +36,7 @@ body {
 
 /* Основний контейнер для перемикача з текстом */
 .theme-toggle-container {
+  padding-left: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -46,7 +47,8 @@ body {
 /* Текст для теми */
 .theme-text {
   font-weight: bold;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
+  transition: font-size 0.3s;
 }
 
 /* Зменшений toggle-switch */
@@ -109,4 +111,15 @@ body {
   transform: translateX(30px);
   background-color: var(--light);
   box-shadow: none;
+}
+
+@media (max-width: 750px) {
+  .theme-text {
+    display: none;
+    transition: 0.3s;
+  }
+  .theme-toggle-container {
+    padding-left: 10px;
+    transition: padding-left 0.3s;
+  }
 }
