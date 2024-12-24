@@ -1,0 +1,160 @@
+/*******************************
+ *  Контейнер екрана завантаження
+ *******************************/
+ .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e1e; /* темний фон */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+    overflow: hidden;
+  }
+  
+  /*******************************
+   *  Куб-спінер
+   *******************************/
+  .spinner {
+    width: 70.4px;
+    height: 70.4px;
+    --clr: white;
+    --clr-alpha: rgba(255, 255, 255, 0.1);
+    animation: spinner 1.6s infinite ease;
+    transform-style: preserve-3d;
+    margin-bottom: 20px;
+  }
+  
+  .spinner > div {
+    background-color: var(--clr-alpha);
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    border: 3.5px solid var(--clr);
+  }
+  
+  .spinner div:nth-of-type(1) {
+    transform: translateZ(-35.2px) rotateY(180deg);
+  }
+  
+  .spinner div:nth-of-type(2) {
+    transform: rotateY(-270deg) translateX(50%);
+    transform-origin: top right;
+  }
+  
+  .spinner div:nth-of-type(3) {
+    transform: rotateY(270deg) translateX(-50%);
+    transform-origin: center left;
+  }
+  
+  .spinner div:nth-of-type(4) {
+    transform: rotateX(90deg) translateY(-50%);
+    transform-origin: top center;
+  }
+  
+  .spinner div:nth-of-type(5) {
+    transform: rotateX(-90deg) translateY(50%);
+    transform-origin: bottom center;
+  }
+  
+  .spinner div:nth-of-type(6) {
+    transform: translateZ(35.2px);
+  }
+  
+  @keyframes spinner {
+    0% {
+      transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
+    }
+    50% {
+      transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+    }
+    100% {
+      transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
+    }
+  }
+  
+  /*******************************
+   *  Заголовок
+   *******************************/
+  .loading-header {
+    font-size: 3rem;    /* приклад: збільшено */
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .loading-sub-header {
+    display: block;
+    font-size: 2rem;
+    margin-top: 0.3em;
+    font-weight: bold;
+  }
+  
+  /*******************************
+   *  Формули, що відлітають
+   *******************************/
+  .floating-formula {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* 
+      починаємо з центру (щоб координати --start-x, --start-y
+      відраховувалися від нього).  
+    */
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  
+    /* 3с — загальна тривалість анімації */
+    animation: flyAway 3s ease-in-out forwards;
+  }
+  
+  /*
+    Використовуємо 4 змінні:
+    --start-x, --start-y (де формула "народжується")
+    --end-x, --end-y     (куди вона відлітає і зникає)
+  */
+  @keyframes flyAway {
+    0% {
+      transform: translate(
+        calc(-50% + var(--start-x)),
+        calc(-50% + var(--start-y))
+      ) scale(0);
+      opacity: 0;
+    }
+    20% {
+      /* Швидкий перехід до нормального розміру та видимості */
+      transform: translate(
+        calc(-50% + var(--start-x)),
+        calc(-50% + var(--start-y))
+      ) scale(1);
+      opacity: 1;
+    }
+    80% {
+      /* Переміщається до кінцевої точки, залишаючись видимою */
+      transform: translate(
+        calc(-50% + var(--end-x)),
+        calc(-50% + var(--end-y))
+      ) scale(1);
+      opacity: 1;
+    }
+    100% {
+      /* У фіналі зменшуємо й робимо прозорою */
+      transform: translate(
+        calc(-50% + var(--end-x)),
+        calc(-50% + var(--end-y))
+      ) scale(0);
+      opacity: 0;
+    }
+  }
+  
