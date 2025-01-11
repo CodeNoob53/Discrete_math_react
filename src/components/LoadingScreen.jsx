@@ -9,7 +9,17 @@ const formulas = [
   '\\varnothing \\subseteq A',
   'A \\cup B = B \\cup A',
   '\\gcd(a, b) = \\gcd(b, a \\bmod b)',
-  'a_n = 3a_{n-1} + 2a_{n-2}'
+  'a_n = 3a_{n-1} + 2a_{n-2}',
+  '\\int_{a}^{b} f(x) \\, dx = F(b) - F(a)',
+  'e^{i\\pi} + 1 = 0',
+  '\\frac{d}{dx} e^x = e^x',
+  '\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1',
+  '\\sum_{n=0}^{\\infty} \\frac{1}{n!} = e',
+  '\\int_{0}^{\\infty} e^{-x^2} \\, dx = \\frac{\\sqrt{\\pi}}{2}',
+  '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\epsilon_0}',
+  '\\frac{d}{dx} \\ln x = \\frac{1}{x}',
+  '\\sum_{k=0}^{n-1} ar^k = a \\frac{1-r^n}{1-r}',
+  '\\oint_{C} \\mathbf{F} \\cdot d\\mathbf{r} = \\iint_{S} (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{S}'
 ];
 
 // Випадковий кут від 0 до 360

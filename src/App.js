@@ -8,6 +8,8 @@ import DecryptMessage from "./pages/DecryptMessage";
 import HammingCode from "./pages/HammingCode";
 import ValidateChecksum from "./pages/ValidateChecksum";
 import Combinatorics from "./pages/Combinatorics";
+import CacheMemoryCalculator from "./pages/Cache";
+
 import ThemeToggle from "./components/ThemeToggle";
 import LoadingScreen from "./components/LoadingScreen";
 import "./styles/App.css";
@@ -51,6 +53,7 @@ const App = () => {
               <Route path="/hamming" element={<HammingCode />} />
               <Route path="/validate_checksum" element={<ValidateChecksum />} />
               <Route path="/combinatorics" element={<Combinatorics />} />
+              <Route path="/cache_calc" element={<CacheMemoryCalculator />} />
             </Routes>
           </div>
         </Router>

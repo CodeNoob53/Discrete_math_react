@@ -54,6 +54,15 @@ input[type="text"]:focus {
     color: var(--result-text);
     border: 1px solid var(--form-border);
     border-radius: 3px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease, max-height 0.5s ease;
+}
+
+.result.show {
+    opacity: 1;
+    max-height: 500px; /* Adjust based on your content */
 }
 
 
@@ -66,8 +75,17 @@ input[type="text"]:focus {
     border-radius: 3px;
     background-color: var(--error-bg);
     color: var(--error-border);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease, max-height 0.5s ease;
+    border: 1px solid var(--error-border);
 }
 
+.flashMessage.show {
+    opacity: 1;
+    max-height: 100px; /* Adjust based on your content */
+}
 
 .formContainer {
     background-color: var(--subject-item);
@@ -193,4 +211,5 @@ button.clear:hover {
     margin-top: 10px;
     white-space: pre-wrap; /* Якщо потрібно форматувати текст по кількох рядках */
   }
+  
   

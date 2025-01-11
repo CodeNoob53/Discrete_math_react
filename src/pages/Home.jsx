@@ -15,6 +15,7 @@ const Home = () => {
         <Link to="/hamming" className="nav-button">Hamming Code</Link>
         <Link to="/validate_checksum" className="nav-button">Validate Checksum</Link>
         <Link to="/combinatorics" className="nav-button">Combinatorics</Link>
+        <Link to="/cache_calc" className="nav-button">CacheMemoryCalculator</Link>
       </div>
       <section className="description">
         <p>

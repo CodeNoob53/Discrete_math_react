@@ -145,3 +145,14 @@ export const validateChecksum = async (messageReceived, checksumReceived) => {
   }
 };
 
+// API для розрахунку кешування пам'яті
+export const calculateCacheMemoryParameters = async (data) => {
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  try {
+    const response = await axios.post(`${BASE_URL}/calculate-cache-memory-parameters`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in calculateCacheMemoryParameters:", error.response?.data || error.message);
+    throw error;
+  }
+};
