@@ -144,7 +144,6 @@ export const validateChecksum = async (messageReceived, checksumReceived) => {
     throw error;
   }
 };
-
 // API для розрахунку кешування пам'яті
 export const calculateCacheMemoryParameters = async (data) => {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
