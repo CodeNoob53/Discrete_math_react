@@ -16,6 +16,7 @@ const Home = () => {
         <Link to="/validate_checksum" className="nav-button">Validate Checksum</Link>
         <Link to="/combinatorics" className="nav-button">Combinatorics</Link>
         <Link to="/cache_calc" className="nav-button">Cache Memory Calculator</Link>
+        <Link to="/solve_linear_equations" className="nav-button">Solve Linear Equations</Link>
       </div>
       <section className="description">
         <p>

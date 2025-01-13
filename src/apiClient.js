@@ -155,3 +155,22 @@ export const calculateCacheMemoryParameters = async (data) => {
     throw error;
   }
 };
+
+
+export const solveLinearEquations = async (equations) => {
+  try {
+    console.log("Preparing to send request to API...");
+    console.log("Data being sent:", JSON.stringify({ equations }));
+
+    const response = await axios.post(`${BASE_URL}/solve-linear-equations`, { equations });
+    console.log("Response from API:", response.data);
+
+    return response.data.solution;
+  } catch (error) {
+    console.error("Error in solveLinearEquations:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+
