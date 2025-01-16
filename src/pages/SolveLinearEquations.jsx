@@ -16,7 +16,7 @@ const SolveLinearEquations = () => {
         }
 
         const equationsArray = trimmedEquations.split("\n").map(eq => eq.trim());
-        if (equationsArray.some(eq => !/^[0-9xXyY\s+\-=]+$/.test(eq))) {
+        if (equationsArray.some(eq => !/^[0-9xXyYZz\s+\-=]+$/.test(eq))) {
             setError(
                 "Invalid format. Use numbers, variables (x, y), and operators (+, -, =)."
             );
@@ -86,6 +86,7 @@ const SolveLinearEquations = () => {
                     <h4>Solution:</h4>
                     <p>{`x = ${result.x}`}</p>
                     <p>{`y = ${result.y}`}</p>
+                    <p>{`y = ${result.z}`}</p>
                 </div>
             
             ) : null}
