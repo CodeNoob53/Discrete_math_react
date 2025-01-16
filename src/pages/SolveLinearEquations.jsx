@@ -84,12 +84,12 @@ const SolveLinearEquations = () => {
             {result ? (
                 <div className="result show">
                     <h4>Solution:</h4>
-                    <p>{`x = ${result.x}`}</p>
-                    <p>{`y = ${result.y}`}</p>
-                    <p>{`y = ${result.z}`}</p>
+                    {Object.entries(result).map(([key, value]) => (
+                        <p key={key}>{`${key} = ${value}`}</p>
+                    ))}
                 </div>
-            
             ) : null}
+
             <div className="form-instruction">
                 <h4>Solve a system of linear equations. Example:</h4>
                 <div className="example-box">
