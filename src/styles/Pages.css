@@ -233,7 +233,7 @@ button.clear:hover {
     font-size: 1rem;
     resize: vertical;
     background-color: var(--form-bg);
-    color: var(--text-color);
+    color: var(--secondary-text-color);
   }
   
   textarea:focus {
@@ -253,3 +253,71 @@ button.clear:hover {
     gap: 10px;
     color: var(--secondary-text-color);
   }
+
+  /* Style for the "+" button */
+.add-count-button {
+  background-color: #64866a; /* Green */
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.add-count-button:hover {
+  background-color: #45a049; /* Darker green */
+  transform: scale(1.0);
+}
+/* Style for the delete field button */
+.delete-field-button {
+  background-color: rgba(207, 66, 66, 0.507); /* Red */
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 50%; /* Circular button */
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.delete-field-button:hover {
+  background-color: #d32f2f; /* Darker red */
+  transform: scale(1.0);
+}
+
+.shortInput {
+  width: 90px;
+}
+
+/* Hide number input spinner arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Placeholder Styling */
+input::placeholder {
+  color: var(--secondary-text-color);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Tooltip Customization */
+.tippy-box {
+  font-size: 0.9rem;
+  background-color: rgba(59, 59, 59, 0.8);
+  color: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}
+

@@ -173,4 +173,81 @@ export const solveLinearEquations = async (equations) => {
 };
 
 
+// API for adding vectors
+export const addVectors = async (vectors) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/add`, { vectors });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in addVectors:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
+// API for calculating cross product
+export const calculateCrossProduct = async (vector1, vector2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/cross-product`, { vector1, vector2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateCrossProduct:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// API for calculating dot product
+export const calculateDotProduct = async (vector1, vector2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/dot-product`, { vector1, vector2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateDotProduct:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// API for calculating magnitude
+export const calculateMagnitude = async (vector) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/magnitude`, { vector });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateMagnitude:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// API for finding negative vector
+export const findNegativeVector = async (vector) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/negative`, { vector });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in findNegativeVector:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// API for subtracting vectors
+export const subtractVectors = async (vectors) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/subtract`, { vectors });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in subtractVectors:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const findStartPoint = async (vector, endPoint) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/vectors/find-start-point`, {
+      vector,
+      endPoint,
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in findStartPoint:", error.response?.data || error.message);
+    throw error;
+  }
+};

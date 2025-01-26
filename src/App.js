@@ -10,6 +10,7 @@ import ValidateChecksum from "./pages/ValidateChecksum";
 import Combinatorics from "./pages/Combinatorics";
 import CacheMemoryCalculator from "./pages/Cache";
 import SolveLinearEquations from "./pages/SolveLinearEquations";
+import VectorCalculations from "./pages/Vectors";
 
 import ThemeToggle from "./components/ThemeToggle";
 import LoadingScreen from "./components/LoadingScreen";
@@ -56,6 +57,7 @@ const App = () => {
               <Route path="/combinatorics" element={<Combinatorics />} />
               <Route path="/cache_calc" element={<CacheMemoryCalculator />} />
               <Route path="/solve_linear_equations" element={<SolveLinearEquations />} />
+              <Route path="/vectors" element={<VectorCalculations />} />
             </Routes>
           </div>
         </Router>
