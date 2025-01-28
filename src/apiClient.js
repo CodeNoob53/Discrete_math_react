@@ -174,7 +174,7 @@ export const solveLinearEquations = async (equations) => {
 
 
 // API for adding vectors
-export const addVectors = async (vectors) => {
+export const addVectors = async ({ vectors }) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/vectors/add`, { vectors });
     return response.data.result;
@@ -184,10 +184,13 @@ export const addVectors = async (vectors) => {
   }
 };
 
-// API for calculating cross product
+// Calculate cross product
 export const calculateCrossProduct = async (vector1, vector2) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/vectors/cross-product`, { vector1, vector2 });
+    const response = await axios.post(`${BASE_URL}/api/vectors/cross-product`, {
+      vector1,
+      vector2,
+    });
     return response.data.result;
   } catch (error) {
     console.error("Error in calculateCrossProduct:", error.response?.data || error.message);
@@ -195,7 +198,8 @@ export const calculateCrossProduct = async (vector1, vector2) => {
   }
 };
 
-// API for calculating dot product
+
+// Calculate dot product
 export const calculateDotProduct = async (vector1, vector2) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/vectors/dot-product`, { vector1, vector2 });
@@ -206,7 +210,7 @@ export const calculateDotProduct = async (vector1, vector2) => {
   }
 };
 
-// API for calculating magnitude
+// Magnitude for single vector
 export const calculateMagnitude = async (vector) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/vectors/magnitude`, { vector });
@@ -229,7 +233,7 @@ export const findNegativeVector = async (vector) => {
 };
 
 // API for subtracting vectors
-export const subtractVectors = async (vectors) => {
+export const subtractVectors = async ({ vectors }) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/vectors/subtract`, { vectors });
     return response.data.result;
@@ -238,6 +242,7 @@ export const subtractVectors = async (vectors) => {
     throw error;
   }
 };
+
 
 export const findStartPoint = async (vector, endPoint) => {
   try {
