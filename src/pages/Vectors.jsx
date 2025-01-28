@@ -10,77 +10,107 @@ import {
   subtractVectors,
 } from "../apiClient";
 
-const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, clearForm, allowAdd = true }) => (
-  <div className="formContainer">
-    <h4>{title}</h4>
-    {error && <p className="flashMessage show">{error}</p>}
-    <form onSubmit={onSubmit}>
-      {vectors.map((vector, index) => (
-        <div className="formGroup" key={index}>
-          <label htmlFor={`vector-${index}`}>Vector {index + 1}:</label>
-          <Tippy content="Enter comma-separated numbers (e.g., 1,2,3)">
-            <input
-              type="text"
-              id={`vector-${index}`}
-              className="shortInput"
-              value={vector.join(",")}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                if (/^[0-9,.\s-]*$/.test(inputValue)) {
-                  const updatedVectors = [...vectors];
-                  updatedVectors[index] = inputValue
-                    .split(",")
-                    .map((v) => (v.trim() === "" ? "" : Number(v)));
-                  setVectors(updatedVectors);
-                }
-              }}
-              placeholder="e.g., 1,2,3"
-              inputMode="numeric"
-            />
-          </Tippy>
-          {index >= 2 && allowAdd && (
-            <Tippy content="Remove this vector field" placement="right">
+const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, clearForm, allowAdd = true }) => {
+  // Store raw input values before conversion to numbers
+  const [rawInputs, setRawInputs] = useState(vectors.map(v => v.join(",")));
+
+  return (
+    <div className="formContainer">
+      <h4>{title}</h4>
+      {error && <p className="flashMessage show">{error}</p>}
+      <form onSubmit={onSubmit}>
+        {vectors.map((vector, index) => (
+          <div className="formGroup" key={index}>
+            <label htmlFor={`vector-${index}`}>Vector {index + 1}:</label>
+            <Tippy content="Enter comma-separated numbers (e.g., 1,2,3)">
+              <input
+                type="text"
+                id={`vector-${index}`}
+                className="shortInput"
+                value={rawInputs[index]}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (/^[-0-9,.\s]*$/.test(inputValue)) {
+                    // Update raw input
+                    const newRawInputs = [...rawInputs];
+                    newRawInputs[index] = inputValue;
+                    setRawInputs(newRawInputs);
+
+                    // Convert to numbers, but only for complete numbers
+                    const updatedVectors = [...vectors];
+                    updatedVectors[index] = inputValue
+                      .split(",")
+                      .map(v => {
+                        const trimmed = v.trim();
+                        if (trimmed === "" || trimmed === "-") return "";
+                        const num = parseFloat(trimmed);
+                        return isNaN(num) ? "" : num;
+                      });
+                    setVectors(updatedVectors);
+                  }
+                }}
+                placeholder="e.g., 1,2,3"
+                inputMode="numeric"
+              />
+            </Tippy>
+            {index >= 2 && allowAdd && (
+              <Tippy content="Remove this vector field" placement="right">
+                <button
+                  type="button"
+                  className="delete-field-button"
+                  onClick={() => {
+                    setVectors(vectors.filter((_, i) => i !== index));
+                    setRawInputs(rawInputs.filter((_, i) => i !== index));
+                  }}
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+              </Tippy>
+            )}
+          </div>
+        ))}
+        {allowAdd && (
+          <div className="formGroup addButtonGroup">
+            <Tippy content="Add a new vector field" placement="right">
               <button
                 type="button"
-                className="delete-field-button"
-                onClick={() => setVectors(vectors.filter((_, i) => i !== index))}
+                className="add-count-button"
+                onClick={() => {
+                  setVectors([...vectors, []]);
+                  setRawInputs([...rawInputs, ""]);
+                }}
               >
-                <span className="material-symbols-outlined">delete</span>
+                <span className="material-symbols-outlined">add</span>
               </button>
             </Tippy>
-          )}
+          </div>
+        )}
+        <div className="buttons">
+          <button type="submit" className="submit">
+            Submit
+          </button>
+          <button 
+            type="button" 
+            className="clear" 
+            onClick={() => {
+              clearForm();
+              setRawInputs(vectors.map(v => ""));
+            }}
+          >
+            Clear
+          </button>
         </div>
-      ))}
-      {allowAdd && (
-        <div className="formGroup addButtonGroup">
-          <Tippy content="Add a new vector field" placement="right">
-            <button
-              type="button"
-              className="add-count-button"
-              onClick={() => setVectors([...vectors, []])}
-            >
-              <span className="material-symbols-outlined">add</span>
-            </button>
-          </Tippy>
+      </form>
+      {result && (
+        <div className="result show">
+          <h5>Result:</h5>
+          <p>{Array.isArray(result) ? result.join(", ") : result}</p>
         </div>
       )}
-      <div className="buttons">
-        <button type="submit" className="submit">
-          Submit
-        </button>
-        <button type="button" className="clear" onClick={clearForm}>
-          Clear
-        </button>
-      </div>
-    </form>
-    {result && (
-      <div className="result show">
-        <h5>Result:</h5>
-        <p>{Array.isArray(result) ? result.join(", ") : result}</p>
-      </div>
-    )}
-  </div>
-);
+    </div>
+  );
+};
+
 
 const Vectors = () => {
   const [addInputs, setAddInputs] = useState([[], []]);
