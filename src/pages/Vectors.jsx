@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import {
@@ -94,7 +95,7 @@ const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, cl
             className="clear" 
             onClick={() => {
               clearForm();
-              setRawInputs(vectors.map(v => ""));
+              setRawInputs(vectors.map(() => ""));
             }}
           >
             Clear
@@ -300,5 +301,14 @@ const Vectors = () => {
     </div>
   );
 };
-
+OperationForm.propTypes = {
+  title: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  vectors: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  setVectors: PropTypes.func.isRequired,
+  result: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  error: PropTypes.string,
+  clearForm: PropTypes.func.isRequired,
+  allowAdd: PropTypes.bool,
+};
 export default Vectors;

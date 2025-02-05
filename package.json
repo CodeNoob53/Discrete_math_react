@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@mui/icons-material": "^6.4.3",
+    "@mui/material": "^6.4.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -11,10 +13,10 @@
     "axios": "^1.7.9",
     "better-react-mathjax": "^2.0.4-beta1",
     "dotenv": "^16.4.7",
-    "mathjax": "^3.2.2",
+    "lucide-react": "^0.474.0",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-mathjax": "^1.0.1",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
     "serve": "^14.2.4",
@@ -25,12 +27,14 @@
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended"
     ]
   },
   "browserslist": {
@@ -46,8 +50,14 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.26.7",
     "@babel/plugin-syntax-flow": "^7.26.0",
     "@babel/plugin-transform-react-jsx": "^7.25.9",
+    "@eslint/js": "^9.19.0",
+    "@testing-library/dom": "^10.4.0",
+    "@types/react": "^19.0.8",
+    "babel-loader": "^9.2.1",
+    "globals": "^15.14.0",
     "typescript": "^5.7.2"
   }
 }

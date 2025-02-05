@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import {
   calculateArrangement,
@@ -299,6 +301,15 @@ const Combinatorics = () => {
       </div>
     </MathJaxContext>
   );
+};
+OperationForm.propTypes = {
+  title: PropTypes.node.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  inputs: PropTypes.object.isRequired,
+  setInputs: PropTypes.func.isRequired,
+  result: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  error: PropTypes.string,
+  clearForm: PropTypes.func.isRequired,
 };
 
 export default Combinatorics;
