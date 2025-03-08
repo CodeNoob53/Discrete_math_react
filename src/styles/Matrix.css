@@ -1,0 +1,26 @@
+.matrix-result {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.matrix-result td {
+  border: 1px solid var(--form-border);
+  padding: 8px;
+  text-align: center;
+}
+
+
+.matrix-input {
+  width: auto;
+  height: 5rem;
+  font-size: 1.2rem;
+  border: 1px solid var(--form-border);
+  background-color: var(--form-bg);
+  color: var(--secondary-text-color);
+}
+
+.matrix-input:focus {
+  border-color: var(--button-bg);
+  outline: none;
+}

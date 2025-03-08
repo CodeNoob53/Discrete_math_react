@@ -256,3 +256,96 @@ export const findStartPoint = async (vector, endPoint) => {
     throw error;
   }
 };
+
+export const addMatrices = async (matrix1, matrix2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/add`, { matrix1, matrix2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in addMatrices:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const subtractMatrices = async (matrix1, matrix2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/subtract`, { matrix1, matrix2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in subtractMatrices:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const multiplyMatrices = async (matrix1, matrix2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/multiply`, { matrix1, matrix2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in multiplyMatrices:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const divideMatrices = async (matrix1, matrix2) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/divide`, { matrix1, matrix2 });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in divideMatrices:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const calculateDeterminant = async (matrix) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/determinant`, { matrix });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateDeterminant:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const calculateInverseMatrix = async (matrix) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/inverse`, { matrix });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateInverseMatrix:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const calculateRank = async (matrix) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/rank`, { matrix });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateRank:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const calculateAdjoint = async (matrix) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/adjoint`, { matrix });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in calculateAdjoint:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const transposeMatrix = async (matrix) => {
+  console.log("Sending request to /matrix/transpose with:", JSON.stringify({ matrix }));
+  try {
+    const response = await axios.post(`${BASE_URL}/matrix/transpose`, { matrix });
+    console.log("Response:", response.data);
+    return response.data.result;
+  } catch (error) {
+    console.error("Error in transposeMatrix:", error.response?.data || error.message);
+    throw error;
+  }
+};
+

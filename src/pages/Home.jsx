@@ -18,6 +18,7 @@ const Home = () => {
         <Link to="/cache_calc" className="nav-button">Cache Memory Calculator</Link>
         <Link to="/solve_linear_equations" className="nav-button">Solve Linear Equations</Link>
         <Link to="/vectors" className="nav-button">Vectors</Link>
+        <Link to="/matrix" className="nav-button">Matrix Operations</Link>
       </div>
       <section className="description">
         <p>
