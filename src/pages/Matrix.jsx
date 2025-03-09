@@ -6,9 +6,13 @@ import {
     subtractMatrices,
     multiplyMatrices,
     calculateDeterminant,
-    transposeMatrix,
+    calculateAdjoint,
+    divideMatrices,
+    calculateInverseMatrix, // Updated from calculateInverse
+    calculateRank,
 } from "../apiClient";
 import "./../styles/Matrix.css";
+import PropTypes from 'prop-types'; // Added for prop-types
 
 // Універсальний компонент форми для матриць
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null }) => {
@@ -123,6 +127,23 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     );
 };
 
+// Add PropTypes validation
+OperationForm.propTypes = {
+    title: PropTypes.string.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    matrices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))).isRequired,
+    setMatrices: PropTypes.func.isRequired,
+    result: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+        PropTypes.number,
+        PropTypes.string,
+    ]),
+    error: PropTypes.string,
+    clearForm: PropTypes.func.isRequired,
+    allowAdd: PropTypes.bool,
+    maxMatrices: PropTypes.number,
+};
+
 // Функція для послідовного додавання багатьох матриць
 const sequentialAddMatrices = async (matrices) => {
     if (matrices.length < 2) throw new Error("Need at least 2 matrices");
@@ -149,19 +170,28 @@ const Matrices = () => {
     const [subtractInputs, setSubtractInputs] = useState([[], []]);
     const [multiplyInputs, setMultiplyInputs] = useState([[], []]);
     const [determinantInputs, setDeterminantInputs] = useState([[]]);
-    const [transposeInputs, setTransposeInputs] = useState([[]]);
+    const [adjointInputs, setAdjointInputs] = useState([[]]);
+    const [divideInputs, setDivideInputs] = useState([[], []]);
+    const [inverseInputs, setInverseInputs] = useState([[]]);
+    const [rankInputs, setRankInputs] = useState([[]]);
 
     const [addResult, setAddResult] = useState("");
     const [subtractResult, setSubtractResult] = useState("");
     const [multiplyResult, setMultiplyResult] = useState("");
     const [determinantResult, setDeterminantResult] = useState("");
-    const [transposeResult, setTransposeResult] = useState("");
+    const [adjointResult, setAdjointResult] = useState("");
+    const [divideResult, setDivideResult] = useState("");
+    const [inverseResult, setInverseResult] = useState("");
+    const [rankResult, setRankResult] = useState("");
 
     const [addError, setAddError] = useState("");
     const [subtractError, setSubtractError] = useState("");
     const [multiplyError, setMultiplyError] = useState("");
     const [determinantError, setDeterminantError] = useState("");
-    const [transposeError, setTransposeError] = useState("");
+    const [adjointError, setAdjointError] = useState("");
+    const [divideError, setDivideError] = useState("");
+    const [inverseError, setInverseError] = useState("");
+    const [rankError, setRankError] = useState("");
 
     const clearForm = (setInputs, setResult, setError, defaultMatrices = [[]]) => {
         setInputs(defaultMatrices);
@@ -182,8 +212,11 @@ const Matrices = () => {
         // Валідація для операцій з однією матрицею
         if (singleMatrix) {
             if (matrices.length !== 1) return "Exactly one matrix is required.";
-            if (apiCall === calculateDeterminant && matrices[0].length !== matrices[0][0].length) {
-                return "Determinant is only defined for square matrices.";
+            if (
+                (apiCall === calculateDeterminant || apiCall === calculateAdjoint || apiCall === calculateInverseMatrix) &&
+                matrices[0].length !== matrices[0][0].length
+            ) {
+                return "This operation is only defined for square matrices.";
             }
             return null;
         }
@@ -193,9 +226,12 @@ const Matrices = () => {
             if (matrices.length !== 2) return "Exactly two matrices are required.";
             const [matrix1, matrix2] = matrices;
 
-            if (apiCall === multiplyMatrices) {
+            if (apiCall === multiplyMatrices || apiCall === divideMatrices) {
                 if (matrix1[0].length !== matrix2.length) {
                     return "Number of columns in the first matrix must equal the number of rows in the second.";
+                }
+                if (apiCall === divideMatrices && matrix2.length !== matrix2[0].length) {
+                    return "Second matrix must be square for division (A/B = A*B^(-1)).";
                 }
             } else { // Для додавання та віднімання
                 if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
@@ -230,7 +266,6 @@ const Matrices = () => {
                 const [matrix1, matrix2] = inputs;
                 result = await apiCall(matrix1, matrix2);
             } else if (apiCall === sequentialAddMatrices || apiCall === sequentialSubtractMatrices) {
-                // Для послідовного додавання/віднімання кількох матриць
                 result = await apiCall(inputs);
             }
             setResult(result);
@@ -295,16 +330,58 @@ const Matrices = () => {
                 maxMatrices={1}
             />
             <OperationForm
-                title="Transpose Matrix"
+                title="Calculate Adjoint (Adjugate)"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(transposeInputs, transposeMatrix, setTransposeResult, setTransposeError, { singleMatrix: true });
+                    handleSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
                 }}
-                matrices={transposeInputs}
-                setMatrices={setTransposeInputs}
-                result={transposeResult}
-                error={transposeError}
-                clearForm={() => clearForm(setTransposeInputs, setTransposeResult, setTransposeError, [[]])}
+                matrices={adjointInputs}
+                setMatrices={setAdjointInputs}
+                result={adjointResult}
+                error={adjointError}
+                clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, [[]])}
+                allowAdd={false}
+                maxMatrices={1}
+            />
+            <OperationForm
+                title="Divide Two Matrices (A/B = A*B^(-1))"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
+                }}
+                matrices={divideInputs}
+                setMatrices={setDivideInputs}
+                result={divideResult}
+                error={divideError}
+                clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, [[], []])}
+                allowAdd={false}
+                maxMatrices={2}
+            />
+            <OperationForm
+                title="Calculate Inverse"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true }); // Updated to calculateInverseMatrix
+                }}
+                matrices={inverseInputs}
+                setMatrices={setInverseInputs}
+                result={inverseResult}
+                error={inverseError}
+                clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, [[]])}
+                allowAdd={false}
+                maxMatrices={1}
+            />
+            <OperationForm
+                title="Calculate Rank"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
+                }}
+                matrices={rankInputs}
+                setMatrices={setRankInputs}
+                result={rankResult}
+                error={rankError}
+                clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, [[]])}
                 allowAdd={false}
                 maxMatrices={1}
             />
