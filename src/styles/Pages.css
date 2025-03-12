@@ -358,4 +358,18 @@ input::placeholder {
 
 .tippy-content li {
     margin: 4px 0;
+    text-align: left;
+}
+
+/* keywords style */
+.keyword-o, .keyword-lb {
+    font-weight: bold;
+}
+
+.keyword-o {
+    color: orange;
+}
+
+.keyword-lb {
+    color: lightblue;
 }

@@ -223,11 +223,11 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                     <div>
                         <p><strong>Input Format:</strong></p>
                         <ul>
-                            <li>Use dot (.) for decimal numbers (e.g., 1.5)</li>
-                            <li>Press Space to add a new column</li>
-                            <li>Press Enter to add a new row</li>
-                            <li>Empty cells are treated as zeros</li>
-                            <li>Use negative sign (-) for negative numbers</li>
+                            <li>Use dot (<span className="keyword-o">.</span>) for decimal numbers (e.g., 1<span className="keyword-o">.</span>5)</li>
+                            <li>Press <span className="keyword-o">Space</span> to add a new <span className="keyword-lb">column</span></li>
+                            <li>Press <span className="keyword-o">Enter</span> to add a new <span className="keyword-lb">row</span></li>
+                            <li><span className="keyword-lb">Empty cells</span> are treated as <span className="keyword-lb">zeros</span></li>
+                            <li>Use negative sign (<span className="keyword-o">-</span>) for <span className="keyword-lb">negative numbers</span></li>
                         </ul>
                     </div>
                 } placement="right" interactive={true}>
