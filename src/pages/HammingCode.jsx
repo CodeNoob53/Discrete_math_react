@@ -46,12 +46,11 @@ const HammingCode = () => {
 
   return (
     <div className="hamming-code">
-      <h3>Hamming Code</h3>
       {/* Flash Message */}
       {flashMessage && <p className="flashMessage">{flashMessage}</p>}
       {/* Encode Form */}
       <div className="formContainer">
-        <h4>Encode Hamming Code</h4>
+        <div className="form-header"><h3>Encode Hamming Code</h3></div>
         <form onSubmit={handleEncode} className="hamming-form">
           <div className="formGroup">
             <label htmlFor="encodeInput">4-bit Input:</label>
@@ -78,7 +77,7 @@ const HammingCode = () => {
 
       {/* Decode Form */}
       <div className="formContainer">
-        <h4>Decode Hamming Code</h4>
+        <div className="form-header"><h3>Decode Hamming Code</h3></div>
         <form onSubmit={handleDecode} className="hamming-form">
           <div className="formGroup">
             <label htmlFor="decodeInput">7-bit Input:</label>

@@ -218,7 +218,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     return (
         <div className="formContainer">
             <div className="form-header">
-                <h4>{title}</h4>
+                <h3>{title}</h3>
                 <Tippy content={
                     <div>
                         <p><strong>Input Format:</strong></p>

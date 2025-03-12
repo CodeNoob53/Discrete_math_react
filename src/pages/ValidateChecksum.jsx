@@ -57,7 +57,7 @@ const ValidateChecksum = () => {
 
   return (
     <div className="formContainer">
-      <h3>Validate Checksum</h3>
+      <div className="form-header"><h3>Validate Checksum</h3></div>
       {error && <p className="flashMessage">{error}</p>}
       <form onSubmit={handleSubmit} className="validate-checksum-form">
         <div className="formGroup">

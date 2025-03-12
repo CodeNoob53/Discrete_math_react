@@ -88,7 +88,7 @@ const SolvingRecurrenceRelations = () => {
   return (
     <MathJaxContext>
       <div className="solving-recurrence-relations">
-        <h3>Solving Recurrence Relations</h3>
+       <div className='form-header'><h3>Solving Recurrence Relations</h3></div>
 
         {/* Flash Message */}
         {flashMessage && (<FlashMessage message={flashMessage} clearMessage={() => setFlashMessage("")}/>)}

@@ -45,7 +45,7 @@ const DecryptMessage = () => {
 
   return (
     <div className="formContainer">
-      <h3>Decrypt Message</h3>
+      <div className="form-header"><h3>Decrypt Message</h3></div>
       {error && <p className="flashMessage">{error}</p>}
       <form onSubmit={handleSubmit} className="decrypt-form">
         <div className="formGroup">
@@ -82,7 +82,7 @@ const DecryptMessage = () => {
 
       {result && (
         <div className="result">
-          <h4>Decrypted Message:</h4>
+          <h3>Decrypted Message:</h3>
           <p className="decoded-result">{result}</p>
         </div>
       )}

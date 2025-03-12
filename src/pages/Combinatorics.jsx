@@ -12,7 +12,7 @@ import {
 
 const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clearForm }) => (
   <div className="formContainer">
-    <h4>{title}</h4>
+    <div className="form-header"><h3>{title}</h3></div>
     {error && <p className="flashMessage error">{error}</p>}
     <form onSubmit={onSubmit}>
       {inputs.n !== undefined && (
@@ -95,7 +95,7 @@ const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clea
     </form>
     {result && (
       <div className="result">
-        <h4>Result:</h4>
+        <h3>Result:</h3>
         <p>{result}</p>
       </div>
     )}

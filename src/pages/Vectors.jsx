@@ -17,10 +17,10 @@ const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, cl
 
   return (
     <div className="formContainer">
-      <h4>{title}</h4>
+      <div className="form-header"><h3>{title}</h3></div>
       {error && <p className="flashMessage show">{error}</p>}
       <form onSubmit={onSubmit}>
-        {vectors.map((vector, index) => (
+        {vectors.map((index) => (
           <div className="formGroup" key={index}>
             <label htmlFor={`vector-${index}`}>Vector {index + 1}:</label>
             <Tippy content="Enter comma-separated numbers (e.g., 1,2,3)">

@@ -72,7 +72,7 @@ const Sets = () => {
     <div className="sets">
       {error && <p className="flashMessage error">{error}</p>}
       <form className="formContainer difference-container" onSubmit={(e) => { e.preventDefault(); handleCalculate("difference"); }}>
-        <h4>Difference</h4>
+        <div className="form-header"><h3>Difference</h3></div>
         <div className="inputGroup">
           <span>{"{"}</span>
           <input
@@ -103,7 +103,7 @@ const Sets = () => {
       </form>
 
       <form className="formContainer union-container" onSubmit={(e) => { e.preventDefault(); handleCalculate("union"); }}>
-        <h4>Union</h4>
+        <div className="form-header"><h3>Union</h3></div>
         <div className="inputGroup">
           <span>{"{"}</span>
           <input
@@ -134,7 +134,7 @@ const Sets = () => {
       </form>
 
       <form className="formContainer intersection-container" onSubmit={(e) => { e.preventDefault(); handleCalculate("intersection"); }}>
-        <h4>Intersection</h4>
+        <div className="form-header"><h3>Intersection</h3></div>
         <div className="inputGroup">
           <span>{"{"}</span>
           <input
