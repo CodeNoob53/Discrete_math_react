@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import {
@@ -8,71 +8,260 @@ import {
     calculateDeterminant,
     calculateAdjoint,
     divideMatrices,
-    calculateInverseMatrix, // Updated from calculateInverse
+    calculateInverseMatrix,
     calculateRank,
 } from "../apiClient";
 import "./../styles/Matrix.css";
-import PropTypes from 'prop-types'; // Added for prop-types
+import PropTypes from 'prop-types';
+
+const MatrixGridInput = ({ value, onChange, index, formId }) => {
+    const [grid, setGrid] = useState(() => {
+        const initialGrid = value ? parseMatrixInput(value) : [["", ""], ["", ""]];
+        return initialGrid;
+    });
+
+    const [activeCell, setActiveCell] = useState(null);
+
+    // Оновлена функція parseMatrixInput
+    const parseMatrixInput = (input) => {
+        if (!input.trim()) return [["", "", ""], ["", "", ""]]; // Повертаємо 2x3 за замовчуванням для коректної структури
+
+        const rows = input.trim().split("\n").map(row => row.trim().split(/\s+/));
+        const maxCols = Math.max(...rows.map(row => row.length));
+
+        return rows.map(row => {
+            const parsedRow = row.map(val => {
+                const trimmed = val.trim();
+                if (trimmed === "" || trimmed === "-") return "";
+                const num = parseFloat(trimmed);
+                return isNaN(num) ? "" : num;
+            });
+            // Доповнюємо рядок порожніми значеннями до максимальної кількості стовпців
+            while (parsedRow.length < maxCols) {
+                parsedRow.push("");
+            }
+            return parsedRow;
+        });
+    };
+
+    // Синхронізація grid з value лише при зміні зовнішнього value
+    useEffect(() => {
+        const newGrid = parseMatrixInput(value);
+        if (newGrid.length === 0 || newGrid[0].length === 0) {
+            setGrid([["", ""], ["", ""]]);
+        } else {
+            setGrid(newGrid);
+        }
+    }, [value]);
+
+    const getCellId = (rowIdx, colIdx) => `cell-${formId}-${index}-${rowIdx}-${colIdx}`;
+
+    const handleChange = (e, rowIdx, colIdx) => {
+        const newGrid = [...grid.map(row => [...row])];
+        newGrid[rowIdx][colIdx] = e.target.value;
+        setGrid(newGrid);
+
+        // Перетворюємо grid у текст, зберігаючи всі клітинки
+        const textValue = newGrid.map(row => row.join(" ")).join("\n");
+        onChange({ target: { value: textValue } });
+
+        // Залишаємо фокус на тій же клітинці
+        setTimeout(() => {
+            const el = document.getElementById(getCellId(rowIdx, colIdx));
+            if (el) el.focus();
+        }, 0);
+    };
+
+    const handleKeyDown = (e, rowIdx, colIdx) => {
+        const newGrid = [...grid.map(row => [...row])];
+        const totalCols = newGrid[rowIdx].length;
+        const totalRows = newGrid.length;
+
+        if (e.key === " " || e.key === "Spacebar") {
+            e.preventDefault();
+            if (colIdx === totalCols - 1) {
+                // Додаємо новий стовпець
+                newGrid.forEach(row => row.push(""));
+                setGrid(newGrid);
+                // Використовуємо index для правильної ідентифікації форми
+                const nextCellId = getCellId(rowIdx, colIdx + 1);
+                setTimeout(() => {
+                    const nextCell = document.getElementById(nextCellId);
+                    if (nextCell) nextCell.focus();
+                }, 0);
+            } else {
+                // Переходимо до наступної клітинки
+                const nextCellId = getCellId(rowIdx, colIdx + 1);
+                setTimeout(() => {
+                    const nextCell = document.getElementById(nextCellId);
+                    if (nextCell) nextCell.focus();
+                }, 0);
+            }
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            if (rowIdx === totalRows - 1) {
+                // Додаємо новий рядок із такою ж кількістю стовпців
+                newGrid.push(Array(totalCols).fill(""));
+                setGrid(newGrid);
+                // Використовуємо index для правильної ідентифікації форми
+                const nextCellId = getCellId(rowIdx + 1, 0);
+                setTimeout(() => {
+                    const nextCell = document.getElementById(nextCellId);
+                    if (nextCell) nextCell.focus();
+                }, 0);
+            } else {
+                // Переходимо до першого стовпця наступного рядка
+                const nextCellId = getCellId(rowIdx + 1, 0);
+                setTimeout(() => {
+                    const nextCell = document.getElementById(nextCellId);
+                    if (nextCell) nextCell.focus();
+                }, 0);
+            }
+        }
+    };
+
+    const handleFocus = (rowIdx, colIdx) => {
+        setActiveCell(`${rowIdx}-${colIdx}`);
+    };
+
+    const handleBlur = () => {
+        setActiveCell(null);
+    };
+
+    return (
+        <div className="matrix-wrapper">
+            <div className="matrix-brackets">
+                <div className="matrix-grid">
+                    {grid.map((row, rowIdx) => (
+                        <div key={rowIdx} className="matrix-row">
+                            {row.map((cell, colIdx) => (
+                                <input
+                                    key={colIdx}
+                                    id={getCellId(rowIdx, colIdx)}
+                                    type="text"
+                                    className={`matrix-cell ${cell !== "" || activeCell === `${rowIdx}-${colIdx}`
+                                        ? "active"
+                                        : "inactive"
+                                        }`}
+                                    value={cell}
+                                    onChange={(e) => handleChange(e, rowIdx, colIdx)}
+                                    onKeyDown={(e) => handleKeyDown(e, rowIdx, colIdx)}
+                                    onFocus={() => handleFocus(rowIdx, colIdx)}
+                                    onBlur={handleBlur}
+                                    placeholder="0"
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+MatrixGridInput.propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    index: PropTypes.number.isRequired,
+    formId: PropTypes.string.isRequired, // Додайте це
+};
 
 // Універсальний компонент форми для матриць
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null }) => {
-    const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(",")).join(";")));
+    const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
+
+    const parseMatrixInput = (input) => {
+        if (!input.trim()) return [["", ""], ["", ""]];
+
+        // Розбиваємо введення на рядки та стовпці
+        let rows = input.trim().split("\n").map(row =>
+            row.trim().split(/\s+/).map(val => {
+                const trimmed = val.trim();
+                return (trimmed === "" || trimmed === "-") ? "" :
+                    (isNaN(parseFloat(trimmed)) ? "" : trimmed);
+            })
+        );
+
+        // Знаходимо максимальну довжину рядка
+        const maxCols = Math.max(...rows.map(row => row.length));
+
+        // Вирівнюємо всі рядки до максимальної довжини
+        rows = rows.map(row => {
+            while (row.length < maxCols) {
+                row.push("");
+            }
+            return row;
+        });
+
+        // Видаляємо пусті рядки
+        rows = rows.filter(row => row.some(cell => cell !== ""));
+
+        // Видаляємо пусті стовпці
+        for (let col = maxCols - 1; col >= 0; col--) {
+            const isEmptyColumn = rows.every(row => row[col] === "");
+            if (isEmptyColumn) {
+                rows = rows.map(row => {
+                    row.splice(col, 1);
+                    return row;
+                });
+            }
+        }
+
+        // Перевіряємо чи залишилися дані після очищення
+        if (rows.length === 0 || rows[0].length === 0) {
+            return [["", ""], ["", ""]];
+        }
+
+        return rows;
+    };
 
     return (
         <div className="formContainer">
             <h4>{title}</h4>
             {error && <p className="flashMessage show">{error}</p>}
             <form onSubmit={onSubmit}>
-                {matrices.map((matrix, index) => (
-                    <div className="formGroup" key={index}>
-                        <label htmlFor={`matrix-${index}`}>Matrix {index + 1}:</label>
-                        <Tippy content="Enter rows separated by semicolons, numbers in rows by commas (e.g., 1,2;3,4)">
-                            <textarea
-                                id={`matrix-${index}`}
-                                className="matrix-input"
-                                value={rawInputs[index]}
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    if (/^[-0-9,;\s]*$/.test(inputValue)) {
-                                        const newRawInputs = [...rawInputs];
-                                        newRawInputs[index] = inputValue;
-                                        setRawInputs(newRawInputs);
-
-                                        const updatedMatrices = [...matrices];
-                                        updatedMatrices[index] = inputValue
-                                            .split(";")
-                                            .map(row =>
-                                                row.split(",").map(v => {
-                                                    const trimmed = v.trim();
-                                                    if (trimmed === "" || trimmed === "-") return "";
-                                                    const num = parseFloat(trimmed);
-                                                    return isNaN(num) ? "" : num;
-                                                })
-                                            )
-                                            .filter(row => row.some(v => v !== ""));
-                                        setMatrices(updatedMatrices);
-                                    }
-                                }}
-                                placeholder="e.g., 1,2;3,4"
-                                rows="3"
-                            />
-                        </Tippy>
-                        {index >= 2 && allowAdd && (
-                            <Tippy content="Remove this matrix field" placement="right">
-                                <button
-                                    type="button"
-                                    className="delete-field-button"
-                                    onClick={() => {
-                                        setMatrices(matrices.filter((_, i) => i !== index));
-                                        setRawInputs(rawInputs.filter((_, i) => i !== index));
-                                    }}
-                                >
-                                    <span className="material-symbols-outlined">delete</span>
-                                </button>
-                            </Tippy>
-                        )}
-                    </div>
-                ))}
+                <div className="matrices-container">
+                    {matrices.map((matrix, index) => (
+                        <div className="matrix-group" key={index}>
+                            <label htmlFor={`matrix-${index}`} className="matrix-label">
+                                Matrix {index + 1}:
+                            </label>
+                            <div className="matrix-input-wrapper">
+                                <Tippy content="Enter numbers in cells, Space for new column, Enter for new row (e.g., 1 2.5 3\n4 5.5 6)">
+                                    <MatrixGridInput
+                                        value={rawInputs[index]}
+                                        onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            if (/^[-0-9.\s\n]*$/.test(inputValue)) {
+                                                const newRawInputs = [...rawInputs];
+                                                newRawInputs[index] = inputValue;
+                                                setRawInputs(newRawInputs);
+                                                const updatedMatrices = newRawInputs.map(raw => parseMatrixInput(raw));
+                                                setMatrices(updatedMatrices);
+                                            }
+                                        }}
+                                        index={index}
+                                        formId={title.replace(/\s+/g, '-').toLowerCase()} // Додайте цей проп
+                                    />
+                                </Tippy>
+                                {index >= 2 && allowAdd && (
+                                    <Tippy content="Remove this matrix field" placement="right">
+                                        <button
+                                            type="button"
+                                            className="delete-field-button"
+                                            onClick={() => {
+                                                setMatrices(matrices.filter((_, i) => i !== index));
+                                                setRawInputs(rawInputs.filter((_, i) => i !== index));
+                                            }}
+                                        >
+                                            <span className="material-symbols-outlined">delete</span>
+                                        </button>
+                                    </Tippy>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
                 {allowAdd && (!maxMatrices || matrices.length < maxMatrices) && (
                     <div className="formGroup addButtonGroup">
                         <Tippy content="Add a new matrix field" placement="right">
@@ -127,7 +316,6 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     );
 };
 
-// Add PropTypes validation
 OperationForm.propTypes = {
     title: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -144,7 +332,7 @@ OperationForm.propTypes = {
     maxMatrices: PropTypes.number,
 };
 
-// Функція для послідовного додавання багатьох матриць
+// Функції для послідовних операцій
 const sequentialAddMatrices = async (matrices) => {
     if (matrices.length < 2) throw new Error("Need at least 2 matrices");
     let result = [...matrices[0]];
@@ -154,7 +342,6 @@ const sequentialAddMatrices = async (matrices) => {
     return result;
 };
 
-// Функція для послідовного віднімання багатьох матриць
 const sequentialSubtractMatrices = async (matrices) => {
     if (matrices.length < 2) throw new Error("Need at least 2 matrices");
     let result = [...matrices[0]];
@@ -164,7 +351,7 @@ const sequentialSubtractMatrices = async (matrices) => {
     return result;
 };
 
-// Головний компонент для матриць
+// Головний компонент
 const Matrices = () => {
     const [addInputs, setAddInputs] = useState([[], []]);
     const [subtractInputs, setSubtractInputs] = useState([[], []]);
@@ -202,73 +389,110 @@ const Matrices = () => {
     const validateInputs = (matrices, apiCall, options = {}) => {
         const { singleMatrix = false, isPair = false } = options;
 
-        // Перевірка, чи всі елементи є числами
-        for (const matrix of matrices) {
-            if (matrix.length === 0 || matrix.some(row => row.length === 0 || row.some(val => isNaN(val) || val === ""))) {
-                return "All inputs must be valid numbers and matrices cannot be empty.";
+        // Лог перед обробкою
+        console.log("Matrices before processing:", JSON.stringify(matrices));
+
+        // Копіюємо матриці та замінюємо "" на 0, конвертуємо в числа
+        const processedMatrices = matrices.map(matrix =>
+            matrix.map(row =>
+                row.map(val => (val === "" || val === undefined || val === null ? 0 : Number(val)))
+            )
+        );
+
+        // Лог після обробки
+        console.log("Before validation (processed):", JSON.stringify(processedMatrices));
+
+        // Перевіряємо, чи матриці валідні після заміни
+        for (const matrix of processedMatrices) {
+            if (matrix.length === 0 || matrix.some(row => row.length === 0)) {
+                return { processedMatrices: [], error: "Matrices cannot be empty." };
+            }
+            if (matrix.some(row => row.some(val => isNaN(val)))) {
+                return { processedMatrices: [], error: "All inputs must be valid numbers." };
             }
         }
 
-        // Валідація для операцій з однією матрицею
         if (singleMatrix) {
-            if (matrices.length !== 1) return "Exactly one matrix is required.";
+            if (processedMatrices.length !== 1) return { processedMatrices: [], error: "Exactly one matrix is required." };
             if (
                 (apiCall === calculateDeterminant || apiCall === calculateAdjoint || apiCall === calculateInverseMatrix) &&
-                matrices[0].length !== matrices[0][0].length
+                processedMatrices[0].length !== processedMatrices[0][0].length
             ) {
-                return "This operation is only defined for square matrices.";
+                return { processedMatrices: [], error: "This operation is only defined for square matrices." };
             }
-            return null;
+            return { processedMatrices, error: null };
         }
 
-        // Валідація для операцій із двома матрицями
         if (isPair) {
-            if (matrices.length !== 2) return "Exactly two matrices are required.";
-            const [matrix1, matrix2] = matrices;
+            if (processedMatrices.length !== 2) return { processedMatrices: [], error: "Exactly two matrices are required." };
+            const [matrix1, matrix2] = processedMatrices;
 
             if (apiCall === multiplyMatrices || apiCall === divideMatrices) {
                 if (matrix1[0].length !== matrix2.length) {
-                    return "Number of columns in the first matrix must equal the number of rows in the second.";
+                    return { processedMatrices: [], error: "Number of columns in the first matrix must equal the number of rows in the second." };
                 }
                 if (apiCall === divideMatrices && matrix2.length !== matrix2[0].length) {
-                    return "Second matrix must be square for division (A/B = A*B^(-1)).";
+                    return { processedMatrices: [], error: "Second matrix must be square for division (A/B = A*B^(-1))." };
                 }
-            } else { // Для додавання та віднімання
+            } else {
                 if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
-                    return "Matrices must have the same dimensions.";
+                    return { processedMatrices: [], error: "Matrices must have the same dimensions." };
                 }
             }
-            return null;
+            return { processedMatrices, error: null };
         }
 
-        // Валідація для кількох матриць (додавання або віднімання)
-        if (matrices.length < 2) return "At least two matrices are required.";
-        const [firstMatrix] = matrices;
-        if (matrices.some(m => m.length !== firstMatrix.length || m[0].length !== firstMatrix[0].length)) {
-            return "All matrices must have the same dimensions.";
+        if (processedMatrices.length < 2) return { processedMatrices: [], error: "At least two matrices are required." };
+        const [firstMatrix] = processedMatrices;
+        if (processedMatrices.some(m => m.length !== firstMatrix.length || m[0].length !== firstMatrix[0].length)) {
+            return { processedMatrices: [], error: "All matrices must have the same dimensions." };
         }
-        return null;
+        return { processedMatrices, error: null };
     };
 
     const handleSubmit = async (inputs, apiCall, setResult, setError, options = {}) => {
         try {
             setError("");
-            const validationError = validateInputs(inputs, apiCall, options);
+
+            // Replace empty cells with 0 and convert to numbers
+            const processedMatrices = inputs.map(matrix =>
+                matrix.map(row =>
+                    row.map(val => {
+                        if (val === "" || val === undefined || val === null) {
+                            return 0;
+                        }
+                        const num = Number(val);
+                        return isNaN(num) ? 0 : num;
+                    })
+                )
+            );
+
+            // Log processed matrices for debugging
+            console.log("Processed matrices:", JSON.stringify(processedMatrices));
+
+            // Validate the processed matrices
+            const { processedMatrices: validatedMatrices, error: validationError } =
+                validateInputs(processedMatrices, apiCall, options);
+
             if (validationError) {
                 setError(validationError);
                 return;
             }
 
+            // Call API based on operation type
             let result;
             if (options.singleMatrix) {
-                result = await apiCall(inputs[0]);
+                result = await apiCall(validatedMatrices[0]);
             } else if (options.isPair) {
-                const [matrix1, matrix2] = inputs;
+                const [matrix1, matrix2] = validatedMatrices;
                 result = await apiCall(matrix1, matrix2);
             } else if (apiCall === sequentialAddMatrices || apiCall === sequentialSubtractMatrices) {
-                result = await apiCall(inputs);
+                result = await apiCall(validatedMatrices);
             }
+
+            console.log("API Result:", result);
             setResult(result);
+
         } catch (error) {
             console.error("Operation error:", error);
             setError(error.response?.data?.message || "An error occurred.");
@@ -361,7 +585,7 @@ const Matrices = () => {
                 title="Calculate Inverse"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true }); // Updated to calculateInverseMatrix
+                    handleSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
                 }}
                 matrices={inverseInputs}
                 setMatrices={setInverseInputs}

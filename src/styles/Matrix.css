@@ -8,19 +8,127 @@
   border: 1px solid var(--form-border);
   padding: 8px;
   text-align: center;
+  min-width: 40px;
 }
 
+.matrices-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 15px;
+}
 
-.matrix-input {
-  width: auto;
-  height: 5rem;
-  font-size: 1.2rem;
+.matrix-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  flex: 1 1 200px; /* Адаптивна ширина */
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.matrix-label {
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  margin-bottom: 5px;
+}
+
+.matrix-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.matrix-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Matrix.css */
+.matrix-brackets {
+  position: relative;
+  padding: 0 15px; 
+}
+
+.matrix-brackets::before,
+.matrix-brackets::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;  /* або мінімально */
+  /* Вимикаємо зображення */
+  background-image: none;
+}
+
+.matrix-brackets::before {
+  content: "("; 
+  left: 0; 
+  font-size: 1.5rem;
+  /* Інші стилі за бажанням */
+}
+
+.matrix-brackets::after {
+  content: ")"; 
+  right: 0; 
+  font-size: 1.5rem;
+}
+
+.matrix-grid {
+  display: inline-block;
+  margin: 8px 0;
+}
+
+.matrix-row {
+  display: flex;
+}
+
+/* Matrix.css */
+.matrix-cell {
+  width: 40px;
+  height: 25px;
+  margin: 2px;
+  text-align: center;
   border: 1px solid var(--form-border);
   background-color: var(--form-bg);
   color: var(--secondary-text-color);
+  font-size: 1.1rem;
+  font-family: monospace;
+  /* Прибираємо заокруглення, якщо було */
+  border-radius: 0;
 }
 
-.matrix-input:focus {
+
+.matrix-cell.inactive {
+  background-color: rgba(128, 128, 128, 0.2); /* Примарний вигляд */
+}
+
+.matrix-cell.active {
+  background-color: var(--form-bg); /* Активний вигляд */
+}
+
+.matrix-cell:focus {
   border-color: var(--button-bg);
   outline: none;
+}
+
+
+@media (min-width: 600px) {
+  .matrices-container {
+      justify-content: flex-start;
+  }
+
+  .matrix-group {
+      flex: 1 1 calc(50% - 20px); /* Дві матриці в ряд */
+      max-width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 599px) {
+  .matrix-group {
+      flex: 1 1 100%; /* Одна матриця в ряд на маленьких екранах */
+      max-width: 100%;
+  }
 }
