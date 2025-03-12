@@ -321,3 +321,41 @@ input::placeholder {
   text-align: center;
 }
 
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.faq-button {
+    color: var(--button-bg);
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.faq-button:hover {
+    background: var(--form-border);
+
+}
+
+.faq-button .material-symbols-outlined {
+    font-size: 18px;
+}
+
+/* Style for Tippy tooltip content */
+.tippy-content ul {
+    padding-left: 20px;
+    margin: 8px 0;
+}
+
+.tippy-content li {
+    margin: 4px 0;
+}

@@ -217,7 +217,26 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
 
     return (
         <div className="formContainer">
-            <h4>{title}</h4>
+            <div className="form-header">
+                <h4>{title}</h4>
+                <Tippy content={
+                    <div>
+                        <p><strong>Input Format:</strong></p>
+                        <ul>
+                            <li>Use dot (.) for decimal numbers (e.g., 1.5)</li>
+                            <li>Press Space to add a new column</li>
+                            <li>Press Enter to add a new row</li>
+                            <li>Empty cells are treated as zeros</li>
+                            <li>Use negative sign (-) for negative numbers</li>
+                        </ul>
+                    </div>
+                } placement="right" interactive={true}>
+                    <button type="button" className="faq-button">
+                        <span className="material-symbols-outlined">help</span>
+                        FAQ
+                    </button>
+                </Tippy>
+            </div>
             {error && <p className="flashMessage show">{error}</p>}
             <form onSubmit={onSubmit}>
                 <div className="matrices-container">
