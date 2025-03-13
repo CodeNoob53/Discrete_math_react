@@ -132,3 +132,59 @@
       max-width: 100%;
   }
 }
+
+/* Matrix.css */
+
+/* Контейнер для модального віконця */
+.matrix-controls {
+    position: absolute;
+    top: 0;
+    right: -110px; /* Розташування праворуч від матриці */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 10;
+}
+
+/* Адаптивність: зміщення вниз на малих екранах */
+@media (max-width: 768px) {
+    .matrix-controls {
+        top: auto;
+        bottom: -110px; /* Розташування під матрицею */
+        right: 0;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+}
+
+/* Стилі для кнопок у модальному віконці */
+.matrix-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.matrix-controls button:hover {
+    background-color: #0056b3;
+}
+
+.matrix-controls button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Додаткові стилі для контейнера матриці */
+.matrix-wrapper {
+    position: relative; /* Для позиціонування модального віконця */
+}
