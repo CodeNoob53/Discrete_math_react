@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
 import {
     addMatrices,
     subtractMatrices,
@@ -11,6 +12,7 @@ import {
     divideMatrices,
     calculateInverseMatrix,
     calculateRank,
+    postMatrixSubtract  // додано
 } from "../apiClient";
 import { 
     parseMatrixInput, 
@@ -20,6 +22,79 @@ import {
 } from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
 import MatrixGridInput from '../components/MatrixGridInput';
+
+// Додаємо компонент для кнопки копіювання результату
+const CopyButton = ({ content, tooltip = "Копіювати" }) => {
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopy = () => {
+        // Конвертуємо матрицю в текстовий формат для копіювання
+        let textToCopy = '';
+        
+        if (Array.isArray(content) && Array.isArray(content[0])) {
+            // Матриця - конвертуємо в текстовий формат
+            textToCopy = content.map(row => row.join(' ')).join('\n');
+        } else {
+            // Звичайне значення (наприклад, детермінант)
+            textToCopy = content.toString();
+        }
+
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+            })
+            .catch(err => console.error('Помилка копіювання:', err));
+    };
+
+    return (
+        <Tippy content={isCopied ? "Скопійовано!" : tooltip} placement="top">
+            <button className="result-copy-button" onClick={handleCopy}>
+                <span className="material-symbols-outlined">content_copy</span>
+                {isCopied ? "Скопійовано" : "Копіювати"}
+            </button>
+        </Tippy>
+    );
+};
+
+CopyButton.propTypes = {
+    content: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number
+        ])))
+    ]).isRequired,
+    tooltip: PropTypes.string
+};
+
+// Компонент для відображення матриці з використанням MathJax
+const MatrixDisplay = ({ matrix }) => {
+    if (!Array.isArray(matrix) || !Array.isArray(matrix[0])) {
+        return <p>{matrix}</p>;
+    }
+
+    // Створюємо LaTeX-представлення матриці
+    const matrixLatex = `\\begin{pmatrix} 
+        ${matrix.map(row => row.join(' & ')).join(' \\\\ ')} 
+    \\end{pmatrix}`;
+
+    return (
+        <MathJax inline>{"\\(" + matrixLatex + "\\)"}</MathJax>
+    );
+};
+
+MatrixDisplay.propTypes = {
+    matrix: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number
+        ])))
+    ]).isRequired
+};
 
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
     const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
@@ -136,18 +211,25 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
             {result && (
                 <div className="result show">
                     <h5>Result:</h5>
+                    {/* Додаємо кнопку копіювання до результату */}
+                    <CopyButton content={result} tooltip="Копіювати результат" />
+                    
+                    {/* Відображаємо результат через MathJax */}
                     {Array.isArray(result) && Array.isArray(result[0]) ? (
-                        <table className="matrix-result">
-                            <tbody>
-                                {result.map((row, rowIndex) => (
-                                    <tr key={rowIndex}>
-                                        {row.map((cell, colIndex) => (
-                                            <td key={colIndex}>{cell}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="matrix-result-wrapper">
+                            <MatrixDisplay matrix={result} />
+                            <table className="matrix-result">
+                                <tbody>
+                                    {result.map((row, rowIndex) => (
+                                        <tr key={rowIndex}>
+                                            {row.map((cell, colIndex) => (
+                                                <td key={colIndex}>{cell}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     ) : (
                         <p>{result}</p>
                     )}
@@ -189,6 +271,11 @@ const Matrices = () => {
     const [divideInputs, setDivideInputs] = useState([[], []]);
     const [inverseInputs, setInverseInputs] = useState([[]]);
     const [rankInputs, setRankInputs] = useState([[]]);
+    
+    // Нові стани для postMatrixSubtract
+    const [postSubtractInputs, setPostSubtractInputs] = useState([[], []]);
+    const [postSubtractResult, setPostSubtractResult] = useState("");
+    const [postSubtractError, setPostSubtractError] = useState("");
 
     const [addResult, setAddResult] = useState("");
     const [subtractResult, setSubtractResult] = useState("");
@@ -224,132 +311,150 @@ const Matrices = () => {
     };
 
     return (
-        <div>
-            <OperationForm
-                title="Add Multiple Matrices"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(addInputs, sequentialAddMatricesWrapper, setAddResult, setAddError);
-                }}
-                matrices={addInputs}
-                setMatrices={setAddInputs}
-                result={addResult}
-                error={addError}
-                clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, null, true)}
-                maxCols={5}
-                maxRows={5}
-            />
-            <OperationForm
-                title="Subtract Multiple Matrices"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(subtractInputs, sequentialSubtractMatricesWrapper, setSubtractResult, setSubtractError);
-                }}
-                matrices={subtractInputs}
-                setMatrices={setSubtractInputs}
-                result={subtractResult}
-                error={subtractError}
-                clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, null, true)}
-                maxCols={5}
-                maxRows={5}
-            />
-            <OperationForm
-                title="Multiply Two Matrices"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
-                }}
-                matrices={multiplyInputs}
-                setMatrices={setMultiplyInputs}
-                result={multiplyResult}
-                error={multiplyError}
-                clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, 2, false)}
-                allowAdd={false}
-                maxMatrices={2}
-                maxCols={5}
-                maxRows={5}
-            />
-            <OperationForm
-                title="Calculate Determinant"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
-                }}
-                matrices={determinantInputs}
-                setMatrices={setDeterminantInputs}
-                result={determinantResult}
-                error={determinantError}
-                clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
-                allowAdd={false}
-                maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
-            />
-            <OperationForm
-                title="Calculate Adjoint (Adjugate)"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
-                }}
-                matrices={adjointInputs}
-                setMatrices={setAdjointInputs}
-                result={adjointResult}
-                error={adjointError}
-                clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
-                allowAdd={false}
-                maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
-            />
-            <OperationForm
-                title="Divide Two Matrices (A/B = A*B^(-1))"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
-                }}
-                matrices={divideInputs}
-                setMatrices={setDivideInputs}
-                result={divideResult}
-                error={divideError}
-                clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, 2, false)}
-                allowAdd={false}
-                maxMatrices={2}
-                maxCols={5}
-                maxRows={5}
-            />
-            <OperationForm
-                title="Calculate Inverse"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
-                }}
-                matrices={inverseInputs}
-                setMatrices={setInverseInputs}
-                result={inverseResult}
-                error={inverseError}
-                clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
-                allowAdd={false}
-                maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
-            />
-            <OperationForm
-                title="Calculate Rank"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMatrixSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
-                }}
-                matrices={rankInputs}
-                setMatrices={setRankInputs}
-                result={rankResult}
-                error={rankError}
-                clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
-                allowAdd={false}
-                maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
-            />
-        </div>
+        <MathJaxContext>
+            <div>
+                <OperationForm
+                    title="Add Multiple Matrices"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(addInputs, sequentialAddMatricesWrapper, setAddResult, setAddError);
+                    }}
+                    matrices={addInputs}
+                    setMatrices={setAddInputs}
+                    result={addResult}
+                    error={addError}
+                    clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, null, true)}
+                    maxCols={5}
+                    maxRows={5}
+                />
+                <OperationForm
+                    title="Subtract Multiple Matrices"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(subtractInputs, sequentialSubtractMatricesWrapper, setSubtractResult, setSubtractError);
+                    }}
+                    matrices={subtractInputs}
+                    setMatrices={setSubtractInputs}
+                    result={subtractResult}
+                    error={subtractError}
+                    clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, null, true)}
+                    maxCols={5}
+                    maxRows={5}
+                />
+                <OperationForm
+                    title="Post Matrix Subtract"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(postSubtractInputs, postMatrixSubtract, setPostSubtractResult, setPostSubtractError, { isPair: true });
+                    }}
+                    matrices={postSubtractInputs}
+                    setMatrices={setPostSubtractInputs}
+                    result={postSubtractResult}
+                    error={postSubtractError}
+                    clearForm={() => clearForm(setPostSubtractInputs, setPostSubtractResult, setPostSubtractError, 2, false)}
+                    allowAdd={false}
+                    maxMatrices={2}
+                    maxCols={8}
+                    maxRows={8}
+                />
+                <OperationForm
+                    title="Multiply Two Matrices"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
+                    }}
+                    matrices={multiplyInputs}
+                    setMatrices={setMultiplyInputs}
+                    result={multiplyResult}
+                    error={multiplyError}
+                    clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, 2, false)}
+                    allowAdd={false}
+                    maxMatrices={2}
+                    maxCols={5}
+                    maxRows={5}
+                />
+                <OperationForm
+                    title="Calculate Determinant"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
+                    }}
+                    matrices={determinantInputs}
+                    setMatrices={setDeterminantInputs}
+                    result={determinantResult}
+                    error={determinantError}
+                    clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
+                    allowAdd={false}
+                    maxMatrices={1}
+                    maxCols={8}
+                    maxRows={8}
+                />
+                <OperationForm
+                    title="Calculate Adjoint (Adjugate)"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
+                    }}
+                    matrices={adjointInputs}
+                    setMatrices={setAdjointInputs}
+                    result={adjointResult}
+                    error={adjointError}
+                    clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
+                    allowAdd={false}
+                    maxMatrices={1}
+                    maxCols={8}
+                    maxRows={8}
+                />
+                <OperationForm
+                    title="Divide Two Matrices (A/B = A*B^(-1))"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
+                    }}
+                    matrices={divideInputs}
+                    setMatrices={setDivideInputs}
+                    result={divideResult}
+                    error={divideError}
+                    clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, 2, false)}
+                    allowAdd={false}
+                    maxMatrices={2}
+                    maxCols={5}
+                    maxRows={5}
+                />
+                <OperationForm
+                    title="Calculate Inverse"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
+                    }}
+                    matrices={inverseInputs}
+                    setMatrices={setInverseInputs}
+                    result={inverseResult}
+                    error={inverseError}
+                    clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
+                    allowAdd={false}
+                    maxMatrices={1}
+                    maxCols={8}
+                    maxRows={8}
+                />
+                <OperationForm
+                    title="Calculate Rank"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMatrixSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
+                    }}
+                    matrices={rankInputs}
+                    setMatrices={setRankInputs}
+                    result={rankResult}
+                    error={rankError}
+                    clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
+                    allowAdd={false}
+                    maxMatrices={1}
+                    maxCols={8}
+                    maxRows={8}
+                />
+            </div>
+        </MathJaxContext>
     );
 };
 

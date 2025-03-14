@@ -249,32 +249,10 @@
   color: var(--secondary-text-color);
 }
 
-
-
 /* Адаптивність */
-
-/* Для середніх екранів */
-/* @media (max-width: 992px) {
-  .matrix-group {
-    flex: 1 1 calc(50% - 20px);
-    max-width: calc(50% - 20px);
-  }
-  
-  .matrix-controls {
-    display: flexbox;
-    right: auto;
-    left: 20px;
-    top: 100%;
-    margin-top: 10px;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-} */
 
 /* Для малих екранів */
 @media (max-width: 768px) {
-
-  
   .matrix-input-wrapper {
     justify-content: center;
   }
@@ -288,7 +266,6 @@
   .buttons button {
     width: 100%;
     max-width: 200px;
-
   }
 }
 
@@ -318,7 +295,6 @@
 
   .matrix-brackets {
     position: relative;
-
   }
 }
 
@@ -366,7 +342,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 5px 8px;
   background-color: var(--form-bg);
   color: var(--secondary-text-color);
   border: 1px solid var(--form-border);
@@ -374,6 +350,7 @@
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  z-index: 5;
 }
 
 .result-copy-button:hover {
@@ -381,12 +358,27 @@
   color: white;
 }
 
+/* Стилі для комбінованого відображення матриці (LaTeX + таблиця) */
+.matrix-result-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* Стилі для кращого відображення MathJax */
+.MathJax {
+  font-size: 1.2rem !important;
+  margin: 10px 0;
+  display: block;
+}
+
 /* Оновлені стилі для результату */
 .result {
   position: relative;
   margin-top: 20px;
   padding: 15px;
-  padding-top: 30px; /* Збільшимо, щоб кнопка копіювання не накладалася на текст */
+  padding-top: 40px; /* Збільшимо, щоб кнопка копіювання не накладалася на текст */
   transition: all 0.3s ease;
   opacity: 0;
   transform: translateY(10px);

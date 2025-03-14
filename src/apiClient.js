@@ -27,6 +27,7 @@ export const calculateDeterminant = async (matrix) => sendRequest("matrix/determ
 export const calculateInverseMatrix = async (matrix) => sendRequest("matrix/inverse", { matrix });
 export const calculateRank = async (matrix) => sendRequest("matrix/rank", { matrix });
 export const calculateAdjoint = async (matrix) => sendRequest("matrix/adjoint", { matrix });
+export const postMatrixSubtract = async (matrix1, matrix2) => sendRequest("matrix/subtract", { matrix1, matrix2 });
 
 /** === Операції з множинами === */
 export const calculateSetDifference = async (set1, set2) => sendRequest("sets/difference", { set1, set2 });
