@@ -22,7 +22,9 @@ import {
 } from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
 import MatrixGridInput from '../components/MatrixGridInput';
+import MatrixResult from '../components/MatrixResult'; // Імпортуємо новий компонент
 
+// Компонент OperationForm
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
     const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
     const [activeMatrixIndex, setActiveMatrixIndex] = useState(null);
@@ -135,26 +137,9 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                     </button>
                 </div>
             </form>
-            {result && (
-                <div className="result show">
-                    <h5>Result:</h5>
-                    {Array.isArray(result) && Array.isArray(result[0]) ? (
-                        <table className="matrix-result">
-                            <tbody>
-                                {result.map((row, rowIndex) => (
-                                    <tr key={rowIndex}>
-                                        {row.map((cell, colIndex) => (
-                                            <td key={colIndex}>{cell}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>{result}</p>
-                    )}
-                </div>
-            )}
+            
+            {/* Використовуємо новий компонент MatrixResult */}
+            {result && <MatrixResult result={result} />}
         </div>
     );
 };
@@ -280,26 +265,9 @@ const ScalarMultiplyForm = ({ onSubmit, matrices, setMatrices, scalar, setScalar
                     </button>
                 </div>
             </form>
-            {result && (
-                <div className="result show">
-                    <h5>Result:</h5>
-                    {Array.isArray(result) && Array.isArray(result[0]) ? (
-                        <table className="matrix-result">
-                            <tbody>
-                                {result.map((row, rowIndex) => (
-                                    <tr key={rowIndex}>
-                                        {row.map((cell, colIndex) => (
-                                            <td key={colIndex}>{cell}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>{result}</p>
-                    )}
-                </div>
-            )}
+            
+            {/* Використовуємо новий компонент MatrixResult */}
+            {result && <MatrixResult result={result} />}
         </div>
     );
 };
