@@ -48,8 +48,9 @@ input[type="text"]:focus {
 
 /* Pages.css */
 .result {
+    position: relative;
     margin-top: 20px;
-    padding: 10px;
+    padding: 15px;
     background-color: var(--result-bg);
     color: var(--result-text);
     border: 1px solid var(--form-border);
@@ -63,6 +64,7 @@ input[type="text"]:focus {
 .result.show {
     opacity: 1;
     max-height: 500px; /* Adjust based on your content */
+    transform: translateY(0);
 }
 
 
