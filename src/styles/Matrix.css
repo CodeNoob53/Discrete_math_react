@@ -373,6 +373,33 @@
   display: block;
 }
 
+.scalar-input {
+  text-align: center;
+  width: 100px;
+  padding: 5px;
+  background-color: var(--form-bg);
+  border: 1px solid var(--form-border);
+  color: var(--secondary-text-color);
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.scalar-input:focus {
+  border-color: var(--button-bg);
+}
+
+.scalar-input::placeholder {
+  color: var(--secondary-text-color);
+}
+
+.scalar-label {
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  margin-bottom: 5px;
+  margin-right: 5px;
+}
+
 /* Оновлені стилі для результату */
 .result {
   position: relative;

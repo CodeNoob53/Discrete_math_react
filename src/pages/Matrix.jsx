@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import { MathJax, MathJaxContext } from "better-react-mathjax";
 import {
     addMatrices,
     subtractMatrices,
@@ -12,89 +11,17 @@ import {
     divideMatrices,
     calculateInverseMatrix,
     calculateRank,
-    postMatrixSubtract  // додано
+    multiplyMatrixByScalar
 } from "../apiClient";
 import { 
     parseMatrixInput, 
     sequentialAddMatrices, 
     sequentialSubtractMatrices,
-    handleMatrixSubmit 
+    handleMatrixSubmit,
+    processMatrix 
 } from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
 import MatrixGridInput from '../components/MatrixGridInput';
-
-// Додаємо компонент для кнопки копіювання результату
-const CopyButton = ({ content, tooltip = "Копіювати" }) => {
-    const [isCopied, setIsCopied] = useState(false);
-
-    const handleCopy = () => {
-        // Конвертуємо матрицю в текстовий формат для копіювання
-        let textToCopy = '';
-        
-        if (Array.isArray(content) && Array.isArray(content[0])) {
-            // Матриця - конвертуємо в текстовий формат
-            textToCopy = content.map(row => row.join(' ')).join('\n');
-        } else {
-            // Звичайне значення (наприклад, детермінант)
-            textToCopy = content.toString();
-        }
-
-        navigator.clipboard.writeText(textToCopy)
-            .then(() => {
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 2000);
-            })
-            .catch(err => console.error('Помилка копіювання:', err));
-    };
-
-    return (
-        <Tippy content={isCopied ? "Скопійовано!" : tooltip} placement="top">
-            <button className="result-copy-button" onClick={handleCopy}>
-                <span className="material-symbols-outlined">content_copy</span>
-                {isCopied ? "Скопійовано" : "Копіювати"}
-            </button>
-        </Tippy>
-    );
-};
-
-CopyButton.propTypes = {
-    content: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number
-        ])))
-    ]).isRequired,
-    tooltip: PropTypes.string
-};
-
-// Компонент для відображення матриці з використанням MathJax
-const MatrixDisplay = ({ matrix }) => {
-    if (!Array.isArray(matrix) || !Array.isArray(matrix[0])) {
-        return <p>{matrix}</p>;
-    }
-
-    // Створюємо LaTeX-представлення матриці
-    const matrixLatex = `\\begin{pmatrix} 
-        ${matrix.map(row => row.join(' & ')).join(' \\\\ ')} 
-    \\end{pmatrix}`;
-
-    return (
-        <MathJax inline>{"\\(" + matrixLatex + "\\)"}</MathJax>
-    );
-};
-
-MatrixDisplay.propTypes = {
-    matrix: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number
-        ])))
-    ]).isRequired
-};
 
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
     const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
@@ -170,7 +97,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                                             onClick={() => {
                                                 setMatrices(matrices.filter((_, i) => i !== index));
                                                 setRawInputs(rawInputs.filter((_, i) => i !== index));
-                                                if (activeMatrixIndex === index) setActiveMatrixIndex(null); // Reset if deleted matrix was active
+                                                if (activeMatrixIndex === index) setActiveMatrixIndex(null);
                                             }}
                                         >
                                             <span className="material-symbols-outlined">delete</span>
@@ -211,25 +138,18 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
             {result && (
                 <div className="result show">
                     <h5>Result:</h5>
-                    {/* Додаємо кнопку копіювання до результату */}
-                    <CopyButton content={result} tooltip="Копіювати результат" />
-                    
-                    {/* Відображаємо результат через MathJax */}
                     {Array.isArray(result) && Array.isArray(result[0]) ? (
-                        <div className="matrix-result-wrapper">
-                            <MatrixDisplay matrix={result} />
-                            <table className="matrix-result">
-                                <tbody>
-                                    {result.map((row, rowIndex) => (
-                                        <tr key={rowIndex}>
-                                            {row.map((cell, colIndex) => (
-                                                <td key={colIndex}>{cell}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <table className="matrix-result">
+                            <tbody>
+                                {result.map((row, rowIndex) => (
+                                    <tr key={rowIndex}>
+                                        {row.map((cell, colIndex) => (
+                                            <td key={colIndex}>{cell}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     ) : (
                         <p>{result}</p>
                     )}
@@ -242,7 +162,10 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
 OperationForm.propTypes = {
     title: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    matrices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))).isRequired,
+    matrices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+    ])))).isRequired,
     setMatrices: PropTypes.func.isRequired,
     result: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
@@ -261,6 +184,146 @@ OperationForm.propTypes = {
 const sequentialAddMatricesWrapper = (matrices) => sequentialAddMatrices(matrices, addMatrices);
 const sequentialSubtractMatricesWrapper = (matrices) => sequentialSubtractMatrices(matrices, subtractMatrices);
 
+// Компонент для операції множення матриці на скаляр
+const ScalarMultiplyForm = ({ onSubmit, matrices, setMatrices, scalar, setScalar, result, error, clearForm, maxRows, maxCols }) => {
+    const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
+    const [activeMatrixIndex, setActiveMatrixIndex] = useState(null);
+    const [resetKey, setResetKey] = useState(0);
+
+    const handleClearForm = () => {
+        clearForm();
+        setResetKey(prev => prev + 1);
+        setRawInputs([""]);
+        setMatrices([parseMatrixInput("", [[""]], 1, 1)]);
+        setScalar("1");
+    };
+
+    return (
+        <div className="formContainer">
+            <div className="form-header">
+                <h3>Multiply Matrix by Scalar</h3>
+                <Tippy content={
+                    <div>
+                        <p><strong>Input Format:</strong></p>
+                        <ul>
+                            <li>Enter a scalar value (can be decimal or negative)</li>
+                            <li>Enter matrix values using the grid interface</li>
+                        </ul>
+                    </div>
+                } placement="right" interactive={true}>
+                    <button type="button" className="faq-button">
+                        <span className="material-symbols-outlined">help</span>
+                        FAQ
+                    </button>
+                </Tippy>
+            </div>
+            {error && <p className="flashMessage show">{error}</p>}
+            <form onSubmit={onSubmit}>
+                <div className="scalar-input-container">
+                    <label htmlFor="scalar-value" className="scalar-label">
+                        Scalar Value:
+                    </label>
+                    <input
+                        id="scalar-value"
+                        type="text"
+                        className="scalar-input short"
+                        value={scalar}
+                        onChange={(e) => {
+                            // Дозволяємо тільки числа, десяткові крапки та мінус
+                            const value = e.target.value;
+                            if (/^-?\d*\.?\d*$/.test(value) || value === "-") {
+                                setScalar(value);
+                            }
+                        }}
+                        placeholder="Enter scalar value"
+                    />
+                </div>
+                
+                <div className="matrices-container">
+                    <div className="matrix-group">
+                        <label htmlFor="matrix-0" className="matrix-label">
+                            Matrix:
+                        </label>
+                        <div className="matrix-input-wrapper">
+                            <Tippy content="Enter numbers in cells, Space for new column, Enter for new row">
+                                <MatrixGridInput
+                                    key={`matrix-0-${resetKey}`}
+                                    value={rawInputs[0]}
+                                    onChange={(e) => {
+                                        const inputValue = e.target.value;
+                                        if (/^[-0-9.\s\n]*$/.test(inputValue)) {
+                                            setRawInputs([inputValue]);
+                                            const updatedMatrix = parseMatrixInput(inputValue);
+                                            setMatrices([updatedMatrix]);
+                                        }
+                                    }}
+                                    index={0}
+                                    formId={"multiply-by-scalar"}
+                                    isActive={activeMatrixIndex === 0}
+                                    setActiveMatrixIndex={setActiveMatrixIndex}
+                                    maxRows={maxRows}
+                                    maxCols={maxCols}
+                                />
+                            </Tippy>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="buttons">
+                    <button type="submit" className="submit">Calculate</button>
+                    <button
+                        type="button"
+                        className="clear"
+                        onClick={handleClearForm}
+                    >
+                        Clear
+                    </button>
+                </div>
+            </form>
+            {result && (
+                <div className="result show">
+                    <h5>Result:</h5>
+                    {Array.isArray(result) && Array.isArray(result[0]) ? (
+                        <table className="matrix-result">
+                            <tbody>
+                                {result.map((row, rowIndex) => (
+                                    <tr key={rowIndex}>
+                                        {row.map((cell, colIndex) => (
+                                            <td key={colIndex}>{cell}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>{result}</p>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+ScalarMultiplyForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    matrices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+    ])))).isRequired,
+    setMatrices: PropTypes.func.isRequired,
+    scalar: PropTypes.string.isRequired,
+    setScalar: PropTypes.func.isRequired,
+    result: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+        PropTypes.number,
+        PropTypes.string,
+    ]),
+    error: PropTypes.string,
+    clearForm: PropTypes.func.isRequired,
+    maxRows: PropTypes.number,
+    maxCols: PropTypes.number,
+};
+
 // Головний компонент
 const Matrices = () => {
     const [addInputs, setAddInputs] = useState([[], []]);
@@ -271,11 +334,11 @@ const Matrices = () => {
     const [divideInputs, setDivideInputs] = useState([[], []]);
     const [inverseInputs, setInverseInputs] = useState([[]]);
     const [rankInputs, setRankInputs] = useState([[]]);
-    
-    // Нові стани для postMatrixSubtract
-    const [postSubtractInputs, setPostSubtractInputs] = useState([[], []]);
-    const [postSubtractResult, setPostSubtractResult] = useState("");
-    const [postSubtractError, setPostSubtractError] = useState("");
+    // Стан для операції множення на скаляр
+    const [scalarMultiplyInputs, setScalarMultiplyInputs] = useState([[]]);
+    const [scalarMultiplyResult, setScalarMultiplyResult] = useState("");
+    const [scalarMultiplyError, setScalarMultiplyError] = useState("");
+    const [scalar, setScalar] = useState("1");
 
     const [addResult, setAddResult] = useState("");
     const [subtractResult, setSubtractResult] = useState("");
@@ -303,158 +366,199 @@ const Matrices = () => {
         } else if (!allowAdd && maxMatrices === 2) {
             defaultMatrices = [[], []]; // Для операцій з двома матрицями
         } else {
-            defaultMatrices = [[], []]; // Для операцій із множинними матрицями за замовчуванням
+            defaultMatrices = [[], []]; // За замовчуванням
         }
         setInputs(defaultMatrices);
         setResult("");
         setError("");
     };
 
+    // Обробник для множення матриці на скаляр
+    const handleScalarMultiply = (e) => {
+        e.preventDefault();
+        setScalarMultiplyError("");
+        
+        try {
+            // Перевірка валідності скаляра
+            const scalarValue = parseFloat(scalar);
+            if (isNaN(scalarValue)) {
+                setScalarMultiplyError("Scalar must be a valid number");
+                return;
+            }
+            
+            // Обробка матриці
+            const processedMatrix = processMatrix(scalarMultiplyInputs[0]);
+            
+            // Перевірка валідності матриці
+            if (processedMatrix.length === 0 || processedMatrix.some(row => row.length === 0)) {
+                setScalarMultiplyError("Matrix cannot be empty");
+                return;
+            }
+            
+            if (processedMatrix.some(row => row.some(val => isNaN(val)))) {
+                setScalarMultiplyError("All matrix elements must be valid numbers");
+                return;
+            }
+            
+            // Виклик API для множення на скаляр
+            multiplyMatrixByScalar(processedMatrix, scalarValue)
+                .then(result => {
+                    setScalarMultiplyResult(result);
+                })
+                .catch(error => {
+                    setScalarMultiplyError(error.message || "An error occurred during calculation");
+                });
+        } catch (error) {
+            setScalarMultiplyError("Error processing input: " + error.message);
+        }
+    };
+
     return (
-        <MathJaxContext>
-            <div>
-                <OperationForm
-                    title="Add Multiple Matrices"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(addInputs, sequentialAddMatricesWrapper, setAddResult, setAddError);
-                    }}
-                    matrices={addInputs}
-                    setMatrices={setAddInputs}
-                    result={addResult}
-                    error={addError}
-                    clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, null, true)}
-                    maxCols={5}
-                    maxRows={5}
-                />
-                <OperationForm
-                    title="Subtract Multiple Matrices"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(subtractInputs, sequentialSubtractMatricesWrapper, setSubtractResult, setSubtractError);
-                    }}
-                    matrices={subtractInputs}
-                    setMatrices={setSubtractInputs}
-                    result={subtractResult}
-                    error={subtractError}
-                    clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, null, true)}
-                    maxCols={5}
-                    maxRows={5}
-                />
-                <OperationForm
-                    title="Post Matrix Subtract"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(postSubtractInputs, postMatrixSubtract, setPostSubtractResult, setPostSubtractError, { isPair: true });
-                    }}
-                    matrices={postSubtractInputs}
-                    setMatrices={setPostSubtractInputs}
-                    result={postSubtractResult}
-                    error={postSubtractError}
-                    clearForm={() => clearForm(setPostSubtractInputs, setPostSubtractResult, setPostSubtractError, 2, false)}
-                    allowAdd={false}
-                    maxMatrices={2}
-                    maxCols={8}
-                    maxRows={8}
-                />
-                <OperationForm
-                    title="Multiply Two Matrices"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
-                    }}
-                    matrices={multiplyInputs}
-                    setMatrices={setMultiplyInputs}
-                    result={multiplyResult}
-                    error={multiplyError}
-                    clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, 2, false)}
-                    allowAdd={false}
-                    maxMatrices={2}
-                    maxCols={5}
-                    maxRows={5}
-                />
-                <OperationForm
-                    title="Calculate Determinant"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
-                    }}
-                    matrices={determinantInputs}
-                    setMatrices={setDeterminantInputs}
-                    result={determinantResult}
-                    error={determinantError}
-                    clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
-                    allowAdd={false}
-                    maxMatrices={1}
-                    maxCols={8}
-                    maxRows={8}
-                />
-                <OperationForm
-                    title="Calculate Adjoint (Adjugate)"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
-                    }}
-                    matrices={adjointInputs}
-                    setMatrices={setAdjointInputs}
-                    result={adjointResult}
-                    error={adjointError}
-                    clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
-                    allowAdd={false}
-                    maxMatrices={1}
-                    maxCols={8}
-                    maxRows={8}
-                />
-                <OperationForm
-                    title="Divide Two Matrices (A/B = A*B^(-1))"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
-                    }}
-                    matrices={divideInputs}
-                    setMatrices={setDivideInputs}
-                    result={divideResult}
-                    error={divideError}
-                    clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, 2, false)}
-                    allowAdd={false}
-                    maxMatrices={2}
-                    maxCols={5}
-                    maxRows={5}
-                />
-                <OperationForm
-                    title="Calculate Inverse"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
-                    }}
-                    matrices={inverseInputs}
-                    setMatrices={setInverseInputs}
-                    result={inverseResult}
-                    error={inverseError}
-                    clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
-                    allowAdd={false}
-                    maxMatrices={1}
-                    maxCols={8}
-                    maxRows={8}
-                />
-                <OperationForm
-                    title="Calculate Rank"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleMatrixSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
-                    }}
-                    matrices={rankInputs}
-                    setMatrices={setRankInputs}
-                    result={rankResult}
-                    error={rankError}
-                    clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
-                    allowAdd={false}
-                    maxMatrices={1}
-                    maxCols={8}
-                    maxRows={8}
-                />
-            </div>
-        </MathJaxContext>
+        <div>
+            <OperationForm
+                title="Add Multiple Matrices"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(addInputs, sequentialAddMatricesWrapper, setAddResult, setAddError);
+                }}
+                matrices={addInputs}
+                setMatrices={setAddInputs}
+                result={addResult}
+                error={addError}
+                clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, null, true)}
+                maxCols={5}
+                maxRows={5}
+            />
+            <OperationForm
+                title="Subtract Multiple Matrices"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(subtractInputs, sequentialSubtractMatricesWrapper, setSubtractResult, setSubtractError);
+                }}
+                matrices={subtractInputs}
+                setMatrices={setSubtractInputs}
+                result={subtractResult}
+                error={subtractError}
+                clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, null, true)}
+                maxCols={5}
+                maxRows={5}
+            />
+            <OperationForm
+                title="Multiply Two Matrices"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
+                }}
+                matrices={multiplyInputs}
+                setMatrices={setMultiplyInputs}
+                result={multiplyResult}
+                error={multiplyError}
+                clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, 2, false)}
+                allowAdd={false}
+                maxMatrices={2}
+                maxCols={5}
+                maxRows={5}
+            />
+            <OperationForm
+                title="Calculate Determinant"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
+                }}
+                matrices={determinantInputs}
+                setMatrices={setDeterminantInputs}
+                result={determinantResult}
+                error={determinantError}
+                clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
+                allowAdd={false}
+                maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
+            />
+            <OperationForm
+                title="Calculate Adjoint (Adjugate)"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
+                }}
+                matrices={adjointInputs}
+                setMatrices={setAdjointInputs}
+                result={adjointResult}
+                error={adjointError}
+                clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
+                allowAdd={false}
+                maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
+            />
+            <OperationForm
+                title="Divide Two Matrices (A/B = A*B^(-1))"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
+                }}
+                matrices={divideInputs}
+                setMatrices={setDivideInputs}
+                result={divideResult}
+                error={divideError}
+                clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, 2, false)}
+                allowAdd={false}
+                maxMatrices={2}
+                maxCols={5}
+                maxRows={5}
+            />
+            <OperationForm
+                title="Calculate Inverse"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
+                }}
+                matrices={inverseInputs}
+                setMatrices={setInverseInputs}
+                result={inverseResult}
+                error={inverseError}
+                clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
+                allowAdd={false}
+                maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
+            />
+            <OperationForm
+                title="Calculate Rank"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleMatrixSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
+                }}
+                matrices={rankInputs}
+                setMatrices={setRankInputs}
+                result={rankResult}
+                error={rankError}
+                clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
+                allowAdd={false}
+                maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
+            />
+            
+            {/* Спеціальна форма для множення матриці на скаляр */}
+            <ScalarMultiplyForm
+                onSubmit={handleScalarMultiply}
+                matrices={scalarMultiplyInputs}
+                setMatrices={setScalarMultiplyInputs}
+                scalar={scalar}
+                setScalar={setScalar}
+                result={scalarMultiplyResult}
+                error={scalarMultiplyError}
+                clearForm={() => {
+                    setScalarMultiplyInputs([[]]);
+                    setScalarMultiplyResult("");
+                    setScalarMultiplyError("");
+                    setScalar("1");
+                }}
+                maxCols={8}
+                maxRows={8}
+            />
+        </div>
     );
 };
 

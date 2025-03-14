@@ -27,7 +27,8 @@ export const calculateDeterminant = async (matrix) => sendRequest("matrix/determ
 export const calculateInverseMatrix = async (matrix) => sendRequest("matrix/inverse", { matrix });
 export const calculateRank = async (matrix) => sendRequest("matrix/rank", { matrix });
 export const calculateAdjoint = async (matrix) => sendRequest("matrix/adjoint", { matrix });
-export const postMatrixSubtract = async (matrix1, matrix2) => sendRequest("matrix/subtract", { matrix1, matrix2 });
+// Виправлена назва ендпоінту згідно зі swagger.json
+export const multiplyMatrixByScalar = async (matrix, scalar) => sendRequest("matrix/multiply-by-scalar", { matrix, scalar });
 
 /** === Операції з множинами === */
 export const calculateSetDifference = async (set1, set2) => sendRequest("sets/difference", { set1, set2 });
@@ -63,4 +64,3 @@ sendRequest.propTypes = {
   endpoint: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
 };
-
