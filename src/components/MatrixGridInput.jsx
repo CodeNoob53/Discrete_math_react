@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "tippy.js/dist/tippy.css";
+import Tippy from "@tippyjs/react";
 import { parseMatrixInput } from '../utils/matrixUtils';
 import PropTypes from 'prop-types';
+import { Copy, Clipboard } from 'lucide-react';
 
 const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMatrixIndex, maxRows, maxCols }) => {
     const [grid, setGrid] = useState(() => {
@@ -182,8 +184,36 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
         // Не скидаємо activeMatrixIndex тут, оскільки це тепер обробляється через клік поза матрицею
     };
 
+    // Функція для копіювання матриці
+    const copyMatrix = () => {
+        const matrixText = grid.map(row => row.map(cell => cell || "0").join(" ")).join("\n");
+        navigator.clipboard.writeText(matrixText)
+            .then(() => {
+                // Можна показати повідомлення про успішне копіювання
+                console.log("Матрицю скопійовано в буфер обміну");
+            })
+            .catch(err => {
+                console.error("Помилка при копіюванні матриці:", err);
+            });
+    };
+
+    // Функція для вставки матриці з буфера обміну
+    const pasteMatrix = async () => {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            // Перевіряємо, чи текст у буфері обміну має формат матриці
+            if (clipboardText.trim()) {
+                const newValue = clipboardText.trim();
+                onChange({ target: { value: newValue } });
+            }
+        } catch (err) {
+            console.error("Помилка при вставці матриці:", err);
+        }
+    };
+
     return (
         <div className="matrix-wrapper" ref={matrixRef}>
+            {/* Блок матриці з дужками */}
             <div className="matrix-brackets">
                 <div className="matrix-grid">
                     {grid.map((row, rowIdx) => (
@@ -211,10 +241,35 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                 </div>
             </div>
             
+            {/* Кнопки копіювання/вставки - тепер винесені за межі matrix-brackets */}
+            <div className="matrix-clipboard-controls">
+                <Tippy content="Copy matrix">
+                    <button 
+                        type="button" 
+                        className="matrix-copy-button" 
+                        onClick={copyMatrix}
+                        aria-label="Copy matrix"
+                    >
+                        <Copy size={16} /> Copy
+                    </button>
+                </Tippy>
+                <Tippy content="Paste matrix">
+                    <button 
+                        type="button" 
+                        className="matrix-paste-button" 
+                        onClick={pasteMatrix}
+                        aria-label="Paste matrix"
+                    >
+                        <Clipboard size={16} /> Paste
+                    </button>
+                </Tippy>
+            </div>
+            
+            {/* Контроли для матриці */}
             {isActive && (
                 <div className="matrix-controls">
                     <div className="matrix-c-wrapper">
-                    <p>Rows</p>
+                        <p>Rows</p>
                         <div className="row-controls">
                             <button type="button" className="add-row-button" onClick={addRow}>Add</button>
                             <button type="button" className="delete-row-button" onClick={deleteRow}>Del.</button>

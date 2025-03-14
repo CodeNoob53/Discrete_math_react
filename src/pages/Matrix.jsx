@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types';
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import {
@@ -11,9 +12,13 @@ import {
     calculateInverseMatrix,
     calculateRank,
 } from "../apiClient";
-import { parseMatrixInput, processMatrix } from '../utils/matrixUtils';
+import { 
+    parseMatrixInput, 
+    sequentialAddMatrices, 
+    sequentialSubtractMatrices,
+    handleMatrixSubmit 
+} from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
-import PropTypes from 'prop-types';
 import MatrixGridInput from '../components/MatrixGridInput';
 
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
@@ -152,7 +157,6 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     );
 };
 
-// Update PropTypes to include new props if needed (not strictly necessary here)
 OperationForm.propTypes = {
     title: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -171,24 +175,9 @@ OperationForm.propTypes = {
     maxCols: PropTypes.number,
 };
 
-// Функції для послідовних операцій
-const sequentialAddMatrices = async (matrices) => {
-    if (matrices.length < 2) throw new Error("Need at least 2 matrices");
-    let result = [...matrices[0]];
-    for (let i = 1; i < matrices.length; i++) {
-        result = await addMatrices(result, matrices[i]);
-    }
-    return result;
-};
-
-const sequentialSubtractMatrices = async (matrices) => {
-    if (matrices.length < 2) throw new Error("Need at least 2 matrices");
-    let result = [...matrices[0]];
-    for (let i = 1; i < matrices.length; i++) {
-        result = await subtractMatrices(result, matrices[i]);
-    }
-    return result;
-};
+// Оголошуємо функції-обгортки для послідовних операцій
+const sequentialAddMatricesWrapper = (matrices) => sequentialAddMatrices(matrices, addMatrices);
+const sequentialSubtractMatricesWrapper = (matrices) => sequentialSubtractMatrices(matrices, subtractMatrices);
 
 // Головний компонент
 const Matrices = () => {
@@ -234,104 +223,13 @@ const Matrices = () => {
         setError("");
     };
 
-    const validateInputs = (matrices, apiCall, options = {}) => {
-        const { singleMatrix = false, isPair = false } = options;
-
-        console.log("Matrices before processing:", JSON.stringify(matrices));
-
-        const processedMatrices = matrices.map(matrix => processMatrix(matrix));
-
-        console.log("Before validation (processed):", JSON.stringify(processedMatrices));
-
-        for (const matrix of processedMatrices) {
-            if (matrix.length === 0 || matrix.some(row => row.length === 0)) {
-                return { processedMatrices: [], error: "Matrices cannot be empty." };
-            }
-            if (matrix.some(row => row.some(val => isNaN(val)))) {
-                return { processedMatrices: [], error: "All inputs must be valid numbers." };
-            }
-        }
-
-        if (singleMatrix) {
-            if (processedMatrices.length !== 1) return { processedMatrices: [], error: "Exactly one matrix is required." };
-            if (
-                (apiCall === calculateDeterminant || apiCall === calculateAdjoint || apiCall === calculateInverseMatrix) &&
-                processedMatrices[0].length !== processedMatrices[0][0].length
-            ) {
-                return { processedMatrices: [], error: "This operation is only defined for square matrices." };
-            }
-            return { processedMatrices, error: null };
-        }
-
-        if (isPair) {
-            if (processedMatrices.length !== 2) return { processedMatrices: [], error: "Exactly two matrices are required." };
-            const [matrix1, matrix2] = processedMatrices;
-
-            if (apiCall === multiplyMatrices || apiCall === divideMatrices) {
-                if (matrix1[0].length !== matrix2.length) {
-                    return { processedMatrices: [], error: "Number of columns in the first matrix must equal the number of rows in the second." };
-                }
-                if (apiCall === divideMatrices && matrix2.length !== matrix2[0].length) {
-                    return { processedMatrices: [], error: "Second matrix must be square for division (A/B = A*B^(-1))." };
-                }
-            } else {
-                if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
-                    return { processedMatrices: [], error: "Matrices must have the same dimensions." };
-                }
-            }
-            return { processedMatrices, error: null };
-        }
-
-        if (processedMatrices.length < 2) return { processedMatrices: [], error: "At least two matrices are required." };
-        const [firstMatrix] = processedMatrices;
-        if (processedMatrices.some(m => m.length !== firstMatrix.length || m[0].length !== firstMatrix[0].length)) {
-            return { processedMatrices: [], error: "All matrices must have the same dimensions." };
-        }
-        return { processedMatrices, error: null };
-    };
-
-    const handleSubmit = async (inputs, apiCall, setResult, setError, options = {}) => {
-        try {
-            setError("");
-
-            const processedMatrices = inputs.map(matrix => processMatrix(matrix));
-
-            console.log("Processed matrices:", JSON.stringify(processedMatrices));
-
-            const { processedMatrices: validatedMatrices, error: validationError } =
-                validateInputs(processedMatrices, apiCall, options);
-
-            if (validationError) {
-                setError(validationError);
-                return;
-            }
-
-            let result;
-            if (options.singleMatrix) {
-                result = await apiCall(validatedMatrices[0]);
-            } else if (options.isPair) {
-                const [matrix1, matrix2] = validatedMatrices;
-                result = await apiCall(matrix1, matrix2);
-            } else if (apiCall === sequentialAddMatrices || apiCall === sequentialSubtractMatrices) {
-                result = await apiCall(validatedMatrices);
-            }
-
-            console.log("API Result:", result);
-            setResult(result);
-
-        } catch (error) {
-            console.error("Operation error:", error);
-            setError(error.response?.data?.message || "An error occurred.");
-        }
-    };
-
     return (
         <div>
             <OperationForm
                 title="Add Multiple Matrices"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(addInputs, sequentialAddMatrices, setAddResult, setAddError);
+                    handleMatrixSubmit(addInputs, sequentialAddMatricesWrapper, setAddResult, setAddError);
                 }}
                 matrices={addInputs}
                 setMatrices={setAddInputs}
@@ -345,7 +243,7 @@ const Matrices = () => {
                 title="Subtract Multiple Matrices"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(subtractInputs, sequentialSubtractMatrices, setSubtractResult, setSubtractError);
+                    handleMatrixSubmit(subtractInputs, sequentialSubtractMatricesWrapper, setSubtractResult, setSubtractError);
                 }}
                 matrices={subtractInputs}
                 setMatrices={setSubtractInputs}
@@ -359,7 +257,7 @@ const Matrices = () => {
                 title="Multiply Two Matrices"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
+                    handleMatrixSubmit(multiplyInputs, multiplyMatrices, setMultiplyResult, setMultiplyError, { isPair: true });
                 }}
                 matrices={multiplyInputs}
                 setMatrices={setMultiplyInputs}
@@ -375,7 +273,7 @@ const Matrices = () => {
                 title="Calculate Determinant"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
+                    handleMatrixSubmit(determinantInputs, calculateDeterminant, setDeterminantResult, setDeterminantError, { singleMatrix: true });
                 }}
                 matrices={determinantInputs}
                 setMatrices={setDeterminantInputs}
@@ -391,7 +289,7 @@ const Matrices = () => {
                 title="Calculate Adjoint (Adjugate)"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
+                    handleMatrixSubmit(adjointInputs, calculateAdjoint, setAdjointResult, setAdjointError, { singleMatrix: true });
                 }}
                 matrices={adjointInputs}
                 setMatrices={setAdjointInputs}
@@ -407,7 +305,7 @@ const Matrices = () => {
                 title="Divide Two Matrices (A/B = A*B^(-1))"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
+                    handleMatrixSubmit(divideInputs, divideMatrices, setDivideResult, setDivideError, { isPair: true });
                 }}
                 matrices={divideInputs}
                 setMatrices={setDivideInputs}
@@ -423,7 +321,7 @@ const Matrices = () => {
                 title="Calculate Inverse"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
+                    handleMatrixSubmit(inverseInputs, calculateInverseMatrix, setInverseResult, setInverseError, { singleMatrix: true });
                 }}
                 matrices={inverseInputs}
                 setMatrices={setInverseInputs}
@@ -439,7 +337,7 @@ const Matrices = () => {
                 title="Calculate Rank"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
+                    handleMatrixSubmit(rankInputs, calculateRank, setRankResult, setRankError, { singleMatrix: true });
                 }}
                 matrices={rankInputs}
                 setMatrices={setRankInputs}

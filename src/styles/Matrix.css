@@ -59,7 +59,7 @@
 .matrix-wrapper {
   position: relative;
   display: inline-block;
-  margin: 0;
+  margin-bottom: 30px; /* Додаємо відступ внизу для кнопок */
   padding: 5px;
   border-radius: 4px;
   transition: box-shadow 0.2s;
@@ -68,8 +68,6 @@
 .matrix-wrapper:focus-within {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
-
-Оновлений CSS для адаптивних дужок матриці
 
 /* Стилі для дужок матриці */
 .matrix-brackets {
@@ -244,20 +242,6 @@
   transition: all 0.3s ease;
 }
 
-/* Секція результату */
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  transition: all 0.3s ease;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.result.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .result h5 {
   margin-top: 0;
   margin-bottom: 10px;
@@ -336,4 +320,74 @@
     position: relative;
 
   }
+}
+
+/* Додамо стилі для кнопок копіювання/вставки */
+.matrix-clipboard-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 28px; /* Збільшено відступ зверху */
+  justify-content: center;
+  position: relative; /* Важливо для правильного позиціонування відносно дужок */
+  z-index: 2; /* Розміщуємо кнопки над дужками */
+}
+
+.matrix-copy-button,
+.matrix-paste-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--form-bg);
+  color: var(--secondary-text-color);
+  border: 1px solid var(--form-border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.matrix-copy-button:hover,
+.matrix-paste-button:hover {
+  background-color: var(--highlight-color);
+  color: white;
+}
+
+.matrix-copy-button svg,
+.matrix-paste-button svg {
+  color: currentColor;
+}
+
+/* Стилі для кнопки копіювання результату */
+.result-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--form-bg);
+  color: var(--secondary-text-color);
+  border: 1px solid var(--form-border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.result-copy-button:hover {
+  background-color: var(--highlight-color);
+  color: white;
+}
+
+/* Оновлені стилі для результату */
+.result {
+  position: relative;
+  margin-top: 20px;
+  padding: 15px;
+  padding-top: 30px; /* Збільшимо, щоб кнопка копіювання не накладалася на текст */
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
 }
