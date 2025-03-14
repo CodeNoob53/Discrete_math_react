@@ -44,10 +44,10 @@ const MatrixResult = ({ result }) => {
 
   return (
     <div className="result show">
-      <h5>Результат:</h5>
+      <h5>Result:</h5>
       <Tippy content="Копіювати результат">
         <button type="button" className="result-copy-button" onClick={copyResult}>
-          <Copy size={16} /> Копіювати
+          <Copy size={16} /> Copy
         </button>
       </Tippy>
 
