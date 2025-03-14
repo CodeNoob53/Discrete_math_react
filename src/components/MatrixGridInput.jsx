@@ -1,23 +1,27 @@
-// src/components/MatrixGridInput.jsx
 import React, { useState, useEffect, useRef } from "react";
-import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { parseMatrixInput } from '../utils/matrixUtils';
 import PropTypes from 'prop-types';
 
-const MatrixGridInput = ({ value, onChange, index, formId }) => {
+const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMatrixIndex, maxRows, maxCols }) => {
     const [grid, setGrid] = useState(() => {
         const initialGrid = value ? parseMatrixInput(value, [[""]], 1, 1) : [[""]];
         return initialGrid;
     });
-
     const [activeCell, setActiveCell] = useState(null);
     const previousGrid = useRef(grid);
+    const matrixRef = useRef(null);
 
     useEffect(() => {
         console.log("useEffect - Value:", value);
         console.log("useEffect - Previous grid:", previousGrid.current);
-        const newGrid = parseMatrixInput(value, previousGrid.current);
+        let newGrid;
+        if (!value.trim()) {
+            // Якщо value порожнє, скидаємо до мінімальної сітки 1x1
+            newGrid = [[""]];
+        } else {
+            newGrid = parseMatrixInput(value, previousGrid.current);
+        }
         console.log("useEffect - Parsed newGrid:", newGrid);
         if (newGrid.length === 0 || newGrid[0].length === 0) {
             setGrid([[""]]);
@@ -26,6 +30,24 @@ const MatrixGridInput = ({ value, onChange, index, formId }) => {
         }
         previousGrid.current = newGrid;
     }, [value]);
+
+    // Додаємо обробник кліку поза матрицею
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Перевіряємо чи клік був зроблений поза матрицею і не на елементах управління
+            const isClickOutsideControls = !event.target.closest('.matrix-controls');
+            const isClickOutsideMatrix = matrixRef.current && !matrixRef.current.contains(event.target);
+            
+            if (isClickOutsideMatrix && isClickOutsideControls) {
+                setActiveMatrixIndex(null); // Встановлюємо активний індекс матриці на null
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [setActiveMatrixIndex]);
 
     const getCellId = (rowIdx, colIdx) => `cell-${formId}-${index}-${rowIdx}-${colIdx}`;
 
@@ -64,86 +86,149 @@ const MatrixGridInput = ({ value, onChange, index, formId }) => {
     };
 
     const handleKeyDown = (e, rowIdx, colIdx) => {
-        const newGrid = [...grid.map(row => [...row])];
-        const totalCols = newGrid[rowIdx].length;
+        const newGrid = grid.map(row => [...row]);
+        const totalCols = newGrid[0].length;
         const totalRows = newGrid.length;
 
-        if (e.key === " " || e.key === "Spacebar") {
+        if (e.key === " ") {
             e.preventDefault();
+            
+            // Перевіряємо, чи це остання колонка
             if (colIdx === totalCols - 1) {
-                newGrid.forEach(row => row.push(""));
-                setGrid(newGrid);
-                const nextCellId = getCellId(rowIdx, colIdx + 1);
-                setTimeout(() => {
-                    const nextCell = document.getElementById(nextCellId);
-                    if (nextCell) nextCell.focus();
-                }, 0);
+                // Додаємо новий стовпець тільки якщо це остання колонка
+                if (totalCols < maxCols) {
+                    newGrid.forEach(row => row.push(""));
+                    setGrid(newGrid);
+                    setTimeout(() => {
+                        const nextCell = document.getElementById(getCellId(rowIdx, colIdx + 1));
+                        if (nextCell) nextCell.focus();
+                    }, 0);
+                }
             } else {
-                const nextCellId = getCellId(rowIdx, colIdx + 1);
+                // Якщо не остання колонка, просто переходимо на наступний стовпець
                 setTimeout(() => {
-                    const nextCell = document.getElementById(nextCellId);
+                    const nextCell = document.getElementById(getCellId(rowIdx, colIdx + 1));
                     if (nextCell) nextCell.focus();
                 }, 0);
             }
         } else if (e.key === "Enter") {
             e.preventDefault();
+            
+            // Перевіряємо, чи це останній рядок
             if (rowIdx === totalRows - 1) {
-                newGrid.push(Array(totalCols).fill(""));
-                setGrid(newGrid);
-                const nextCellId = getCellId(rowIdx + 1, 0);
-                setTimeout(() => {
-                    const nextCell = document.getElementById(nextCellId);
-                    if (nextCell) nextCell.focus();
-                }, 0);
+                // Додаємо новий рядок тільки якщо це останній рядок
+                if (totalRows < maxRows) {
+                    newGrid.push(Array(totalCols).fill(""));
+                    setGrid(newGrid);
+                    setTimeout(() => {
+                        const nextCell = document.getElementById(getCellId(rowIdx + 1, 0));
+                        if (nextCell) nextCell.focus();
+                    }, 0);
+                }
             } else {
-                const nextCellId = getCellId(rowIdx + 1, 0);
+                // Якщо не останній рядок, просто переходимо на наступний рядок
                 setTimeout(() => {
-                    const nextCell = document.getElementById(nextCellId);
+                    const nextCell = document.getElementById(getCellId(rowIdx + 1, colIdx));
                     if (nextCell) nextCell.focus();
                 }, 0);
             }
+        } else if (e.key === "Backspace") {
+            e.preventDefault();
+            if (newGrid.every(row => row[colIdx] === "")) {
+                if (totalCols > 1) {
+                    newGrid.forEach(row => row.splice(colIdx, 1));
+                }
+            }
+            if (newGrid[rowIdx].every(cell => cell === "")) {
+                if (totalRows > 1) {
+                    newGrid.splice(rowIdx, 1);
+                }
+            }
+            setGrid(newGrid);
+        }
+    };
+
+    const addRow = () => {
+        if (grid.length < maxRows) {
+            setGrid([...grid, Array(grid[0].length).fill("")]);
+        }
+    };
+
+    const deleteRow = () => {
+        if (grid.length > 1) {
+            setGrid(grid.slice(0, -1));
+        }
+    };
+
+    const addColumn = () => {
+        if (grid[0].length < maxCols) {
+            setGrid(grid.map(row => [...row, ""]));
+        }
+    };
+
+    const deleteColumn = () => {
+        if (grid[0].length > 1) {
+            setGrid(grid.map(row => row.slice(0, -1)));
         }
     };
 
     const handleFocus = (rowIdx, colIdx) => {
         setActiveCell(`${rowIdx}-${colIdx}`);
+        setActiveMatrixIndex(index); // Set this matrix as active
     };
 
     const handleBlur = () => {
         setActiveCell(null);
+        // Не скидаємо activeMatrixIndex тут, оскільки це тепер обробляється через клік поза матрицею
     };
 
     return (
-        <div className="matrix-wrapper">
+        <div className="matrix-wrapper" ref={matrixRef}>
             <div className="matrix-brackets">
                 <div className="matrix-grid">
                     {grid.map((row, rowIdx) => (
                         <div key={rowIdx} className="matrix-row">
                             {row.map((cell, colIdx) => (
-                                <Tippy
+                                <input
                                     key={colIdx}
-                                    content="Use Space to move right, Enter to move down"
-                                    placement="top"
-                                    delay={[500, 0]} // Show after 500ms hover, hide immediately
-                                >
-                                    <input
-                                        id={getCellId(rowIdx, colIdx)}
-                                        type="text"
-                                        inputMode="numeric"
-                                        className={`matrix-cell ${cell !== "" || activeCell === `${rowIdx}-${colIdx}` ? "active" : "inactive"}`}
-                                        value={cell}
-                                        onChange={(e) => handleChange(e, rowIdx, colIdx)}
-                                        onKeyDown={(e) => handleKeyDown(e, rowIdx, colIdx)}
-                                        onFocus={() => handleFocus(rowIdx, colIdx)}
-                                        onBlur={handleBlur}
-                                        placeholder="0"
-                                    />
-                                </Tippy>
+                                    id={getCellId(rowIdx, colIdx)}
+                                    type="text"
+                                    className={`matrix-cell ${cell !== "" || activeCell === `${rowIdx}-${colIdx}` ? "active" : "inactive"
+                                        }`}
+                                    value={cell}
+                                    onChange={(e) => handleChange(e, rowIdx, colIdx)}
+                                    onKeyDown={(e) => handleKeyDown(e, rowIdx, colIdx)}
+                                    onFocus={() => handleFocus(rowIdx, colIdx)}
+                                    onBlur={handleBlur}
+                                    placeholder="0"
+                                    inputMode="numeric"
+                                    autoComplete="off"
+                                    pattern="[0-9]*"
+                                />
                             ))}
                         </div>
                     ))}
                 </div>
             </div>
+            
+            {isActive && (
+                <div className="matrix-controls">
+                    <div className="matrix-c-wrapper">
+                    <p>Rows</p>
+                        <div className="row-controls">
+                            <button type="button" className="add-row-button" onClick={addRow}>Add</button>
+                            <button type="button" className="delete-row-button" onClick={deleteRow}>Del.</button>
+                        </div>
+                    </div>
+                    <div className="matrix-c-wrapper">
+                        <p>Collums</p>
+                        <div className="col-controls">
+                            <button type="button" className="add-col-button" onClick={addColumn}>Add</button>
+                            <button type="button" className="delete-col-button" onClick={deleteColumn}>Del.</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -153,6 +238,10 @@ MatrixGridInput.propTypes = {
     onChange: PropTypes.func.isRequired,
     index: PropTypes.number.isRequired,
     formId: PropTypes.string.isRequired,
+    isActive: PropTypes.bool.isRequired,
+    setActiveMatrixIndex: PropTypes.func.isRequired,
+    maxRows: PropTypes.number.isRequired,
+    maxCols: PropTypes.number.isRequired,
 };
 
 export default MatrixGridInput;

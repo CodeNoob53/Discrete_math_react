@@ -14,16 +14,19 @@ import {
 import { parseMatrixInput, processMatrix } from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
 import PropTypes from 'prop-types';
-import MatrixGridInput from '../components/MatrixGridInput'; // Імпорт нового компонента
+import MatrixGridInput from '../components/MatrixGridInput';
 
-// Універсальний компонент форми для матриць
-const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null }) => {
+const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
     const [rawInputs, setRawInputs] = useState(matrices.map(m => m.map(row => row.join(" ")).join("\n")));
+    const [activeMatrixIndex, setActiveMatrixIndex] = useState(null);
+    const [resetKey, setResetKey] = useState(0);
 
     const handleClearForm = () => {
+        const defaultMatrices = title.includes("Multiple") ? [[], []] : [[]]; // Для "Multiple" — 2 матриці, інакше 1
         clearForm();
-        setRawInputs(matrices.map(() => ""));
-        setMatrices(matrices.map(() => parseMatrixInput("", [[""]], 2, 3)));
+        setResetKey(prev => prev + 1);
+        setRawInputs(defaultMatrices.map(() => ""));
+        setMatrices(defaultMatrices.map(() => parseMatrixInput("", [[""]], 1, 1)));
     };
 
     return (
@@ -58,7 +61,8 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                             </label>
                             <div className="matrix-input-wrapper">
                                 <Tippy content="Enter numbers in cells, Space for new column, Enter for new row (e.g., 1 2.5 3\n4 5.5 6)">
-                                    <MatrixGridInput // Використовуємо новий компонент
+                                    <MatrixGridInput
+                                        key={`matrix-${index}-${resetKey}`}
                                         value={rawInputs[index]}
                                         onChange={(e) => {
                                             const inputValue = e.target.value;
@@ -72,6 +76,10 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                                         }}
                                         index={index}
                                         formId={title.replace(/\s+/g, '-').toLowerCase()}
+                                        isActive={activeMatrixIndex === index} // Pass active state
+                                        setActiveMatrixIndex={setActiveMatrixIndex} // Pass setter
+                                        maxRows={maxRows} // додано
+                                        maxCols={maxCols} // додано
                                     />
                                 </Tippy>
                                 {index >= 2 && allowAdd && (
@@ -82,6 +90,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                                             onClick={() => {
                                                 setMatrices(matrices.filter((_, i) => i !== index));
                                                 setRawInputs(rawInputs.filter((_, i) => i !== index));
+                                                if (activeMatrixIndex === index) setActiveMatrixIndex(null); // Reset if deleted matrix was active
                                             }}
                                         >
                                             <span className="material-symbols-outlined">delete</span>
@@ -113,9 +122,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                     <button
                         type="button"
                         className="clear"
-                        onClick={() => {
-                            handleClearForm();
-                        }}
+                        onClick={handleClearForm}
                     >
                         Clear
                     </button>
@@ -145,6 +152,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     );
 };
 
+// Update PropTypes to include new props if needed (not strictly necessary here)
 OperationForm.propTypes = {
     title: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -159,6 +167,8 @@ OperationForm.propTypes = {
     clearForm: PropTypes.func.isRequired,
     allowAdd: PropTypes.bool,
     maxMatrices: PropTypes.number,
+    maxRows: PropTypes.number,
+    maxCols: PropTypes.number,
 };
 
 // Функції для послідовних операцій
@@ -209,7 +219,16 @@ const Matrices = () => {
     const [inverseError, setInverseError] = useState("");
     const [rankError, setRankError] = useState("");
 
-    const clearForm = (setInputs, setResult, setError, defaultMatrices = [[]]) => {
+    const clearForm = (setInputs, setResult, setError, maxMatrices = null, allowAdd = true) => {
+        // Визначаємо початкову кількість матриць залежно від maxMatrices та allowAdd
+        let defaultMatrices;
+        if (!allowAdd && maxMatrices === 1) {
+            defaultMatrices = [[]]; // Для операцій з однією матрицею
+        } else if (!allowAdd && maxMatrices === 2) {
+            defaultMatrices = [[], []]; // Для операцій з двома матрицями
+        } else {
+            defaultMatrices = [[], []]; // Для операцій із множинними матрицями за замовчуванням
+        }
         setInputs(defaultMatrices);
         setResult("");
         setError("");
@@ -318,7 +337,9 @@ const Matrices = () => {
                 setMatrices={setAddInputs}
                 result={addResult}
                 error={addError}
-                clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, [[], []])}
+                clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, null, true)}
+                maxCols={5}
+                maxRows={5}
             />
             <OperationForm
                 title="Subtract Multiple Matrices"
@@ -330,7 +351,9 @@ const Matrices = () => {
                 setMatrices={setSubtractInputs}
                 result={subtractResult}
                 error={subtractError}
-                clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, [[], []])}
+                clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, null, true)}
+                maxCols={5}
+                maxRows={5}
             />
             <OperationForm
                 title="Multiply Two Matrices"
@@ -342,9 +365,11 @@ const Matrices = () => {
                 setMatrices={setMultiplyInputs}
                 result={multiplyResult}
                 error={multiplyError}
-                clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, [[], []])}
+                clearForm={() => clearForm(setMultiplyInputs, setMultiplyResult, setMultiplyError, 2, false)}
                 allowAdd={false}
                 maxMatrices={2}
+                maxCols={5}
+                maxRows={5}
             />
             <OperationForm
                 title="Calculate Determinant"
@@ -356,9 +381,11 @@ const Matrices = () => {
                 setMatrices={setDeterminantInputs}
                 result={determinantResult}
                 error={determinantError}
-                clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, [[]])}
+                clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
             />
             <OperationForm
                 title="Calculate Adjoint (Adjugate)"
@@ -370,9 +397,11 @@ const Matrices = () => {
                 setMatrices={setAdjointInputs}
                 result={adjointResult}
                 error={adjointError}
-                clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, [[]])}
+                clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
             />
             <OperationForm
                 title="Divide Two Matrices (A/B = A*B^(-1))"
@@ -384,9 +413,11 @@ const Matrices = () => {
                 setMatrices={setDivideInputs}
                 result={divideResult}
                 error={divideError}
-                clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, [[], []])}
+                clearForm={() => clearForm(setDivideInputs, setDivideResult, setDivideError, 2, false)}
                 allowAdd={false}
                 maxMatrices={2}
+                maxCols={5}
+                maxRows={5}
             />
             <OperationForm
                 title="Calculate Inverse"
@@ -398,9 +429,11 @@ const Matrices = () => {
                 setMatrices={setInverseInputs}
                 result={inverseResult}
                 error={inverseError}
-                clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, [[]])}
+                clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
             />
             <OperationForm
                 title="Calculate Rank"
@@ -412,9 +445,11 @@ const Matrices = () => {
                 setMatrices={setRankInputs}
                 result={rankResult}
                 error={rankError}
-                clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, [[]])}
+                clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
+                maxCols={8}
+                maxRows={8}
             />
         </div>
     );

@@ -1,190 +1,339 @@
+/* Загальні стилі для компонентів матриці */
 .matrix-result {
   border-collapse: collapse;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .matrix-result td {
   border: 1px solid var(--form-border);
-  padding: 8px;
+  padding: 10px;
   text-align: center;
   min-width: 40px;
+  transition: background-color 0.2s;
 }
 
+.matrix-result tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Контейнер для всіх матриць на формі */
 .matrices-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
+/* Група для кожної матриці */
 .matrix-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 5px;
-  flex: 1 1 200px; /* Адаптивна ширина */
+  flex: 1 1 250px;
   min-width: 200px;
-  max-width: 300px;
+  margin-bottom: 10px;
+  position: relative;
 }
 
+/* Надпис матриці */
 .matrix-label {
   font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
   color: var(--secondary-text-color);
-  margin-bottom: 5px;
 }
 
+/* Обгортка для матриці та кнопки видалення */
 .matrix-input-wrapper {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   width: 100%;
+  position: relative;
 }
 
+/* Зовнішня обгортка матриці */
 .matrix-wrapper {
   position: relative;
   display: inline-block;
+  margin: 0;
+  padding: 5px;
+  border-radius: 4px;
+  transition: box-shadow 0.2s;
 }
 
-/* Matrix.css */
+.matrix-wrapper:focus-within {
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+Оновлений CSS для адаптивних дужок матриці
+
+/* Стилі для дужок матриці */
 .matrix-brackets {
   position: relative;
-  padding: 0 15px; 
+  padding: 0 15px;
+  font-size: 1.2rem;
+  display: inline-flex;
 }
 
 .matrix-brackets::before,
 .matrix-brackets::after {
-  content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 0;  /* або мінімально */
-  /* Вимикаємо зображення */
-  background-image: none;
+  width: 10px;
+  display: flex;
+  align-items: stretch;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--secondary-text-color);
+  overflow: hidden;
 }
 
 .matrix-brackets::before {
-  content: "("; 
-  left: 0; 
-  font-size: 1.5rem;
-  /* Інші стилі за бажанням */
+  content: "";
+  left: 0;
+  border-left: 2px solid var(--secondary-text-color);
+  border-top: 2px solid var(--secondary-text-color);
+  border-bottom: 2px solid var(--secondary-text-color);
+  border-radius: 8px 0 0 8px;
 }
 
 .matrix-brackets::after {
-  content: ")"; 
-  right: 0; 
-  font-size: 1.5rem;
+  content: "";
+  right: 0;
+  border-right: 2px solid var(--secondary-text-color);
+  border-top: 2px solid var(--secondary-text-color);
+  border-bottom: 2px solid var(--secondary-text-color);
+  border-radius: 0 8px 8px 0;
 }
 
+/* Сітка матриці */
 .matrix-grid {
-  display: inline-block;
-  margin: 8px 0;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 4px;
 }
 
 .matrix-row {
   display: flex;
+  gap: 4px;
 }
 
-/* Matrix.css */
+/* Стилі для клітинок матриці */
 .matrix-cell {
-  width: 40px;
-  height: 25px;
-  margin: 2px;
+  width: 45px;
+  height: 32px;
   text-align: center;
   border: 1px solid var(--form-border);
   background-color: var(--form-bg);
   color: var(--secondary-text-color);
-  font-size: 1.1rem;
   font-family: monospace;
-  /* Прибираємо заокруглення, якщо було */
-  border-radius: 0;
+  font-size: 1rem;
+  padding: 0 5px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
 }
 
-
 .matrix-cell.inactive {
-  background-color: rgba(128, 128, 128, 0.2); /* Примарний вигляд */
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .matrix-cell.active {
-  background-color: var(--form-bg); /* Активний вигляд */
+  background-color: var(--form-bg);
+  border-color: var(--button-bg);
 }
 
 .matrix-cell:focus {
   border-color: var(--button-bg);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
   outline: none;
 }
 
-
-@media (min-width: 600px) {
-  .matrices-container {
-      justify-content: flex-start;
-  }
-
-  .matrix-group {
-      flex: 1 1 calc(50% - 20px); /* Дві матриці в ряд */
-      max-width: calc(50% - 20px);
-  }
+.matrix-cell:hover:not(:focus) {
+  border-color: #c4c4c4;
 }
 
-@media (max-width: 599px) {
-  .matrix-group {
-      flex: 1 1 100%; /* Одна матриця в ряд на маленьких екранах */
-      max-width: 100%;
-  }
-}
-
-/* Matrix.css */
-
-/* Контейнер для модального віконця */
+/* Панель керування матрицею */
 .matrix-controls {
-    position: absolute;
-    top: 0;
-    right: -110px; /* Розташування праворуч від матриці */
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.76);
+  backdrop-filter: blur(2px);
+  border: 1px solid var(--form-border);
+  border-radius: 8px;
+  margin: 15px -10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Кнопки в панелі керування */
+
+.delete-col-button:hover, .delete-row-button:hover {
+  background-color: rgba(255, 0, 0, 0.897);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.add-col-button:hover, .add-row-button:hover {
+  background-color: rgba(0, 153, 255, 0.897);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.matrix-controls button:active {
+  transform: translateY(1px);
+}
+
+.matrix-c-wrapper {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--form-border);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.matrix-c-wrapper p {
+  margin: 0;
+  padding-bottom: 2px;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+.col-controls, .row-controls {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.add-col-button, .add-row-button {
+  background-color: #108eb470;
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 2px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.delete-col-button, .delete-row-button {
+  background-color: #e71b1b70;;
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 2px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Секція результату */
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.result.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.result h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: var(--secondary-text-color);
+}
+
+
+
+/* Адаптивність */
+
+/* Для середніх екранів */
+/* @media (max-width: 992px) {
+  .matrix-group {
+    flex: 1 1 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+  
+  .matrix-controls {
+    display: flexbox;
+    right: auto;
+    left: 20px;
+    top: 100%;
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+} */
+
+/* Для малих екранів */
+@media (max-width: 768px) {
+
+  
+  .matrix-input-wrapper {
+    justify-content: center;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .buttons button {
+    width: 100%;
+    max-width: 200px;
+
+  }
+}
+
+/* Для дуже малих екранів */
+@media (max-width: 570px) {
+  .matrix-cell {
+    width: 35px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+  
+  .matrix-brackets::before,
+  .matrix-brackets::after {
+    width: 8px;
+    border-width: 1.5px;
+  }
+
+  .matrix-grid {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    z-index: 10;
-}
+    justify-content: center;
+  }
 
-/* Адаптивність: зміщення вниз на малих екранах */
-@media (max-width: 768px) {
-    .matrix-controls {
-        top: auto;
-        bottom: -110px; /* Розташування під матрицею */
-        right: 0;
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-around;
-    }
-}
+  .matrix-controls {
+    margin: 10px auto;
+  }
 
-/* Стилі для кнопок у модальному віконці */
-.matrix-controls button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s;
-}
+  .matrix-brackets {
+    position: relative;
 
-.matrix-controls button:hover {
-    background-color: #0056b3;
-}
-
-.matrix-controls button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-/* Додаткові стилі для контейнера матриці */
-.matrix-wrapper {
-    position: relative; /* Для позиціонування модального віконця */
+  }
 }

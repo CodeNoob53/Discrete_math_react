@@ -7,6 +7,7 @@ body.dark-theme {
   --background-color: #1e1e1e;
   --SwitchButton: rgb(240, 240, 240);
   --s-text-color: black;
+  --matrix-controls: #b8b8b8a6;
 }
 
 /* Світла тема */
