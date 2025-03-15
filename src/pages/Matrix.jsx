@@ -31,7 +31,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
     const [resetKey, setResetKey] = useState(0);
 
     const handleClearForm = () => {
-        const defaultMatrices = title.includes("Multiple") ? [[], []] : [[]]; // Для "Multiple" — 2 матриці, інакше 1
+        const defaultMatrices = maxMatrices === 2 ? [[], []] : [[]]; // For maxMatrices=2, always keep 2 matrices
         clearForm();
         setResetKey(prev => prev + 1);
         setRawInputs(defaultMatrices.map(() => ""));
@@ -49,6 +49,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                             <li>Use dot (<span className="keyword-o">.</span>) for decimal numbers (e.g., 1<span className="keyword-o">.</span>5)</li>
                             <li>Press <span className="keyword-o">Space</span> to add a new <span className="keyword-lb">column</span></li>
                             <li>Press <span className="keyword-o">Enter</span> to add a new <span className="keyword-lb">row</span></li>
+                            <li>Press <span className="keyword-o">Ctrl+Backspace</span> to delete empty <span className="keyword-lb">row/column</span></li>
                             <li><span className="keyword-lb">Empty cells</span> are treated as <span className="keyword-lb">zeros</span></li>
                             <li>Use negative sign (<span className="keyword-o">-</span>) for <span className="keyword-lb">negative numbers</span></li>
                         </ul>

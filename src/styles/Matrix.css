@@ -375,6 +375,7 @@
   border-radius: 4px;
   margin: 5px 0;
   overflow-x: auto;
+  min-height: 50px; /* Мінімальна висота для кращого відображення */
 }
 
 /* Стилі для покращення відображення MathJax */

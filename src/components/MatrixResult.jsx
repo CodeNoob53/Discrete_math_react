@@ -14,16 +14,28 @@ const MatrixResult = ({ result }) => {
     if (Array.isArray(result) && Array.isArray(result[0])) {
       return result.map(row => row.join(" ")).join("\n");
     }
+    // Якщо результат є масивом (вектор)
+    else if (Array.isArray(result)) {
+      return result.join(",");
+    }
     // Якщо результат є числом чи рядком
     return result.toString();
   };
 
-  // Функція для конвертації матриці в LaTeX формат
+  // Функція для конвертації матриці або вектора в LaTeX формат
   const matrixToLatex = (matrix) => {
-    if (!Array.isArray(matrix) || !Array.isArray(matrix[0])) {
-      return `\\(${matrix}\\)`;
+    if (!Array.isArray(matrix)) {
+      return `${matrix}`;
     }
-
+    
+    // Якщо це простий масив чисел (вектор)
+    if (Array.isArray(matrix) && !Array.isArray(matrix[0])) {
+      // Відобразити як вектор-стовпець
+      const elements = matrix.join(" \\\\ ");
+      return `\\begin{pmatrix} ${elements} \\end{pmatrix}`;
+    }
+    
+    // Якщо це матриця (масив масивів)
     const rows = matrix.map(row => row.join(" & ")).join(" \\\\ ");
     return `\\begin{pmatrix} ${rows} \\end{pmatrix}`;
   };
@@ -44,11 +56,10 @@ const MatrixResult = ({ result }) => {
 
   return (
     <div className="result show">
-      <h5>Result:</h5>
-      <hr />
+      <h5>Результат:</h5>
       <Tippy content="Копіювати результат">
         <button type="button" className="result-copy-button" onClick={copyResult}>
-          <Copy size={16} /> Copy
+          <Copy size={16} /> Копіювати
         </button>
       </Tippy>
 
@@ -57,9 +68,14 @@ const MatrixResult = ({ result }) => {
         <MathJaxContext>
           <div className="matrix-latex">
             <MathJax>
-              {`\\(${Array.isArray(result) && Array.isArray(result[0]) 
-                ? matrixToLatex(result) 
-                : result}\\)`}
+              {`\\(${
+                // Перевіряємо тип результату і форматуємо відповідно
+                Array.isArray(result) && Array.isArray(result[0]) 
+                  ? matrixToLatex(result) // Матриця
+                  : Array.isArray(result)
+                    ? matrixToLatex(result) // Вектор
+                    : result // Скаляр
+                }\\)`}
             </MathJax>
           </div>
         </MathJaxContext>

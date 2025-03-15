@@ -10,6 +10,7 @@ import {
   findNegativeVector,
   subtractVectors,
 } from "../apiClient";
+import MatrixResult from '../components/MatrixResult'; // Імпортуємо новий компонент
 
 const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, clearForm, allowAdd = true }) => {
   // Store raw input values before conversion to numbers
@@ -20,7 +21,7 @@ const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, cl
       <div className="form-header"><h3>{title}</h3></div>
       {error && <p className="flashMessage show">{error}</p>}
       <form onSubmit={onSubmit}>
-        {vectors.map((index) => (
+        {vectors.map((vector, index) => (
           <div className="formGroup" key={index}>
             <label htmlFor={`vector-${index}`}>Vector {index + 1}:</label>
             <Tippy content="Enter comma-separated numbers (e.g., 1,2,3)">
@@ -102,11 +103,15 @@ const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, cl
           </button>
         </div>
       </form>
+      
+      {/* Використовуємо компонент MatrixResult замість відображення результату напряму */}
       {result && (
-        <div className="result show">
-          <h5>Result:</h5>
-          <p>{Array.isArray(result) ? result.join(", ") : result}</p>
-        </div>
+        <MatrixResult result={
+          // Перетворюємо результат у формат, який очікує MatrixResult
+          Array.isArray(result) 
+            ? [result] // Якщо масив - представляємо як вектор-рядок (матриця з одним рядком)
+            : result   // Якщо скаляр - передаємо як є
+        } />
       )}
     </div>
   );
@@ -304,7 +309,10 @@ const Vectors = () => {
 OperationForm.propTypes = {
   title: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  vectors: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  vectors: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.number, 
+    PropTypes.string
+  ]))).isRequired,
   setVectors: PropTypes.func.isRequired,
   result: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   error: PropTypes.string,

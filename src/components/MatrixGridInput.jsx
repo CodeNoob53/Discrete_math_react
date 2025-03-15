@@ -134,13 +134,15 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                     if (nextCell) nextCell.focus();
                 }, 0);
             }
-        } else if (e.key === "Backspace") {
+        } else if (e.key === "Backspace" && e.ctrlKey) {
             e.preventDefault();
+            // Видалення стовпця, якщо всі значення в ньому порожні
             if (newGrid.every(row => row[colIdx] === "")) {
                 if (totalCols > 1) {
                     newGrid.forEach(row => row.splice(colIdx, 1));
                 }
             }
+            // Видалення рядка, якщо всі значення в ньому порожні
             if (newGrid[rowIdx].every(cell => cell === "")) {
                 if (totalRows > 1) {
                     newGrid.splice(rowIdx, 1);
@@ -233,7 +235,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                                     placeholder="0"
                                     inputMode="numeric"
                                     autoComplete="off"
-                                    pattern="[0-9]*"
+                                    pattern="[-]?[0-9]*[.]?[0-9]*"
                                 />
                             ))}
                         </div>
