@@ -13,12 +13,12 @@ import {
     calculateRank,
     multiplyMatrixByScalar
 } from "../apiClient";
-import { 
-    parseMatrixInput, 
-    sequentialAddMatrices, 
+import {
+    parseMatrixInput,
+    sequentialAddMatrices,
     sequentialSubtractMatrices,
     handleMatrixSubmit,
-    processMatrix 
+    processMatrix
 } from '../utils/matrixUtils';
 import "./../styles/Matrix.css";
 import MatrixGridInput from '../components/MatrixGridInput';
@@ -138,7 +138,7 @@ const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, 
                     </button>
                 </div>
             </form>
-            
+
             {/* Використовуємо новий компонент MatrixResult */}
             {result && <MatrixResult result={result} />}
         </div>
@@ -215,16 +215,16 @@ const ScalarMultiplyForm = ({ onSubmit, matrices, setMatrices, scalar, setScalar
                         className="scalar-input short"
                         value={scalar}
                         onChange={(e) => {
-                            // Дозволяємо тільки числа, десяткові крапки та мінус
+                            // Оновлена регулярна умова для скаляра
                             const value = e.target.value;
-                            if (/^-?\d*\.?\d*$/.test(value) || value === "-") {
+                            if (/^-?\.?$/.test(value) || /^-?\d*\.?\d*$/.test(value)) {
                                 setScalar(value);
                             }
                         }}
                         placeholder="Enter scalar value"
                     />
                 </div>
-                
+
                 <div className="matrices-container">
                     <div className="matrix-group">
                         <label htmlFor="matrix-0" className="matrix-label">
@@ -254,7 +254,7 @@ const ScalarMultiplyForm = ({ onSubmit, matrices, setMatrices, scalar, setScalar
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="buttons">
                     <button type="submit" className="submit">Calculate</button>
                     <button
@@ -266,7 +266,7 @@ const ScalarMultiplyForm = ({ onSubmit, matrices, setMatrices, scalar, setScalar
                     </button>
                 </div>
             </form>
-            
+
             {/* Використовуємо новий компонент MatrixResult */}
             {result && <MatrixResult result={result} />}
         </div>
@@ -346,7 +346,7 @@ const Matrices = () => {
     const handleScalarMultiply = (e) => {
         e.preventDefault();
         setScalarMultiplyError("");
-        
+
         try {
             // Перевірка валідності скаляра
             const scalarValue = parseFloat(scalar);
@@ -354,21 +354,21 @@ const Matrices = () => {
                 setScalarMultiplyError("Scalar must be a valid number");
                 return;
             }
-            
+
             // Обробка матриці
             const processedMatrix = processMatrix(scalarMultiplyInputs[0]);
-            
+
             // Перевірка валідності матриці
             if (processedMatrix.length === 0 || processedMatrix.some(row => row.length === 0)) {
                 setScalarMultiplyError("Matrix cannot be empty");
                 return;
             }
-            
+
             if (processedMatrix.some(row => row.some(val => isNaN(val)))) {
                 setScalarMultiplyError("All matrix elements must be valid numbers");
                 return;
             }
-            
+
             // Виклик API для множення на скаляр
             multiplyMatrixByScalar(processedMatrix, scalarValue)
                 .then(result => {
@@ -508,7 +508,7 @@ const Matrices = () => {
                 maxCols={8}
                 maxRows={8}
             />
-            
+
             {/* Спеціальна форма для множення матриці на скаляр */}
             <ScalarMultiplyForm
                 onSubmit={handleScalarMultiply}

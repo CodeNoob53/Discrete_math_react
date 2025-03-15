@@ -4,10 +4,15 @@
  * @param {Array} matrix - Матриця для обробки
  * @returns {Array} Оброблена матриця
  */
+// Виправлена функція processMatrix в файлі matrixUtils.js
 export const processMatrix = (matrix) => {
     return matrix.map(row =>
         row.map(val => {
             if (val === "" || val === undefined || val === null) {
+                return 0;
+            }
+            // Спеціальна обробка для крапки та "-."
+            if (val === "." || val === "-.") {
                 return 0;
             }
             const num = Number(val);
@@ -24,6 +29,8 @@ export const processMatrix = (matrix) => {
  * @param {number} defaultCols - Кількість стовпців за замовчуванням
  * @returns {Array} Розібрана матриця
  */
+
+// Виправлена функція parseMatrixInput в файлі matrixUtils.js
 export const parseMatrixInput = (input, previousGrid = [[""]], defaultRows = 1, defaultCols = 1) => {
     console.log("Input to parseMatrixInput:", JSON.stringify(input));
     console.log("Previous grid:", previousGrid);
@@ -51,11 +58,17 @@ export const parseMatrixInput = (input, previousGrid = [[""]], defaultRows = 1, 
             rowFromInput.forEach((val, colIdx) => {
                 if (colIdx < maxCols) {
                     const trimmed = val.trim();
-                    if (trimmed === "" || trimmed === "-") {
+                    // Додаємо перевірку для крапки та "-."
+                    if (trimmed === "" || trimmed === "-" || trimmed === "." || trimmed === "-.") {
                         parsedRow[colIdx] = trimmed;
                     } else {
-                        const num = parseFloat(trimmed);
-                        parsedRow[colIdx] = isNaN(num) ? "" : num;
+                        // Не перетворюємо рядок на число, а залишаємо як є,
+                        // якщо він відповідає шаблону дійсного числа
+                        if (/^-?\d*\.?\d*$/.test(trimmed) && trimmed !== "") {
+                            parsedRow[colIdx] = trimmed;
+                        } else {
+                            parsedRow[colIdx] = "";
+                        }
                     }
                 }
             });

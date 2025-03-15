@@ -39,7 +39,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
             // Перевіряємо чи клік був зроблений поза матрицею і не на елементах управління
             const isClickOutsideControls = !event.target.closest('.matrix-controls');
             const isClickOutsideMatrix = matrixRef.current && !matrixRef.current.contains(event.target);
-            
+
             if (isClickOutsideMatrix && isClickOutsideControls) {
                 setActiveMatrixIndex(null); // Встановлюємо активний індекс матриці на null
             }
@@ -53,36 +53,47 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
 
     const getCellId = (rowIdx, colIdx) => `cell-${formId}-${index}-${rowIdx}-${colIdx}`;
 
+    // функція handleChange 
     const handleChange = (e, rowIdx, colIdx) => {
         const newGrid = [...grid.map(row => [...row])];
         const value = e.target.value;
-
+    
         console.log("handleChange - Input value:", value);
-
-        if (value === "-" || value === "" || !isNaN(value) || value === undefined) {
+    
+        // Перевіряємо чи це крапка, порожній рядок, мінус, або відповідає шаблону валідного числа
+        if (value === "" || value === "-" || value === "." || value === "-." || 
+            /^-?\d*\.?\d*$/.test(value)) {
             newGrid[rowIdx][colIdx] = value || "";
-
+    
             const maxCols = Math.max(...newGrid.map(row => row.length));
             newGrid.forEach(row => {
                 while (row.length < maxCols) {
                     row.push("");
                 }
             });
-
+    
             setGrid(newGrid);
-
+    
+            // Створюємо точне текстове представлення матриці для збереження крапки
             const textValue = newGrid
                 .map(row => row.map(cell => cell || "").join(" "))
                 .join("\n");
-
+    
             console.log("newGrid after change:", newGrid);
             console.log("textValue:", JSON.stringify(textValue));
-
+    
+            // Важливо! Передаємо значення напряму, щоб уникнути додаткової обробки
             onChange({ target: { value: textValue } });
-
+    
+            // Фокусуємо поле знову (може допомогти зі збереженням курсора)
             setTimeout(() => {
                 const el = document.getElementById(getCellId(rowIdx, colIdx));
-                if (el) el.focus();
+                if (el) {
+                    el.focus();
+                    // Встановлюємо курсор в кінець тексту
+                    const valueLength = el.value.length;
+                    el.setSelectionRange(valueLength, valueLength);
+                }
             }, 0);
         }
     };
@@ -94,7 +105,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
 
         if (e.key === " ") {
             e.preventDefault();
-            
+
             // Перевіряємо, чи це остання колонка
             if (colIdx === totalCols - 1) {
                 // Додаємо новий стовпець тільки якщо це остання колонка
@@ -115,7 +126,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
             }
         } else if (e.key === "Enter") {
             e.preventDefault();
-            
+
             // Перевіряємо, чи це останній рядок
             if (rowIdx === totalRows - 1) {
                 // Додаємо новий рядок тільки якщо це останній рядок
@@ -235,20 +246,20 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                                     placeholder="0"
                                     inputMode="numeric"
                                     autoComplete="off"
-                                    pattern="[-]?[0-9]*[.]?[0-9]*"
+                                    pattern="-?[0-9]*\.?[0-9]*"
                                 />
                             ))}
                         </div>
                     ))}
                 </div>
             </div>
-            
+
             {/* Кнопки копіювання/вставки - тепер винесені за межі matrix-brackets */}
             <div className="matrix-clipboard-controls">
                 <Tippy content="Copy matrix">
-                    <button 
-                        type="button" 
-                        className="matrix-copy-button" 
+                    <button
+                        type="button"
+                        className="matrix-copy-button"
                         onClick={copyMatrix}
                         aria-label="Copy matrix"
                     >
@@ -256,9 +267,9 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                     </button>
                 </Tippy>
                 <Tippy content="Paste matrix">
-                    <button 
-                        type="button" 
-                        className="matrix-paste-button" 
+                    <button
+                        type="button"
+                        className="matrix-paste-button"
                         onClick={pasteMatrix}
                         aria-label="Paste matrix"
                     >
@@ -266,7 +277,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                     </button>
                 </Tippy>
             </div>
-            
+
             {/* Контроли для матриці */}
             {isActive && (
                 <div className="matrix-controls">
