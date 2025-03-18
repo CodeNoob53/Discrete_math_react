@@ -2,12 +2,29 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 /* Тема за замовчуванням */
 body.dark-theme {
-  --header-color: #272833;
-  --text-color: #cfd2e1;
+
   --background-color: #1e1e1e;
   --SwitchButton: rgb(240, 240, 240);
   --s-text-color: black;
   --matrix-controls: #b8b8b8a6;
+  --header-color: #464646;
+  --nav-button: #1a1a1a;
+  --nav-button-hover-shdw: #5bbcfd67;
+  --subject-item: #303030;
+  --text-color: #cfd2e1;
+  --secondary-text-color: rgb(255, 255, 255);
+  --highlight-color: #0384c0;
+  --container-bg: #1e1e1e;
+  --button-bg: #007acc;
+  --button-hover-bg: #8acdff;
+  --btn-border: #6969698e;
+  --error-bg: #1600004B;
+  --error-border: #a12626;
+  --form-bg: #1e1e1e;
+  --form-border: #585858;
+  --result-bg: #1e1e1e;
+  --result-text: #b5cea8;
+  --header-height: 60px; /* Додаємо змінну для висоти header */
 }
 
 /* Світла тема */

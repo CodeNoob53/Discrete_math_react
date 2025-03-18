@@ -61,7 +61,7 @@ const SolveLinearEquations = () => {
     };
 
     return (
-        <div className="formContainer">
+        <div className="formContainer wrapper">
             <div className="form-header"><h3>Solve Linear Equations</h3></div>
             {error && <p className="flashMessage show">{error}</p>}
             <form onSubmit={handleSubmit}>

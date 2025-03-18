@@ -203,7 +203,7 @@ const Combinatorics = () => {
 
   return (
     <MathJaxContext>
-      <div className="combinatorics">
+      <div className=" wrapper combinatorics">
         <OperationForm
           title={<MathJax inline>{"Arrangement \\(A(n, k)\\)"}</MathJax>}
           onSubmit={(e) =>

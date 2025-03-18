@@ -383,7 +383,8 @@ const Matrices = () => {
     };
 
     return (
-        <div>
+        <div className="wrapper">
+            {/* Використовуємо компонент OperationForm для всіх операцій */}
             <OperationForm
                 title="Add Multiple Matrices"
                 onSubmit={(e) => {

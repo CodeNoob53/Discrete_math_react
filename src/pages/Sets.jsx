@@ -69,7 +69,7 @@ const Sets = () => {
   };
 
   return (
-    <div className="sets">
+    <div className="sets wrapper">
       {error && <p className="flashMessage error">{error}</p>}
       <form className="formContainer difference-container" onSubmit={(e) => { e.preventDefault(); handleCalculate("difference"); }}>
         <div className="form-header"><h3>Difference</h3></div>

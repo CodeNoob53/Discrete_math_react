@@ -81,7 +81,7 @@ const CacheMemoryCalculator = () => {
   };
 
   return (
-    <div className="formContainer">
+    <div className="formContainer wrapper">
       <div className="form-header"><h3>Cache Memory Calculator</h3></div>
 
       {/* Error Message */}

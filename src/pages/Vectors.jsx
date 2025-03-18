@@ -226,7 +226,7 @@ const Vectors = () => {
   };
 
   return (
-    <div>
+    <div className="wrapper">
       <OperationForm
         title="Add Multiple Vectors"
         onSubmit={(e) => {

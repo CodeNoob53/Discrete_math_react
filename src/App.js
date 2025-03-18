@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./pages/home/Home";
 // import RecurrenceRelations from './pages/RecurrenceRelations';
 // import SolvingRecurrenceRelations from './pages/SolvingRecurrenceRelations';
 import Sets from './pages/Sets';
@@ -44,7 +44,7 @@ const App = () => {
             <h1 className="header-title">Discrete Math Calculator</h1>
             <ThemeToggle />
           </header>
-          <div className="container">
+          <div className="main">
             <Routes>
               <Route path="/" element={<Home />} />
               {/* <Route path="/cnf_to_dnf" element={<div>CNF to DNF Page</div>} />

@@ -45,7 +45,7 @@ const HammingCode = () => {
   };
 
   return (
-    <div className="hamming-code">
+    <div className="hamming-code wrapper">
       {/* Flash Message */}
       {flashMessage && <p className="flashMessage">{flashMessage}</p>}
       {/* Encode Form */}

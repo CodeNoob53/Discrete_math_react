@@ -7,7 +7,7 @@ const RecurrenceRelations = () => {
 
   return (
     <MathJaxContext>
-      <div className="formContainer">
+      <div className="formContainer wrapper">
         <h3>Recurrence Relations</h3>
         <form id={formId}>
           <div className="formGroup">

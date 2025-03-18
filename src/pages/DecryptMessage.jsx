@@ -44,7 +44,7 @@ const DecryptMessage = () => {
   };
 
   return (
-    <div className="formContainer">
+    <div className="formContainer wrapper">
       <div className="form-header"><h3>Decrypt Message</h3></div>
       {error && <p className="flashMessage">{error}</p>}
       <form onSubmit={handleSubmit} className="decrypt-form">

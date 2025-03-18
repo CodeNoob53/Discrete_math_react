@@ -1,0 +1,188 @@
+.mainContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+  
+  /* Вітальний блок */
+  .welcome-box {
+    background-color: var(--subject-item);
+    padding: 20px;
+    border-radius: 8px;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+  }
+  
+  .welcome-box h2 {
+    color: var(--highlight-color);
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  .welcome-box p {
+    margin: 0;
+    line-height: 1.6;
+  }
+  
+  /* Контейнер для кнопок навігації */
+  .nav-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  /* Навігаційні кнопки */
+  .nav-button {
+    padding: 16px;
+    background-color: var(--nav-button);
+    margin-bottom: 8px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 1px solid var(--btn-border);
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-grow: 1;
+    width: 100%;
+    color: var(--text-color);
+}
+  
+.nav-button:hover {
+  background-color: var(--nav-button-hover);
+  transform: translateY(-2px);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px, 1px -127px 43px -113px var(--nav-button-hover-shdw) inset;
+}
+  
+  .nav-button:focus {
+    outline: none;
+  }
+  
+  .nav-button:active {
+    transform: translateY(0px);
+    transition: transform 0.1s;
+}
+  
+  /* Стилі для десктопного вигляду */
+  .desktop-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .section-card {
+    background-color: var(--subject-item);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  }
+  
+  .section-header {
+    padding: 15px;
+    background-color: var(--subject-item);
+    color: var(--text-color);
+  }
+  
+  .section-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+  
+  .section-content {
+    padding: 20px;
+  }
+  
+  /* Стилі для мобільного вигляду з акордеонами */
+  .mobile-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .accordion {
+    background-color: var(--subject-item);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  }
+  
+  .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--subject-item);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s;
+ 
+  }
+  
+  .accordion-header.expanded {
+    filter: brightness(1.3);
+  }
+  
+  .accordion-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  .expand-icon {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 15px;
+  }
+  
+  .accordion-content.show {
+    max-height: 1000px;
+    padding: 15px;
+  }
+  
+  /* Медіа-запити для адаптивного дизайну */
+  @media (max-width: 991px) {
+    .desktop-sections {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .desktop-sections {
+      display: none;
+    }
+    
+    .mobile-sections {
+      display: flex;
+    }
+    
+    .mainContainer {
+      max-width: 100%;
+      padding: 10px;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-sections {
+      display: none;
+    }
+    
+    .desktop-sections {
+      display: grid;
+    }
+  }
+  
+  /* Анімаціїї для плавного переходу між темами */
+  * {
+    transition: background-color 0.3s ease, 
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+  }
