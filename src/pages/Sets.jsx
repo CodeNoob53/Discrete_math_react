@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-
 import { calculateSetDifference, calculateSetIntersection, calculateSetUnion } from "../api/apiClient";
-
+import FlashMessage from "../components/flashMessage/FlashMessage";
 import "./../styles/Pages.css";
+
 const Sets = () => {
   const [differenceInputs, setDifferenceInputs] = useState({ set1: "", set2: "" });
   const [differenceResult, setDifferenceResult] = useState("");
@@ -71,7 +71,13 @@ const Sets = () => {
 
   return (
     <div className="sets wrapper">
-      {error && <p className="flashMessage error">{error}</p>}
+      {error && (
+        <FlashMessage 
+          message={error} 
+          clearMessage={() => setError("")} 
+          type="error" 
+        />
+      )}
       <form className="formContainer difference-container" onSubmit={(e) => { e.preventDefault(); handleCalculate("difference"); }}>
         <div className="form-header"><h3>Difference</h3></div>
         <div className="inputGroup">

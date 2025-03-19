@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { validateChecksum } from "../api/apiClient";
+import FlashMessage from "../components/flashMessage/FlashMessage";
+import Result from "../components/result/Result";
 import "./../styles/Pages.css";
 
 const ValidateChecksum = () => {
@@ -58,7 +60,13 @@ const ValidateChecksum = () => {
   return (
     <div className="formContainer wrapper">
       <div className="form-header"><h3>Validate Checksum</h3></div>
-      {error && <p className="flashMessage">{error}</p>}
+      {error && (
+        <FlashMessage 
+          message={error} 
+          clearMessage={() => setError("")} 
+          type="error" 
+        />
+      )}
       <form onSubmit={handleSubmit} className="validate-checksum-form">
         <div className="formGroup">
           <label htmlFor="messageReceived">Message Received:</label>
@@ -92,12 +100,7 @@ const ValidateChecksum = () => {
         </div>
       </form>
 
-      {result && (
-        <div className="result">
-          <h4>Validation Result:</h4>
-          <p className="decoded-result">{result}</p>
-        </div>
-      )}
+      {result && <Result result={result} title="Validation Result:" />}
     </div>
   );
 };

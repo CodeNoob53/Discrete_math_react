@@ -1,22 +1,42 @@
 import React, { useState } from "react";
-
 import PropTypes from "prop-types";
-
 import Tippy from "@tippyjs/react";
-
-import MatrixResult from '../components/MatrixResult';
-import { addVectors, calculateCrossProduct, calculateDotProduct, calculateMagnitude, findNegativeVector, subtractVectors } from "../api/apiClient";
-
+import FlashMessage from "../components/flashMessage/FlashMessage";
+import MatrixResult from "../components/result/Result";
+import { 
+  addVectors, 
+  calculateCrossProduct, 
+  calculateDotProduct, 
+  calculateMagnitude, 
+  findNegativeVector, 
+  subtractVectors 
+} from "../api/apiClient";
 import "tippy.js/dist/tippy.css";
 
-const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, clearForm, allowAdd = true }) => {
+const OperationForm = ({ 
+  title, 
+  onSubmit, 
+  vectors, 
+  setVectors, 
+  result, 
+  error, 
+  clearForm, 
+  clearError, 
+  allowAdd = true 
+}) => {
   // Store raw input values before conversion to numbers
   const [rawInputs, setRawInputs] = useState(vectors.map(v => v.join(",")));
 
   return (
     <div className="formContainer">
       <div className="form-header"><h3>{title}</h3></div>
-      {error && <p className="flashMessage show">{error}</p>}
+      {error && (
+        <FlashMessage 
+          message={error} 
+          clearMessage={clearError} 
+          type="error" 
+        />
+      )}
       <form onSubmit={onSubmit}>
         {vectors.map((vector, index) => (
           <div className="formGroup" key={index}>
@@ -114,6 +134,22 @@ const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, cl
   );
 };
 
+OperationForm.propTypes = {
+  title: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  vectors: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.number, 
+      PropTypes.string
+    ]))
+  ).isRequired,
+  setVectors: PropTypes.func.isRequired,
+  result: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  error: PropTypes.string,
+  clearForm: PropTypes.func.isRequired,
+  clearError: PropTypes.func.isRequired,
+  allowAdd: PropTypes.bool,
+};
 
 const Vectors = () => {
   const [addInputs, setAddInputs] = useState([[], []]);
@@ -235,6 +271,7 @@ const Vectors = () => {
         result={addResult}
         error={addError}
         clearForm={() => clearForm(setAddInputs, setAddResult, setAddError, [[], []])}
+        clearError={() => setAddError("")}
       />
       <OperationForm
         title="Calculate Cross Product"
@@ -247,6 +284,7 @@ const Vectors = () => {
         result={crossResult}
         error={crossError}
         clearForm={() => clearForm(setCrossInputs, setCrossResult, setCrossError, [[], []])}
+        clearError={() => setCrossError("")}
         allowAdd={false}
       />
       <OperationForm
@@ -260,6 +298,7 @@ const Vectors = () => {
         result={dotResult}
         error={dotError}
         clearForm={() => clearForm(setDotInputs, setDotResult, setDotError, [[], []])}
+        clearError={() => setDotError("")}
         allowAdd={false}
       />
       <OperationForm
@@ -273,6 +312,7 @@ const Vectors = () => {
         result={magnitudeResult}
         error={magnitudeError}
         clearForm={() => clearForm(setMagnitudeInputs, setMagnitudeResult, setMagnitudeError, [[]])}
+        clearError={() => setMagnitudeError("")}
         allowAdd={false}
       />
       <OperationForm
@@ -286,6 +326,7 @@ const Vectors = () => {
         result={negativeResult}
         error={negativeError}
         clearForm={() => clearForm(setNegativeInputs, setNegativeResult, setNegativeError, [[]])}
+        clearError={() => setNegativeError("")}
         allowAdd={false}
       />
       <OperationForm
@@ -299,21 +340,10 @@ const Vectors = () => {
         result={subtractResult}
         error={subtractError}
         clearForm={() => clearForm(setSubtractInputs, setSubtractResult, setSubtractError, [[], []])}
+        clearError={() => setSubtractError("")}
       />
     </div>
   );
 };
-OperationForm.propTypes = {
-  title: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  vectors: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.number, 
-    PropTypes.string
-  ]))).isRequired,
-  setVectors: PropTypes.func.isRequired,
-  result: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  error: PropTypes.string,
-  clearForm: PropTypes.func.isRequired,
-  allowAdd: PropTypes.bool,
-};
+
 export default Vectors;

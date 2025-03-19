@@ -5,7 +5,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 
-const MatrixResult = ({ result }) => {
+const Result = ({ result, title = "Результат:" }) => {
   // Функція для конвертації результату в текстовий формат (сумісний з форматом вводу)
   const resultToText = () => {
     if (!result) return "";
@@ -56,40 +56,42 @@ const MatrixResult = ({ result }) => {
 
   return (
     <div className="result show">
-      <h5>Результат:</h5>
+      <h5>{title}</h5>
       <Tippy content="Копіювати результат">
         <button type="button" className="result-copy-button" onClick={copyResult}>
           <Copy size={16} /> Копіювати
         </button>
       </Tippy>
 
-      <div className="matrix-result-wrapper">
-        {/* Тільки MathJax відображення */}
-        <MathJaxContext>
-          <div className="matrix-latex">
-            <MathJax>
-              {`\\(${
-                // Перевіряємо тип результату і форматуємо відповідно
-                Array.isArray(result) && Array.isArray(result[0]) 
-                  ? matrixToLatex(result) // Матриця
-                  : Array.isArray(result)
-                    ? matrixToLatex(result) // Вектор
-                    : result // Скаляр
-                }\\)`}
-            </MathJax>
+      <div className="result-wrapper">
+        {Array.isArray(result) ? (
+          // MathJax відображення для матриць і векторів
+          <MathJaxContext>
+            <div className="result-latex">
+              <MathJax>
+                {`\\(${matrixToLatex(result)}\\)`}
+              </MathJax>
+            </div>
+          </MathJaxContext>
+        ) : (
+          // Звичайне відображення для скалярних значень та рядків
+          <div className="result-text">
+            {result}
           </div>
-        </MathJaxContext>
+        )}
       </div>
     </div>
   );
 };
 
-MatrixResult.propTypes = {
+Result.propTypes = {
   result: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    PropTypes.arrayOf(PropTypes.number),
     PropTypes.number,
     PropTypes.string,
-  ])
+  ]),
+  title: PropTypes.string
 };
 
-export default MatrixResult;
+export default Result;

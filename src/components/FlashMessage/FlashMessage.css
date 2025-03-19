@@ -1,0 +1,48 @@
+.flash-message {
+  margin-bottom: 20px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+  font-size: 1rem;
+}
+
+.flash-message p {
+  margin: 0;
+}
+
+/* Типи повідомлень */
+.flash-message.error {
+  background-color: var(--error-bg);
+  color: #a12626;
+  border: 1px solid #a12626;
+}
+
+.flash-message.success {
+  background-color: #d1f6d1;
+  color: #26a126;
+  border: 1px solid #26a126;
+}
+
+.flash-message.warning {
+  background-color: #f6f6d1;
+  color: #a1a126;
+  border: 1px solid #a1a126;
+}
+
+.flash-message.info {
+  background-color: #d1d1f6;
+  color: #2626a1;
+  border: 1px solid #2626a1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

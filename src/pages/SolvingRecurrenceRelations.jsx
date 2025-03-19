@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MathJax, MathJaxContext } from "better-react-mathjax";
-import FlashMessage from "../components/FlashMessage/FlashMessage";
+import FlashMessage from "../components/flashMessage/FlashMessage";
 import { solveRecurrenceRelations } from "../api/apiClient";
 import "./../styles/Pages.css";
 

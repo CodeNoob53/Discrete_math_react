@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import FlashMessage from "../components/flashMessage/FlashMessage"; // Updated import
+import Result from "../components/result/Result"; // New import for Result
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import {
   calculateArrangement,
@@ -12,8 +13,16 @@ import {
 
 const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clearForm }) => (
   <div className="formContainer">
-    <div className="form-header"><h3>{title}</h3></div>
-    {error && <p className="flashMessage error">{error}</p>}
+    <div className="form-header">
+      <h3>{title}</h3>
+    </div>
+    {error && (
+      <FlashMessage
+        message={error}
+        clearMessage={() => {}} // You may add a function to clear the error state if needed
+        type="error" // or "success", "warning", "info" as appropriate
+      />
+    )}
     <form onSubmit={onSubmit}>
       {inputs.n !== undefined && (
         <div className="formGroup">
@@ -61,7 +70,7 @@ const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clea
                   setInputs({ ...inputs, elements: updatedElements });
                 }}
                 placeholder="Enter count"
-                maxLength={3} // Обмеження довжини вводу до 3 символів
+                maxLength={3}
               />
             </div>
           ))}
@@ -93,12 +102,7 @@ const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clea
         </button>
       </div>
     </form>
-    {result && (
-      <div className="result">
-        <h3>Result:</h3>
-        <p>{result}</p>
-      </div>
-    )}
+    {result && <Result result={result} title="Result:" />} {/* Updated result rendering */}
   </div>
 );
 

@@ -1,22 +1,39 @@
 import React, { useEffect } from "react";
-import "./FlashMessageStl.css";
+import PropTypes from "prop-types";
+import "./FlashMessage.css";
 
-const FlashMessage = ({ message, clearMessage }) => {
+const FlashMessage = ({ 
+  message, 
+  clearMessage, 
+  type = "error", 
+  duration = 3000,
+  show = true 
+}) => {
   useEffect(() => {
-    if (message) {
+    if (message && show) {
       const timer = setTimeout(() => {
         clearMessage(); // Виклик функції очищення
-      }, 3000);
+      }, duration);
 
       return () => clearTimeout(timer); // Очистка таймера при демонтуванні
     }
-  }, [message, clearMessage]);
+  }, [message, clearMessage, duration, show]);
 
-  return message ? (
-    <div className="flashMessage">
+  if (!message || !show) return null;
+
+  return (
+    <div className={`flash-message ${type}`}>
       <p>{message}</p>
     </div>
-  ) : null;
+  );
+};
+
+FlashMessage.propTypes = {
+  message: PropTypes.string.isRequired,
+  clearMessage: PropTypes.func.isRequired,
+  type: PropTypes.oneOf(["error", "success", "warning", "info"]),
+  duration: PropTypes.number,
+  show: PropTypes.bool
 };
 
 export default FlashMessage;

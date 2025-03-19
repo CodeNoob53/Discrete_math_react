@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { decryptMessage } from "../api/apiClient";
+import Result from '../components/result/Result';
+import FlashMessage from "../components/flashMessage/FlashMessage";
 import "./../styles/Pages.css";
 
 const DecryptMessage = () => {
@@ -36,7 +38,13 @@ const DecryptMessage = () => {
   return (
     <div className="formContainer wrapper">
       <div className="form-header"><h3>Decrypt Message</h3></div>
-      {error && <p className="flashMessage">{error}</p>}
+      {error && (
+        <FlashMessage 
+          message={error} 
+          clearMessage={() => setError("")} 
+          type="error" 
+        />
+      )}
       <form onSubmit={handleSubmit} className="decrypt-form">
         <div className="formGroup">
           <label htmlFor="message">Message:</label>
@@ -70,12 +78,7 @@ const DecryptMessage = () => {
         </div>
       </form>
 
-      {result && (
-        <div className="result">
-          <h3>Decrypted Message:</h3>
-          <p className="decoded-result">{result}</p>
-        </div>
-      )}
+      {result && <Result result={result} title="Result:" />}
     </div>
   );
 };

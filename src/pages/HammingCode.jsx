@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { encodeHamming, decodeHamming } from "../api/apiClient";
+import FlashMessage from "../components/flashMessage/FlashMessage";
+import Result from "../components/result/Result";
 import "./../styles/Pages.css";
 
 const HammingCode = () => {
@@ -47,7 +49,14 @@ const HammingCode = () => {
   return (
     <div className="hamming-code wrapper">
       {/* Flash Message */}
-      {flashMessage && <p className="flashMessage">{flashMessage}</p>}
+      {flashMessage && (
+        <FlashMessage 
+          message={flashMessage} 
+          clearMessage={() => setFlashMessage("")} 
+          type="error" 
+        />
+      )}
+
       {/* Encode Form */}
       <div className="formContainer">
         <div className="form-header"><h3>Encode Hamming Code</h3></div>
@@ -68,10 +77,7 @@ const HammingCode = () => {
           </div>
         </form>
         {encodedData && (
-          <div className="result">
-            <h5>Encoded Data:</h5>
-            <p>{encodedData}</p>
-          </div>
+          <Result result={encodedData} title="Encoded Data:" />
         )}
       </div>
 
@@ -95,20 +101,14 @@ const HammingCode = () => {
           </div>
         </form>
         {(decodedData || syndrome) && (
-          <div className="result">
+          <>
             {decodedData && (
-              <>
-                <h5>Decoded Data:</h5>
-                <p>{decodedData}</p>
-              </>
+              <Result result={decodedData} title="Decoded Data:" />
             )}
             {syndrome && (
-              <>
-                <h5>Syndrome:</h5>
-                <p>{syndrome}</p>
-              </>
+              <Result result={syndrome} title="Syndrome:" />
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

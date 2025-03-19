@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { calculateCacheMemoryParameters } from "../api/apiClient"
 import "./../styles/Pages.css";
 import "./../styles/Table.css";
+import FlashMessage from "../components/flashMessage/FlashMessage";
 
 const CacheMemoryCalculator = () => {
   const [inputs, setInputs] = useState({
@@ -82,10 +83,18 @@ const CacheMemoryCalculator = () => {
 
   return (
     <div className="formContainer wrapper">
-      <div className="form-header"><h3>Cache Memory Calculator</h3></div>
+      <div className="form-header">
+        <h3>Cache Memory Calculator</h3>
+      </div>
 
-      {/* Error Message */}
-      {error && <p className="flashMessage show">{error}</p>}
+      {/* Updated Error Message using FlashMessage */}
+      {error && (
+        <FlashMessage
+          message={error}
+          clearMessage={() => setError("")}
+          type="error" // or "success", "warning", "info" as needed
+        />
+      )}
       
       {/* Input Form */}
       <form onSubmit={handleSubmit} className="cache-form">
