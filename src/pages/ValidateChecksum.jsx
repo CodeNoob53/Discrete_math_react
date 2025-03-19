@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { validateChecksum } from "../apiClient";
+import { validateChecksum } from "../api/apiClient";
 import "./../styles/Pages.css";
 
 const ValidateChecksum = () => {

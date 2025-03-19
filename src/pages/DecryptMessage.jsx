@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { decryptMessage } from "../api/apiClient";
 import "./../styles/Pages.css";
 
 const DecryptMessage = () => {
@@ -17,20 +18,9 @@ const DecryptMessage = () => {
 
     try {
       setError("");
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/decrypt_message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message, key }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to decrypt the message.");
-      }
-
-      const data = await response.json();
-      setResult(data.message);
+      const decrypted = await decryptMessage(message, key);
+      // decrypted contains the API response result (e.g. decrypted message)
+      setResult(decrypted);
     } catch (err) {
       setError(err.message);
     }

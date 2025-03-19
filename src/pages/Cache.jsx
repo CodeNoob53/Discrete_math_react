@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { calculateCacheMemoryParameters } from "../apiClient"; // API-запит перенесено
+import { calculateCacheMemoryParameters } from "../api/apiClient"
 import "./../styles/Pages.css";
 import "./../styles/Table.css";
 

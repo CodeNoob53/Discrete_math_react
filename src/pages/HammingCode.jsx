@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { encodeHamming, decodeHamming } from "../apiClient";
+import { encodeHamming, decodeHamming } from "../api/apiClient";
 import "./../styles/Pages.css";
 
 const HammingCode = () => {

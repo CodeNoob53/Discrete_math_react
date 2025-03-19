@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { calculateSetDifference, calculateSetIntersection, calculateSetUnion } from "../apiClient";
+import { calculateSetDifference, calculateSetIntersection, calculateSetUnion } from "../api/apiClient";
 
 import "./../styles/Pages.css";
 const Sets = () => {

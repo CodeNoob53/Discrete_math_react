@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Tippy from "@tippyjs/react";
 
 import MatrixResult from '../components/MatrixResult';
-import { addVectors, calculateCrossProduct, calculateDotProduct, calculateMagnitude, findNegativeVector, subtractVectors } from "../apiClient";
+import { addVectors, calculateCrossProduct, calculateDotProduct, calculateMagnitude, findNegativeVector, subtractVectors } from "../api/apiClient";
 
 import "tippy.js/dist/tippy.css";
 

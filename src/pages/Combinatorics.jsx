@@ -8,7 +8,7 @@ import {
   calculateCombinationWithRepetition,
   calculatePermutation,
   calculatePermutationWithRepetition,
-} from "../apiClient";
+} from "../api/apiClient"
 
 const OperationForm = ({ title, onSubmit, inputs, setInputs, result, error, clearForm }) => (
   <div className="formContainer">

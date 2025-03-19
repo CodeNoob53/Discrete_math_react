@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 
-import { solveLinearEquations } from "../apiClient";
+import { solveLinearEquations } from "../api/apiClient";
 
 import "./../styles/Pages.css";
 

@@ -1,5 +1,5 @@
 // matrixUtils.js
-import { calculateDeterminant } from '../apiClient';
+import { calculateDeterminant } from '../api/apiClient';
 
 /**
  * Обробляє матрицю, замінюючи порожні або невалідні значення на 0
