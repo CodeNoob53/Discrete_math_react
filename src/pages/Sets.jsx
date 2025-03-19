@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import "./../styles/Pages.css";
-import { calculateSetDifference, calculateSetUnion, calculateSetIntersection } from "../apiClient";
 
+import { calculateSetDifference, calculateSetIntersection, calculateSetUnion } from "../apiClient";
+
+import "./../styles/Pages.css";
 const Sets = () => {
   const [differenceInputs, setDifferenceInputs] = useState({ set1: "", set2: "" });
   const [differenceResult, setDifferenceResult] = useState("");

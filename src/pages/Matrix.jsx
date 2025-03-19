@@ -1,28 +1,17 @@
 import React, { useState } from "react";
+
 import PropTypes from 'prop-types';
+
 import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
-import {
-    addMatrices,
-    subtractMatrices,
-    multiplyMatrices,
-    calculateDeterminant,
-    calculateAdjoint,
-    divideMatrices,
-    calculateInverseMatrix,
-    calculateRank,
-    multiplyMatrixByScalar
-} from "../apiClient";
-import {
-    parseMatrixInput,
-    sequentialAddMatrices,
-    sequentialSubtractMatrices,
-    handleMatrixSubmit,
-    processMatrix
-} from '../utils/matrixUtils';
-import "./../styles/Matrix.css";
+
+import MatrixResult from '../components/MatrixResult';
 import MatrixGridInput from '../components/MatrixGridInput';
-import MatrixResult from '../components/MatrixResult'; // Імпортуємо новий компонент
+import { handleMatrixSubmit, parseMatrixInput, processMatrix, sequentialAddMatrices, sequentialSubtractMatrices } from '../utils/matrixUtils';
+import { addMatrices, calculateAdjoint, calculateDeterminant, calculateInverseMatrix, calculateRank, divideMatrices, multiplyMatrices, multiplyMatrixByScalar, subtractMatrices } from "../apiClient";
+
+import "tippy.js/dist/tippy.css";
+
+import "./../styles/Matrix.css";
 
 // Компонент OperationForm
 const OperationForm = ({ title, onSubmit, matrices, setMatrices, result, error, clearForm, allowAdd = true, maxMatrices = null, maxRows, maxCols }) => {
@@ -442,8 +431,8 @@ const Matrices = () => {
                 clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
+                maxCols={10}
+                maxRows={10}
             />
             <OperationForm
                 title="Calculate Adjoint (Adjugate)"
@@ -458,8 +447,8 @@ const Matrices = () => {
                 clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
+                maxCols={10}
+                maxRows={10}
             />
             <OperationForm
                 title="Divide Two Matrices (A/B = A*B^(-1))"
@@ -490,8 +479,8 @@ const Matrices = () => {
                 clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
+                maxCols={10}
+                maxRows={10}
             />
             <OperationForm
                 title="Calculate Rank"
@@ -506,8 +495,8 @@ const Matrices = () => {
                 clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
                 allowAdd={false}
                 maxMatrices={1}
-                maxCols={8}
-                maxRows={8}
+                maxCols={10}
+                maxRows={10}
             />
 
             {/* Спеціальна форма для множення матриці на скаляр */}
@@ -525,8 +514,8 @@ const Matrices = () => {
                     setScalarMultiplyError("");
                     setScalar("1");
                 }}
-                maxCols={8}
-                maxRows={8}
+                maxCols={10}
+                maxRows={10}
             />
         </div>
     );

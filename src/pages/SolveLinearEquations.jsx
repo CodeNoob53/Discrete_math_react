@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+
 import { MathJax, MathJaxContext } from "better-react-mathjax";
+
 import { solveLinearEquations } from "../apiClient";
+
 import "./../styles/Pages.css";
 
 const SolveLinearEquations = () => {

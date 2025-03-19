@@ -1,3 +1,42 @@
+/* Додаткові налаштування для світлої теми */
+body.light-theme .matrix-cell {
+  background-color: #f9f9f9;
+}
+
+body.light-theme .matrix-cell:focus {
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3);
+}
+
+body.light-theme .form-header {
+  background-color: #f0f7ff;
+}
+
+body.light-theme .matrix-brackets::before,
+body.light-theme .matrix-brackets::after {
+  color: #666;
+}
+
+/* Додаткові налаштування для темної теми */
+body.dark-theme .matrix-cell {
+  background-color: #1e1e1e;
+  border-color: #3a3a3a;
+}
+
+body.dark-theme .matrix-cell:focus {
+  border-color: #0384c0;
+  box-shadow: 0 0 0 2px rgba(3, 132, 192, 0.3);
+}
+
+body.dark-theme .form-header {
+  background-color: #252525;
+  border-color: #3a3a3a;
+}
+
+body.dark-theme .result {
+  border-color: #3a3a3a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* Загальні стилі для компонентів матриці */
 .matrix-result {
   border-collapse: collapse;
@@ -134,7 +173,6 @@
   font-size: 1rem;
   padding: 0 5px;
   border-radius: 3px;
-  transition: all 0.2s ease;
 }
 
 .matrix-cell.inactive {
@@ -170,7 +208,6 @@
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  transition: opacity 0.3s, transform 0.3s;
 }
 
 /* Кнопки в панелі керування */

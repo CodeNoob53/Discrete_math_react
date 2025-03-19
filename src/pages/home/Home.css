@@ -13,6 +13,7 @@
     border-radius: 8px;
     color: var(--text-color);
     margin-bottom: 2rem;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   }
   
   .welcome-box h2 {
@@ -30,7 +31,7 @@
   .nav-buttons-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+
     width: 100%;
   }
   
@@ -179,10 +180,3 @@
     }
   }
   
-  /* Анімаціїї для плавного переходу між темами */
-  * {
-    transition: background-color 0.3s ease, 
-                color 0.3s ease,
-                border-color 0.3s ease,
-                box-shadow 0.3s ease;
-  }

@@ -1,56 +1,105 @@
 /* Import Google Material Icons */
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* В ThemeToggle.css */
+
+/* Видаліть існуючі правила transition з усіх CSS файлів */
+
+/* Додайте ці правила до кореневого елементу */
+:root {
+  --theme-transition-duration: 0.4s;
+}
+
+/* Коли активний перехід, всі елементи змінюються одночасно */
+.theme-transition-active,
+.theme-transition-active * {
+  transition: background-color var(--theme-transition-duration) ease-in-out,
+
+              border-color var(--theme-transition-duration) ease-in-out,
+              box-shadow var(--theme-transition-duration) ease-in-out !important;
+}
+
+/* В звичайному стані вимикаємо усі переходи, щоб вони не впливали на інші анімації */
+body, body * {
+  transition: none;
+}
+
+/* Запобігаємо переходам для анімацій та елементів з активною взаємодією */
+.spinner, 
+.floating-formula,
+button:active,
+input:focus,
+a:active,
+.no-transition {
+  transition: none !important;
+}
+
 /* Тема за замовчуванням */
 body.dark-theme {
-
-  --background-color: #1e1e1e;
+  --background-color: #1a1a1a;
   --SwitchButton: rgb(240, 240, 240);
   --s-text-color: black;
-  --matrix-controls: #b8b8b8a6;
-  --header-color: #464646;
-  --nav-button: #1a1a1a;
+  --matrix-controls: rgba(184, 184, 184, 0.9);
+  --header-color: #2c2c2c;
+  --nav-button: #252525;
+  --nav-button-hover: #303030;
   --nav-button-hover-shdw: #5bbcfd67;
-  --subject-item: #303030;
-  --text-color: #cfd2e1;
-  --secondary-text-color: rgb(255, 255, 255);
+  --subject-item: #2a2a2a;
+  --text-color: #e0e0e0;
+  --secondary-text-color: #b0b0b0;
   --highlight-color: #0384c0;
-  --container-bg: #1e1e1e;
-  --button-bg: #007acc;
-  --button-hover-bg: #8acdff;
-  --btn-border: #6969698e;
-  --error-bg: #1600004B;
+  --container-bg: #1a1a1a;
+  --button-bg: #0384c0;
+  --button-hover-bg: #046fa1;
+  --btn-border: #4a4a4a;
+  --error-bg: rgba(59, 1, 1, 0.2);
   --error-border: #a12626;
-  --form-bg: #1e1e1e;
-  --form-border: #585858;
-  --result-bg: #1e1e1e;
-  --result-text: #b5cea8;
-  --header-height: 60px; /* Додаємо змінну для висоти header */
+  --form-bg: #222222;
+  --form-border: #3a3a3a;
+  --result-bg: #1d1d1dd2;
+  --result-text: #8bc34a;
+  --header-height: 60px;
 }
 
 /* Світла тема */
 body.light-theme {
-  /* Світла тема */
+  --background-color: #f5f5f7;
   --SwitchButton: rgb(26, 26, 26);
-  --nav-button:#28292c;
-  --text-color: #ffffff;
-  --secondary-text-color: black;
-  --highlight-color: #059bff;
-  --subject-item: #f3f3f3;
-  --container-bg: #E7E9EF;
+  --s-text-color: #202124;
+  --matrix-controls: #e8e8e8;
+  --header-color: #0099ff;
+  --nav-button: #ffffff;
+  --nav-button-hover: #f0f0f0;
+  --nav-button-hover-shdw: #007acc4d;
+  --subject-item: #ffffff;
+  --text-color: #202124;
+  --secondary-text-color: #474747;
+  --highlight-color: #007acc;
+  --container-bg: #f5f5f7;
   --button-bg: #007acc;
   --button-hover-bg: #005a9e;
+  --btn-border: #e0e0e0;
   --error-bg: #ffebee;
   --error-border: #ce2525;
   --form-bg: #ffffff;
-  --form-border: #979797;
-  --result-bg: #ffffff;
+  --form-border: #dadce0;
+  --result-bg: #f1f8ff;
   --result-text: #2e7d32;
+  --header-height: 60px;
 }
 
-/* Анімація плавного переходу */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Light theme fix for resilt */
+body.dark-theme .result {
+  border-color: #3a3a3a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+/* Dark theme fix for result */
+body.light-theme .result {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
 
 /* Основний контейнер для перемикача з текстом */
 .theme-toggle-container {
@@ -66,7 +115,6 @@ body {
 .theme-text {
   font-weight: bold;
   font-size: 1.2rem;
-  transition: font-size 0.3s;
 }
 
 /* Зменшений toggle-switch */
@@ -86,7 +134,6 @@ body {
   border-radius: 25px;
   cursor: pointer;
   border: 2px solid var(--light);
-  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 
@@ -101,7 +148,6 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 25px;
-  transition: 0.3s;
 }
 
 .slider::before {
@@ -115,13 +161,10 @@ body {
   -webkit-box-shadow: inset 12px -4px 0px 0px var(--light);
   box-shadow: inset 8px -2px 0px 0px var(--light);
   background-color: var(--dark);
-  -webkit-transition: 0.3s;
-  transition: 0.3s;
 }
 
 .checkbox:checked + .switch-label {
   border-color: rgb(223, 255, 159);
-  transition: border-color 0.3s ease;
 }
 
 
@@ -134,7 +177,6 @@ body {
 @media (max-width: 750px) {
   .theme-text {
     display: none;
-    transition: 0.3s;
   }
   .theme-toggle-container {
     padding-left: 10px;

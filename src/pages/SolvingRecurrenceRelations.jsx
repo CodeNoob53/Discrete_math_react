@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 
 import FlashMessage from "../components/FlashMessage/FlashMessage";
+
 import "./../styles/Pages.css";
 
 const SolvingRecurrenceRelations = () => {

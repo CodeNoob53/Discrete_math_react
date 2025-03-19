@@ -1,16 +1,13 @@
 import React, { useState } from "react";
+
 import PropTypes from "prop-types";
+
 import Tippy from "@tippyjs/react";
+
+import MatrixResult from '../components/MatrixResult';
+import { addVectors, calculateCrossProduct, calculateDotProduct, calculateMagnitude, findNegativeVector, subtractVectors } from "../apiClient";
+
 import "tippy.js/dist/tippy.css";
-import {
-  addVectors,
-  calculateCrossProduct,
-  calculateDotProduct,
-  calculateMagnitude,
-  findNegativeVector,
-  subtractVectors,
-} from "../apiClient";
-import MatrixResult from '../components/MatrixResult'; // Імпортуємо новий компонент
 
 const OperationForm = ({ title, onSubmit, vectors, setVectors, result, error, clearForm, allowAdd = true }) => {
   // Store raw input values before conversion to numbers

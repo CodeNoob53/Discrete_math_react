@@ -1,3 +1,7 @@
+body.light-theme .result {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 h3 {
     color: var(--highlight-color);
     margin: 0px 0px 0px 10px;
@@ -133,21 +137,23 @@ button {
     border-radius: 3px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    min-width: 100px; 
+    text-align: center;
 }
 
 input[type="submit"]:hover,
 button:hover {
-    background-color: #0298DD;
+    filter: brightness(1.1);
 }
 
 button.clear {
-    background-color: var(--error-border);
-    color: var(--text-color);
+  background-color: var(--error-border);
+  color: var(--text-color);
+  min-width: 100px; 
 }
 
 button.clear:hover {
-    background-color: #c9302c;
+    filter: brightness(1.1);
 }
 
 .counts-container {
@@ -348,6 +354,7 @@ input::placeholder {
     padding: 12px;
     cursor: pointer;
     font-size: 14px;
+    box-shadow: none;
     transition: all 0.2s ease;
 }
 

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/home/Home";
-// import RecurrenceRelations from './pages/RecurrenceRelations';
-// import SolvingRecurrenceRelations from './pages/SolvingRecurrenceRelations';
+import React, { useEffect, useState } from "react";
+
+import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
 import Sets from './pages/Sets';
-import DecryptMessage from "./pages/DecryptMessage";
+import Matrix from "./pages/Matrix";
+import Home from "./pages/home/Home";
 import HammingCode from "./pages/HammingCode";
-import ValidateChecksum from "./pages/ValidateChecksum";
+import VectorCalculations from "./pages/Vectors";
 import Combinatorics from "./pages/Combinatorics";
 import CacheMemoryCalculator from "./pages/Cache";
-import SolveLinearEquations from "./pages/SolveLinearEquations";
-import VectorCalculations from "./pages/Vectors";
-import Matrix from "./pages/Matrix";
-// visual parts
 import ThemeToggle from "./components/ThemeToggle";
+import DecryptMessage from "./pages/DecryptMessage";
 import LoadingScreen from "./components/LoadingScreen";
+import ValidateChecksum from "./pages/ValidateChecksum";
+import SolveLinearEquations from "./pages/SolveLinearEquations";
+
 import "./styles/App.css";
 
 const App = () => {

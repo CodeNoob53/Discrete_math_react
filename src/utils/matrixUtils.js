@@ -1,4 +1,6 @@
 // matrixUtils.js
+import { calculateDeterminant } from '../apiClient';
+
 /**
  * Обробляє матрицю, замінюючи порожні або невалідні значення на 0
  * @param {Array} matrix - Матриця для обробки
@@ -251,9 +253,22 @@ export const handleMatrixSubmit = async (inputs, apiCall, setResult, setError, o
             result = await apiCall(validatedMatrices[0]);
         } else if (options.isPair) {
             const [matrix1, matrix2] = validatedMatrices;
+            
+            // Check determinant for division operation
+            if (apiCall.name === "divideMatrices") {
+                try {
+                    const det = await calculateDeterminant(matrix2);
+                    if (det === 0) {
+                        throw new Error("Division is impossible: second matrix has zero determinant");
+                    }
+                } catch (detError) {
+                    setError(detError.message);
+                    return;
+                }
+            }
+            
             result = await apiCall(matrix1, matrix2);
         } else {
-            // Для всіх інших випадків (включно з sequentialAddMatrices/sequentialSubtractMatrices)
             result = await apiCall(validatedMatrices);
         }
 
