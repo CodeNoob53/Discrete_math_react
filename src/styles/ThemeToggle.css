@@ -37,10 +37,11 @@ a:active,
 /* Тема за замовчуванням */
 body.dark-theme {
   --background-color: #1a1a1a;
-  --SwitchButton: rgb(240, 240, 240);
+  --SwitchButton: #f0f0f0;
   --s-text-color: black;
-  --matrix-controls: rgba(184, 184, 184, 0.9);
+  --matrix-controls: #b8b8b8e6;
   --header-color: #2c2c2c;
+  --form-header: #353535;
   --nav-button: #252525;
   --nav-button-hover: #303030;
   --nav-button-hover-shdw: #5bbcfd67;
@@ -52,7 +53,7 @@ body.dark-theme {
   --button-bg: #0384c0;
   --button-hover-bg: #046fa1;
   --btn-border: #4a4a4a;
-  --error-bg: rgba(59, 1, 1, 0.2);
+  --error-bg: #3b010133;
   --error-border: #a12626;
   --form-bg: #222222;
   --form-border: #3a3a3a;
@@ -64,7 +65,7 @@ body.dark-theme {
 /* Світла тема */
 body.light-theme {
   --background-color: #f5f5f7;
-  --SwitchButton: rgb(26, 26, 26);
+  --SwitchButton: #1a1a1a;
   --s-text-color: #202124;
   --matrix-controls: #e8e8e8;
   --header-color: #0099ff;

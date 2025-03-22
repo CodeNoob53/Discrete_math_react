@@ -286,9 +286,9 @@ input::placeholder {
 .form-header {
   display: flex;
   align-items: center;
+  background-color: var(--form-header);
   justify-content: space-between;
   height: 2.5rem;
-  background-color: #5f5f5f17;
   margin-bottom: 1rem;
   border-bottom: 1px ridge var(--form-border);
   padding: 0rem 0rem;
