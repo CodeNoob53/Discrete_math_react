@@ -27,43 +27,38 @@ body.dark-theme .matrix-cell:focus {
   box-shadow: 0 0 0 2px rgba(3, 132, 192, 0.3);
 }
 
-body.dark-theme .form-header {
-  background-color: #252525;
-  border-color: #3a3a3a;
-}
-
-body.dark-theme .result {
-  border-color: #3a3a3a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Загальні стилі для компонентів матриці */
-.matrix-result {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-}
-
-.matrix-result td {
-  border: 1px solid var(--form-border);
-  padding: 10px;
-  text-align: center;
-  min-width: 40px;
-  transition: background-color 0.2s;
-}
-
-.matrix-result tr:nth-child(even) td {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 /* Контейнер для всіх матриць на формі */
 .matrices-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 колонки однакової ширини */
+  gap: 10px;
   margin-bottom: 20px;
   width: 100%;
+}
+
+/* Контейнер для кнопки додавання матриці */
+.add-matrix-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 2px dashed var(--form-border);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  grid-column: span 1; /* Займає 1 колонку */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-matrix-cell:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--highlight-color);
+}
+
+.add-matrix-cell .add-count-button {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
 }
 
 /* Група для кожної матриці */
@@ -71,8 +66,7 @@ body.dark-theme .result {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  flex: 1 1 250px;
-  min-width: 200px;
+  width: 100%;
   margin-bottom: 10px;
   position: relative;
 }
@@ -85,23 +79,33 @@ body.dark-theme .result {
   color: var(--secondary-text-color);
 }
 
+.matrix-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
 /* Обгортка для матриці та кнопки видалення */
 .matrix-input-wrapper {
-  display: flex;
-  align-items: flex-start;
   gap: 12px;
   width: 100%;
-  position: relative;
+
+}
+
+.matrix-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 /* Зовнішня обгортка матриці */
 .matrix-wrapper {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 30px; /* Додаємо відступ внизу для кнопок */
+  justify-items: center;
   padding: 5px;
   border-radius: 4px;
-  transition: box-shadow 0.2s;
+  min-height: 200px;
 }
 
 .matrix-wrapper:focus-within {
@@ -194,109 +198,20 @@ body.dark-theme .result {
   border-color: #c4c4c4;
 }
 
-/* Панель керування матрицею */
-.matrix-controls {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.76);
-  backdrop-filter: blur(2px);
-  border: 1px solid var(--form-border);
-  border-radius: 8px;
-  margin: 15px -10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
 
-/* Кнопки в панелі керування */
-
-.delete-col-button:hover, .delete-row-button:hover {
-  background-color: rgba(255, 0, 0, 0.897);
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.add-col-button:hover, .add-row-button:hover {
-  background-color: rgba(0, 153, 255, 0.897);
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.matrix-controls button:active {
-  transform: translateY(1px);
-}
-
-.matrix-c-wrapper {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--form-border);
-  border-radius: 4px;
-  padding: 4px;
-}
-
-.matrix-c-wrapper p {
-  margin: 0;
-  padding-bottom: 2px;
-  font-size: 1.2rem;
-  color: var(--text-color);
-}
-
-.col-controls, .row-controls {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 5px;
-}
-
-.add-col-button, .add-row-button {
-  background-color: #108eb470;
-  color: white;
-  border: none;
-  padding: 4px 6px;
-  border-radius: 2px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.3s ease;
-}
-
-.delete-col-button, .delete-row-button {
-  background-color: #e71b1b70;;
-  color: white;
-  border: none;
-  padding: 4px 6px;
-  border-radius: 2px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.3s ease;
-}
-
-.result h5 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  color: var(--secondary-text-color);
-}
 
 /* Адаптивність */
 
 /* Для малих екранів */
 @media (max-width: 768px) {
+  .matrices-container {
+    grid-template-columns: 1fr;
+  }
+
   .matrix-input-wrapper {
     justify-content: center;
   }
   
-  .matrix-result-wrapper {
-    flex-direction: column;
-  }
   
   .matrix-latex {
     overflow-x: auto;
@@ -318,20 +233,21 @@ body.dark-theme .result {
     border-width: 1.5px;
   }
 
-  .matrix-grid {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .matrix-controls {
-    margin: 10px auto;
-  }
-
   .matrix-brackets {
     position: relative;
   }
+
+  .matrix-label-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .matrix-buttons {
+    align-self: flex-end;
+  }
 }
+
 
 /* Додамо стилі для кнопок копіювання/вставки */
 .matrix-clipboard-controls {
@@ -369,38 +285,7 @@ body.dark-theme .result {
   color: currentColor;
 }
 
-/* Стилі для кнопки копіювання результату */
-.result-copy-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
-  background-color: var(--form-bg);
-  color: var(--secondary-text-color);
-  border: 1px solid var(--form-border);
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 5;
-}
 
-.result-copy-button:hover {
-  background-color: var(--highlight-color);
-  color: white;
-}
-
-/* Зовнішня обгортка результату */
-.matrix-result-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 15px;
-  position: relative;
-}
 
 /* Стилі для LaTeX-відображення */
 .matrix-latex {
@@ -446,13 +331,4 @@ body.dark-theme .result {
   color: var(--secondary-text-color);
   margin-bottom: 5px;
   margin-right: 5px;
-}
-
-.scalar-result {
-  font-size: 1.2rem;
-  text-align: center;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-radius: 4px;
-  color: var(--text-color);
 }

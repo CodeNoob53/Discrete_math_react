@@ -88,18 +88,6 @@ body.light-theme {
   --header-height: 60px;
 }
 
-/* Light theme fix for resilt */
-body.dark-theme .result {
-  border-color: #3a3a3a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Dark theme fix for result */
-body.light-theme .result {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-
 
 /* Основний контейнер для перемикача з текстом */
 .theme-toggle-container {

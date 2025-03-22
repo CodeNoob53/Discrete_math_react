@@ -1,285 +1,239 @@
-body.light-theme .result {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
 
 h3 {
-    color: var(--highlight-color);
-    margin: 0px 0px 0px 10px;
-
+  color: var(--highlight-color);
+  margin: 0px 0px 0px 10px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .formGroup {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--secondary-text-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--secondary-text-color);
 }
 
 label.math {
-    font-size: 1.2rem;
-    color: var(--secondary-text-color);
+  font-size: 1.2rem;
+  color: var(--secondary-text-color);
 }
 
 input[type="text"] {
-    background-color: var(--form-bg);
-    border: 1px solid var(--form-border);
-    color: var(--secondary-text-color);
-    padding: 5px;
-    border-radius: 3px;
-    font-size: 1rem;
+  background-color: var(--form-bg);
+  border: 1px solid var(--form-border);
+  color: var(--secondary-text-color);
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 1rem;
 }
 
 input[type="text"].short {
-    width: 50px;
+  width: 50px;
 }
 
 input[type="text"]:focus {
-    border-color: var(--button-bg);
-    outline: none;
+  border-color: var(--button-bg);
+  outline: none;
 }
 
 .buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
 }
-
-/* Pages.css */
-.result {
-    position: relative;
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--result-bg);
-    color: var(--result-text);
-    border: 1px solid var(--form-border);
-    border-radius: 3px;
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 0.5s ease, max-height 0.5s ease;
-}
-
-.result.show {
-    opacity: 1;
-    max-height: 500px; /* Adjust based on your content */
-    transform: translateY(0);
-}
-
-
-
 
 /* Pages.css */
 .flashMessage {
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 3px;
-    background-color: var(--error-bg);
-    color: var(--error-border);
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 0.5s ease, max-height 0.5s ease;
-    border: 1px solid var(--error-border);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 3px;
+  background-color: var(--error-bg);
+  color: var(--error-border);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease, max-height 0.5s ease;
+  border: 1px solid var(--error-border);
 }
 
 .flashMessage.show {
-    opacity: 1;
-    max-height: 100px; /* Adjust based on your content */
+  opacity: 1;
+  max-height: 100px; /* Adjust based on your content */
 }
 
 .formContainer {
-    background-color: var(--subject-item);
-    border: 1px solid var(--form-border);
-    padding: 0px 20px 30px;
-    margin-top: 20px;
-    border-radius: 2px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  background-color: var(--subject-item);
+  border: 1px solid var(--form-border);
+  padding: 0px 20px 30px;
+  margin-top: 20px;
+  border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .solving-recurrence-relations {
-    background-color: var(--subject-item);
-    border: 1px solid var(--form-border);
-    padding: 5px 20px 30px;
-    margin-top: 20px;
-    border-radius: 2px;
+  background-color: var(--subject-item);
+  border: 1px solid var(--form-border);
+  padding: 5px 20px 30px;
+  margin-top: 20px;
+  border-radius: 2px;
 }
 
 .inputGroup {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--secondary-text-color);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--secondary-text-color);
 }
 
 .inputGroup input {
-    width: 150px;
-    padding: 5px;
-    text-align: center;
+  width: 150px;
+  padding: 5px;
+  text-align: center;
 }
 
 .inputGroup span {
-    font-weight: bold;
-    font-size: 1.2rem;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 input[type="submit"],
 button {
-    background-color: var(--button-bg);
-    color: var(--text-color);
-    border: none;
-    padding: 10px;
-    border-radius: 3px;
-    font-size: 1rem;
-    cursor: pointer;
-    min-width: 100px; 
-    text-align: center;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+  padding: 10px;
+  border-radius: 3px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+.buttons input[type="submit"],
+.buttons button,
+button.clear,
+button.submit {
+  min-width: 100px;
 }
 
 input[type="submit"]:hover,
 button:hover {
-    filter: brightness(1.1);
+  filter: brightness(1.1);
 }
 
 button.clear {
   background-color: var(--error-border);
   color: var(--text-color);
-  min-width: 100px; 
+  min-width: 100px;
 }
 
 button.clear:hover {
-    filter: brightness(1.1);
+  filter: brightness(1.1);
 }
 
 .counts-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: end;
-    margin-top: 10px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+  margin-top: 10px;
+}
 
-  /* Кожен елемент count має label та input */
-  .count-field {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-  }
+/* Кожен елемент count має label та input */
+.count-field {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
 
-  /* Задаємо стилі для лейблу */
-  .count-field label {
-    font-size: 0.9rem;
-    color: var(--secondary-text-color);
-  }
-  
-  /* Стилі для інпуту */
-  .count-field input[type="number"] {
-    width: 4rem;
-    text-align: center;
-    padding: 5px;
-    background-color: var(--form-bg);
-    border: 1px solid var(--form-border);
-    color: var(--secondary-text-color);
-    font-size: 1rem;
-  }
-  
-  .count-field input[type="number"]:focus {
-    border-color: var(--button-bg);
-    outline: none;
-  }
-  
-  /* Кнопка "+" за останнім полем */
-  .add-count-button {
-    background-color: var(--button-bg);
-    color: var(--text-color);
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    font-size: 1rem;
-    cursor: pointer;
-    line-height: normal;
-    align-self: center; /* Вирівнювання по центру по вертикалі відносно input */
-  }
-  
-  .add-count-button:hover {
-    background-color: var(--button-hover-bg);
-  }
-  
+/* Задаємо стилі для лейблу */
+.count-field label {
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+}
 
-  /* Результат більш зручний для читання */
-  .result p {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-top: 10px;
-    white-space: pre-wrap; /* Якщо потрібно форматувати текст по кількох рядках */
-  }
-  
+/* Стилі для інпуту */
+.count-field input[type="number"] {
+  width: 4rem;
+  text-align: center;
+  padding: 5px;
+  background-color: var(--form-bg);
+  border: 1px solid var(--form-border);
+  color: var(--secondary-text-color);
+  font-size: 1rem;
+}
+
+.count-field input[type="number"]:focus {
+  border-color: var(--button-bg);
+  outline: none;
+}
+
+
 /* Стиль для прикладу */
 .example-box {
-    background-color: var(--subject-item);
-    border: 1px solid var(--form-border);
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 15px;
-    font-size: 1rem;
-    background-color: rgba(253 215 169 / 0.19);
-  }
-  
-  /* Стиль для текстового поля */
-  textarea {
-    width: 100%;
-    height: 100px;
-    border: 1px solid var(--form-border);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1rem;
-    resize: vertical;
-    background-color: var(--form-bg);
-    color: var(--secondary-text-color);
-  }
-  
-  textarea:focus {
-    border-color: var(--button-bg);
-    outline: none;
-  }
-  
-  .form-instruction {
-    font-size: 0.9rem;
-    color: var(--secondary-text-color);
-    margin-bottom: 10px;
-  }
-  
-  .formCol {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    color: var(--secondary-text-color);
-  }
+  background-color: var(--subject-item);
+  border: 1px solid var(--form-border);
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  background-color: rgba(253 215 169 / 0.19);
+}
 
-  /* Style for the "+" button */
+/* Стиль для текстового поля */
+textarea {
+  width: 100%;
+  height: 100px;
+  border: 1px solid var(--form-border);
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  resize: vertical;
+  background-color: var(--form-bg);
+  color: var(--secondary-text-color);
+}
+
+textarea:focus {
+  border-color: var(--button-bg);
+  outline: none;
+}
+
+.form-instruction {
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  margin-bottom: 10px;
+}
+
+.formCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--secondary-text-color);
+}
+
+/* Style for the "+" button */
 .add-count-button {
-  background-color: #64866a; /* Green */
-  color: white;
+  color: var(--text-color);
   border: none;
-  padding: 4px 6px;
+  background-color: transparent;
   border-radius: 5px;
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   transition: all 0.3s ease;
+  min-width: 0;
 }
 
 .add-count-button:hover {
-  background-color: #45a049; /* Darker green */
-  transform: scale(1.0);
+  color: #3a93ce; /* Darker green */
+  background-color: transparent;
+  transform: scale(1.3);
 }
 /* Style for the delete field button */
 .delete-field-button {
@@ -288,17 +242,17 @@ button.clear:hover {
   border: none;
   padding: 8px;
   border-radius: 50%; /* Circular button */
-  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  min-width: 0;
 }
 
 .delete-field-button:hover {
   background-color: #d32f2f; /* Darker red */
-  transform: scale(1.0);
+  transform: scale(1);
 }
 
 .shortInput {
@@ -344,49 +298,49 @@ input::placeholder {
 }
 
 .faq-button {
-    color: var(--button-bg);
-    background-color: transparent;
-    border-left: 1px ridge var(--form-border);
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 12px;
-    cursor: pointer;
-    font-size: 14px;
-    box-shadow: none;
-    transition: all 0.2s ease;
+  color: var(--button-bg);
+  background-color: transparent;
+  border-left: 1px ridge var(--form-border);
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: none;
+  transition: all 0.2s ease;
 }
 
 .faq-button:hover {
-    background: var(--form-border);
-
+  background: var(--form-border);
 }
 
 .faq-button .material-symbols-outlined {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 /* Style for Tippy tooltip content */
 .tippy-content ul {
-    padding-left: 20px;
-    margin: 8px 0;
+  padding-left: 20px;
+  margin: 8px 0;
 }
 
 .tippy-content li {
-    margin: 4px 0;
-    text-align: left;
+  margin: 4px 0;
+  text-align: left;
 }
 
 /* keywords style */
-.keyword-o, .keyword-lb {
-    font-weight: bold;
+.keyword-o,
+.keyword-lb {
+  font-weight: bold;
 }
 
 .keyword-o {
-    color: orange;
+  color: orange;
 }
 
 .keyword-lb {
-    color: lightblue;
+  color: lightblue;
 }

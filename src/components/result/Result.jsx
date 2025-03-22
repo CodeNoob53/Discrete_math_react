@@ -4,6 +4,7 @@ import { Copy } from 'lucide-react';
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
+import "./Result.css";
 
 const Result = ({ result, title = "Результат:" }) => {
   // Функція для конвертації результату в текстовий формат (сумісний з форматом вводу)

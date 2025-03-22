@@ -1,0 +1,271 @@
+/* Покращені стилі для кнопок контрольної панелі */
+.add-row-button,
+.add-col-button,
+.delete-row-button,
+.delete-col-button {
+  min-width: 50px;
+  padding: 6px 8px;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid var(--form-border);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+  text-align: center;
+  flex: 1;
+}
+
+.add-row-button:hover,
+.add-col-button:hover {
+  background-color: rgba(0, 180, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+.delete-row-button:hover,
+.delete-col-button:hover {
+  background-color: rgba(220, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Покращення відображення контролів матриці */
+.matrix-controls {
+  position: absolute;
+  background-color: rgba(35, 35, 35, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--form-border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  box-shadow: rgb(39, 39, 39) 0px 1px 2px 0px, rgba(0, 0, 0, 0.15) 0px 2px 6px 2px;
+  z-index: 100;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 12px;
+  transition: opacity 0.3s ease;
+
+}
+
+/* Ефект наведення на контрольну панель */
+.matrix-controls:hover {
+
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+/* Стрілка-покажчик для контрольної панелі */
+.matrix-controls::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(35, 35, 35, 0.95);
+  
+  z-index: 1;
+}
+
+/* Поліпшені стилі для обгортки групи кнопок */
+.matrix-c-wrapper {
+  padding: 0 8px 8px 8px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.07);
+  transition: all 0.2s ease;
+  flex: 1;
+  width: 160px; /* Фіксована ширина для однакового розміру */
+}
+
+.matrix-c-wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.matrix-c-wrapper p {
+  color: white;
+  padding: 5px;
+  margin: 0;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* Оновлені стилі для групи кнопок (в ряд) */
+.row-controls,
+.col-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  width: 100%;
+}
+
+/* Поліпшені стилі для кнопок копіювання і вставки */
+.matrix-copy-button,
+.matrix-paste-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid var(--form-border);
+  background-color: var(--form-bg);
+}
+
+.matrix-copy-button:hover,
+.matrix-paste-button:hover {
+  background-color: var(--highlight-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.matrix-copy-button:active,
+.matrix-paste-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Адаптивність для мобільних пристроїв */
+@media (max-width: 570px) {
+  .matrix-controls {
+    position: fixed;
+    bottom: 20px;
+    top: auto;
+    width: 88%;
+    left: 6%;
+    transform: none !important; /* Важливо - забороняємо трансформацію при наведенні */
+    z-index: 1000;
+    background-color: rgba(30, 30, 30, 0.98);
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+
+    padding: 15px;
+  }
+  
+  .matrix-controls::before {
+    display: none;
+  }
+  
+  .matrix-c-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .row-controls,
+  .col-controls {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .add-row-button,
+  .add-col-button,
+  .delete-row-button,
+  .delete-col-button {
+    min-width: 40px;
+    flex: 1;
+    padding: 10px 0;
+  }
+  
+  /* Покращення для мобільних - збільшуємо розмір кнопок для легшого натискання */
+  .add-row-button,
+  .add-col-button,
+  .delete-row-button,
+  .delete-col-button {
+    padding: 12px 0;
+    font-size: 1rem;
+  }
+}
+
+/* Стилі для світлої теми */
+body.light-theme .matrix-controls {
+  background-color: rgba(245, 245, 245, 0.95);
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border: var(--form-border);
+}
+
+body.light-theme .matrix-controls::before {
+  border-bottom: 10px solid rgba(245, 245, 245, 0.95);
+}
+
+body.light-theme .matrix-c-wrapper {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .matrix-c-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+body.light-theme .matrix-c-wrapper p {
+  color: #333;
+}
+
+body.light-theme .delete-row-button,
+body.light-theme .delete-col-button {
+  background-color: #df58585b;
+  color: #333;
+  border: 1px solid #df363660;
+}
+
+body.light-theme .add-row-button,
+body.light-theme .add-col-button{
+    background-color: #64a8d377;
+    color: #333;
+    border: 1px solid #519df3;
+}
+
+body.light-theme .add-row-button:hover,
+body.light-theme .add-col-button:hover {
+  background-color: rgb(5, 153, 238);
+}
+
+body.light-theme .delete-row-button:hover,
+body.light-theme .delete-col-button:hover {
+  background-color: rgba(220, 0, 0, 0.705);
+}
+
+/* Покращення оформлення кнопок копіювання/вставки для світлої теми */
+body.light-theme .matrix-copy-button,
+body.light-theme .matrix-paste-button {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+body.light-theme .matrix-copy-button:hover,
+body.light-theme .matrix-paste-button:hover {
+  background-color: var(--highlight-color);
+  color: white;
+}
+
+/* Анімація появи панелі керування */
+.matrix-controls {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* Стилі кнопок у різних станах */
+.add-row-button:active,
+.add-col-button:active,
+.delete-row-button:active,
+.delete-col-button:active {
+  transform: translateY(1px);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}

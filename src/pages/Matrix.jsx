@@ -1,23 +1,18 @@
 import React, { useState } from "react";
+
 import PropTypes from "prop-types";
+
 import Tippy from "@tippyjs/react";
-import Result from "../components/result/Result"; 
-import FlashMessage from "../components/flashMessage/FlashMessage"; 
-import MatrixGridInput from "../components/MatrixGridInput";
+
+import Result from "../components/result/Result";
+import MatrixGridInput from "../components/matrixComponents/MatrixGridInput";
+import FAQModal from "../components/matrixComponents/faq/FAQModal";
+import FlashMessage from "../components/flashMessage/FlashMessage";
 import { handleMatrixSubmit, parseMatrixInput, processMatrix, sequentialAddMatrices, sequentialSubtractMatrices } from "../utils/matrixUtils";
-import {
-  addMatrices,
-  calculateAdjoint,
-  calculateDeterminant,
-  calculateInverseMatrix,
-  calculateRank,
-  divideMatrices,
-  multiplyMatrices,
-  multiplyMatrixByScalar,
-  subtractMatrices,
-  solveLinearSystem,
-} from "../api/apiClient";
+import { addMatrices, calculateAdjoint, calculateDeterminant, calculateInverseMatrix, calculateRank, divideMatrices, multiplyMatrices, multiplyMatrixByScalar, solveLinearSystem, subtractMatrices } from "../api/apiClient";
 import "tippy.js/dist/tippy.css";
+import { HelpCircle, Trash, Plus } from 'lucide-react';
+
 import "./../styles/Matrix.css";
 
 // Updated universal OperationForm including scalar input support
@@ -40,6 +35,7 @@ const OperationForm = ({
   const [rawInputs, setRawInputs] = useState(matrices.map((m) => m.map((row) => row.join(" ")).join("\n")));
   const [activeMatrixIndex, setActiveMatrixIndex] = useState(null);
   const [resetKey, setResetKey] = useState(0);
+  const [isFAQOpen, setIsFAQOpen] = useState(false); // Додаємо стан для модального вікна
 
   const handleClearForm = () => {
     const defaultMatrices = maxMatrices === 2 ? [[], []] : [[]];
@@ -50,43 +46,25 @@ const OperationForm = ({
     if (includeScalar && setScalar) setScalar("1");
   };
 
+  // Функція для додавання нової матриці
+  const addMatrix = () => {
+    setMatrices([...matrices, []]);
+    setRawInputs([...rawInputs, ""]);
+  };
+
   return (
     <div className="formContainer">
       <div className="form-header">
         <h3>{title}</h3>
-        <Tippy
-          content={
-            <div>
-              <p>
-                <strong>Input Format:</strong>
-              </p>
-              <ul>
-                <li>
-                  Use dot (<span className="keyword-o">.</span>) for decimals
-                </li>
-                <li>
-                  Press <span className="keyword-o">Space</span> to add a column
-                </li>
-                <li>
-                  Press <span className="keyword-o">Enter</span> to add a row
-                </li>
-                <li>Empty cells are treated as zeros</li>
-                <li>
-                  Use negative sign (<span className="keyword-o">-</span>) for negative numbers
-                </li>
-              </ul>
-            </div>
-          }
-          placement="right"
-          interactive={true}
+        <button 
+          type="button" 
+          className="faq-button"
+          onClick={() => setIsFAQOpen(true)}
         >
-          <button type="button" className="faq-button">
-            <span className="material-symbols-outlined">help</span>
-            FAQ
-          </button>
-        </Tippy>
+          <HelpCircle size={18} />
+          FAQ
+        </button>
       </div>
-      {/* Оновлено: використання нового компоненту FlashMessage */}
       {error && <FlashMessage message={error} clearMessage={() => {}} type="error" />}
       <form onSubmit={onSubmit}>
         {includeScalar && (
@@ -112,73 +90,72 @@ const OperationForm = ({
         <div className="matrices-container">
           {matrices.map((_, index) => (
             <div className="matrix-group" key={index}>
-              <label htmlFor={`matrix-${index}`} className="matrix-label">
-                {includeScalar ? "Matrix:" : `Matrix ${index + 1}:`}
-              </label>
-              <div className="matrix-input-wrapper">
-                <Tippy
-                  content={
-                    includeScalar
-                      ? "Enter numbers in cells"
-                      : "Enter numbers in cells, Space for new column, Enter for new row (e.g., 1 2.5 3\n4 5.5 6)"
-                  }
-                >
-                  <MatrixGridInput
-                    key={`matrix-${index}-${resetKey}`}
-                    value={rawInputs[index]}
-                    onChange={(e) => {
-                      const inputValue = e.target.value;
-                      if (/^[-0-9.\s\n]*$/.test(inputValue)) {
-                        const newRawInputs = [...rawInputs];
-                        newRawInputs[index] = inputValue;
-                        setRawInputs(newRawInputs);
-                        const updatedMatrices = newRawInputs.map((raw) => parseMatrixInput(raw));
-                        setMatrices(updatedMatrices);
-                      }
-                    }}
-                    index={index}
-                    formId={title.replace(/\s+/g, "-").toLowerCase()}
-                    isActive={activeMatrixIndex === index}
-                    setActiveMatrixIndex={setActiveMatrixIndex}
-                    maxRows={maxRows}
-                    maxCols={maxCols}
-                  />
-                </Tippy>
+              <div className="matrix-label-container">
+                <label htmlFor={`matrix-${index}`} className="matrix-label">
+                  {includeScalar ? "Matrix:" : `Matrix ${index + 1}:`}
+                </label>
+                {/* Кнопки управління матрицями */}
                 {index >= 2 && allowAdd && (
-                  <Tippy content="Remove this matrix field" placement="right">
-                    <button
-                      type="button"
-                      className="delete-field-button"
-                      onClick={() => {
-                        setMatrices(matrices.filter((_, i) => i !== index));
-                        setRawInputs(rawInputs.filter((_, i) => i !== index));
-                        if (activeMatrixIndex === index) setActiveMatrixIndex(null);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
-                  </Tippy>
+                  <div className="matrix-buttons">
+                    <Tippy content="Remove this matrix field" placement="right">
+                      <button
+                        type="button"
+                        className="delete-field-button"
+                        onClick={() => {
+                          setMatrices(matrices.filter((_, i) => i !== index));
+                          setRawInputs(rawInputs.filter((_, i) => i !== index));
+                          if (activeMatrixIndex === index) setActiveMatrixIndex(null);
+                        }}
+                      >
+                        <Trash size={18} />
+                      </button>
+                    </Tippy>
+                  </div>
                 )}
+              </div>
+              <div className="matrix-input-wrapper">
+                <MatrixGridInput
+                  key={`matrix-${index}-${resetKey}`}
+                  value={rawInputs[index]}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (/^[-0-9.\s\n]*$/.test(inputValue)) {
+                      const newRawInputs = [...rawInputs];
+                      newRawInputs[index] = inputValue;
+                      setRawInputs(newRawInputs);
+                      const updatedMatrices = newRawInputs.map((raw) => parseMatrixInput(raw));
+                      setMatrices(updatedMatrices);
+                    }
+                  }}
+                  index={index}
+                  formId={title.replace(/\s+/g, "-").toLowerCase()}
+                  isActive={activeMatrixIndex === index}
+                  setActiveMatrixIndex={setActiveMatrixIndex}
+                  maxRows={maxRows}
+                  maxCols={maxCols}
+                />
               </div>
             </div>
           ))}
+          
+          {/* Комірка для додавання нової матриці */}
+          {allowAdd && (!maxMatrices || matrices.length < maxMatrices) && (
+            <div className="add-matrix-cell" onClick={addMatrix}>
+              <Tippy content="Add a new matrix" placement="top">
+                <button
+                  type="button"
+                  className="add-count-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Запобігаємо подвійному спрацьовуванню
+                    addMatrix();
+                  }}
+                >
+                  <Plus size={18} />
+                </button>
+              </Tippy>
+            </div>
+          )}
         </div>
-        {allowAdd && (!maxMatrices || matrices.length < maxMatrices) && (
-          <div className="formGroup addButtonGroup">
-            <Tippy content="Add a new matrix field" placement="right">
-              <button
-                type="button"
-                className="add-count-button"
-                onClick={() => {
-                  setMatrices([...matrices, []]);
-                  setRawInputs([...rawInputs, ""]);
-                }}
-              >
-                <span className="material-symbols-outlined">add</span>
-              </button>
-            </Tippy>
-          </div>
-        )}
         <div className="buttons">
           <button type="submit" className="submit">
             {includeScalar ? "Calculate" : "Submit"}
@@ -188,7 +165,10 @@ const OperationForm = ({
           </button>
         </div>
       </form>
-      {result && <Result result={result} title="Результат:" />} {/* заміна MatrixResult на Result */}
+      {result && <Result result={result} title="Результат:" />}
+      
+      {/* Модальне вікно FAQ */}
+      <FAQModal isOpen={isFAQOpen} onClose={() => setIsFAQOpen(false)} />
     </div>
   );
 };
@@ -213,8 +193,6 @@ OperationForm.propTypes = {
   maxCols: PropTypes.number,
   includeScalar: PropTypes.bool,
 };
-
-// Removed separate ScalarMultiplyForm component
 
 // Wrapper functions for sequential operations
 const sequentialAddMatricesWrapper = (matrices) => sequentialAddMatrices(matrices, addMatrices);
@@ -363,8 +341,8 @@ const Matrices = () => {
         clearForm={() => clearForm(setDeterminantInputs, setDeterminantResult, setDeterminantError, 1, false)}
         allowAdd={false}
         maxMatrices={1}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
       <OperationForm
         title="Calculate Adjoint (Adjugate)"
@@ -379,8 +357,8 @@ const Matrices = () => {
         clearForm={() => clearForm(setAdjointInputs, setAdjointResult, setAdjointError, 1, false)}
         allowAdd={false}
         maxMatrices={1}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
       <OperationForm
         title="Divide Two Matrices (A/B = A*B^(-1))"
@@ -411,8 +389,8 @@ const Matrices = () => {
         clearForm={() => clearForm(setInverseInputs, setInverseResult, setInverseError, 1, false)}
         allowAdd={false}
         maxMatrices={1}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
       <OperationForm
         title="Calculate Rank"
@@ -427,8 +405,8 @@ const Matrices = () => {
         clearForm={() => clearForm(setRankInputs, setRankResult, setRankError, 1, false)}
         allowAdd={false}
         maxMatrices={1}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
       <OperationForm
         title="Multiply Matrix by Scalar"
@@ -446,8 +424,8 @@ const Matrices = () => {
           setScalar("1");
         }}
         includeScalar={true}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
       <OperationForm
         title="Solve System of Linear Equations (Gaussian Elimination)"
@@ -462,8 +440,8 @@ const Matrices = () => {
         clearForm={() => clearForm(setSolveInputs, setSolveResult, setSolveError, 1, false)}
         allowAdd={false}
         maxMatrices={1}
-        maxCols={10}
-        maxRows={10}
+        maxCols={8}
+        maxRows={8}
       />
     </div>
   );

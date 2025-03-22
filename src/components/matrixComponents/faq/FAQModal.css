@@ -1,0 +1,431 @@
+/* Стилі для модального вікна FAQ */
+.faq-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .faq-modal-content {
+    background-color: var(--subject-item);
+    color: var(--text-color);
+    width: 90%;
+    max-width: 700px;
+    height: 85vh;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Контейнер для прокрутки */
+  .faq-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-right: -10px; /* Компенсуємо padding-right */
+    scrollbar-width: thin;
+    scrollbar-color: var(--highlight-color) rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Стилі для скролбару */
+  .faq-scroll-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .faq-scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .faq-scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--highlight-color);
+    border-radius: 4px;
+  }
+  
+  .faq-scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--button-hover-bg);
+  }
+  
+  .faq-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 2;
+  }
+  
+  .faq-modal-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+  }
+  
+  .faq-modal-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    color: var(--highlight-color);
+    border-bottom: 1px solid var(--form-border);
+    position: sticky;
+    top: 0;
+    background-color: var(--subject-item);
+    z-index: 1;
+  }
+  
+  /* Стилі для акордеонів */
+  .faq-accordion {
+    margin-bottom: 15px;
+    border: 1px solid var(--form-border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: rgba(128, 128, 128, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .faq-accordion-header:hover {
+    background-color: rgba(128, 128, 128, 0.15);
+  }
+  
+  .faq-accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .faq-accordion-title h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-color);
+  }
+  
+  .faq-accordion-icon {
+    color: var(--highlight-color);
+    display: flex;
+    align-items: center;
+  }
+  
+  .faq-accordion-toggle {
+    background: transparent;
+    border: none;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+  
+  .faq-accordion-toggle:hover {
+    color: var(--highlight-color);
+  }
+  
+  .faq-accordion-content {
+    padding: 15px;
+    background-color: var(--subject-item);
+    animation: accordionSlideDown 0.3s ease-out;
+  }
+  
+  @keyframes accordionSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Операції з матрицями - сітка для відображення */
+  .faq-operations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+  }
+  
+  .faq-operation-item {
+    background-color: rgba(128, 128, 128, 0.1);
+    border-radius: 6px;
+    padding: 12px 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .faq-operation-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .faq-operation-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .faq-operation-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+  }
+  
+  .faq-operation-item p {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--secondary-text-color);
+  }
+  
+  .faq-formula {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: var(--highlight-color);
+  }
+  
+  /* Клавіатурні скорочення */
+  .faq-keyboard-shortcuts ul {
+    padding-left: 10px;
+    list-style-type: none;
+  }
+  
+  .faq-keyboard-shortcuts li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 25px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .faq-keyboard-shortcuts li::before {
+    content: '⌨';
+    position: absolute;
+    left: 5px;
+    color: var(--highlight-color);
+    font-weight: bold;
+  }
+  
+  /* Поради */
+  .faq-tips ul {
+    padding-left: 10px;
+    list-style-type: none;
+  }
+  
+  .faq-tips li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 25px;
+  }
+  
+  .faq-tips li::before {
+    content: '✓';
+    position: absolute;
+    left: 5px;
+    color: var(--highlight-color);
+    font-weight: bold;
+  }
+  
+  /* Вміст секцій FAQ */
+  .faq-content h4 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 1.1rem;
+  }
+  
+  .faq-content ul {
+    list-style-type: none;
+    padding-left: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .faq-content li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 25px;
+  }
+  
+  .faq-content li::before {
+    content: '•';
+    position: absolute;
+    left: 5px;
+    color: var(--highlight-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  /* Кнопка в футері для закриття */
+  .faq-modal-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid var(--form-border);
+  }
+  
+  .faq-modal-close-button {
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .faq-modal-close-button:hover {
+    background-color: var(--button-hover-bg);
+  }
+  
+  /* Оновлений стиль для кнопки FAQ */
+  .faq-button {
+    color: var(--text-color);
+    background-color: transparent;
+    border-left: 1px ridge var(--form-border);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    height: 100%;
+  }
+  
+  .faq-button:hover {
+    background: var(--form-border);
+    color: var(--highlight-color);
+  }
+  
+  .faq-button svg {
+    color: var(--highlight-color);
+  }
+  
+  /* Ключові слова та виділення */
+  .keyword-o {
+    color: orange;
+    font-weight: bold;
+  }
+  
+  /* Анімації */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from { 
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to { 
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Адаптивність */
+  @media (max-width: 768px) {
+    .faq-modal-content {
+      width: 95%;
+      padding: 15px;
+      height: 90vh;
+    }
+    
+    .faq-modal-title {
+      font-size: 1.5rem;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .faq-operations-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .faq-accordion-title h3 {
+      font-size: 1rem;
+    }
+    
+    .faq-modal-close-button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Стилі для світлої та темної теми */
+  body.light-theme .faq-operation-item {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  body.light-theme .faq-formula {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  body.light-theme .faq-accordion-header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  body.light-theme .faq-accordion-header:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  body.dark-theme .faq-operation-item {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  body.dark-theme .faq-formula {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  body.dark-theme .faq-accordion-header {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  body.dark-theme .faq-accordion-header:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  /* Стилі для MathJax формул */
+  .MathJax {
+    display: inline !important;
+  }
+  
+  .faq-formula .MathJax {
+    color: var(--highlight-color) !important;
+  }

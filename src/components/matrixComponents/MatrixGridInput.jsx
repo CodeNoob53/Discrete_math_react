@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react";
-import { parseMatrixInput } from '../utils/matrixUtils';
+import { parseMatrixInput } from '../../utils/matrixUtils';
 import PropTypes from 'prop-types';
 import { Copy, Clipboard } from 'lucide-react';
+import "./../../styles/MatrixControls.css";
 
 const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMatrixIndex, maxRows, maxCols }) => {
     const [grid, setGrid] = useState(() => {
@@ -13,8 +14,16 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
     const [activeCell, setActiveCell] = useState(null);
     const previousGrid = useRef(grid);
     const matrixRef = useRef(null);
+    const isUpdatingRef = useRef(false); // Для відстеження стану оновлення
 
+    // Оновлений useEffect який враховує стан оновлення
     useEffect(() => {
+        // Якщо зміни відбуваються всередині компонента, пропускаємо зовнішнє оновлення
+        if (isUpdatingRef.current) {
+            isUpdatingRef.current = false;
+            return;
+        }
+
         console.log("useEffect - Value:", value);
         console.log("useEffect - Previous grid:", previousGrid.current);
         let newGrid;
@@ -53,6 +62,23 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
 
     const getCellId = (rowIdx, colIdx) => `cell-${formId}-${index}-${rowIdx}-${colIdx}`;
 
+    // Універсальна функція для оновлення сітки і передачі змін назовні
+    const updateGridAndNotify = (newGrid) => {
+        isUpdatingRef.current = true; // Вказуємо, що оновлення йде зсередини
+        setGrid(newGrid);
+        
+        // Створюємо текстове представлення для передачі назовні
+        const textValue = newGrid
+            .map(row => row.map(cell => cell || "").join(" "))
+            .join("\n");
+        
+        // Викликаємо onChange з новим значенням
+        onChange({ target: { value: textValue } });
+        
+        // Зберігаємо поточну сітку для подальшого використання
+        previousGrid.current = newGrid;
+    };
+
     // функція handleChange 
     const handleChange = (e, rowIdx, colIdx) => {
         const newGrid = [...grid.map(row => [...row])];
@@ -72,18 +98,8 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                 }
             });
     
-            setGrid(newGrid);
-    
-            // Створюємо точне текстове представлення матриці для збереження крапки
-            const textValue = newGrid
-                .map(row => row.map(cell => cell || "").join(" "))
-                .join("\n");
-    
-            console.log("newGrid after change:", newGrid);
-            console.log("textValue:", JSON.stringify(textValue));
-    
-            // Важливо! Передаємо значення напряму, щоб уникнути додаткової обробки
-            onChange({ target: { value: textValue } });
+            // Використовуємо універсальну функцію для оновлення
+            updateGridAndNotify(newGrid);
     
             // Фокусуємо поле знову (може допомогти зі збереженням курсора)
             setTimeout(() => {
@@ -111,7 +127,8 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                 // Додаємо новий стовпець тільки якщо це остання колонка
                 if (totalCols < maxCols) {
                     newGrid.forEach(row => row.push(""));
-                    setGrid(newGrid);
+                    updateGridAndNotify(newGrid);
+                    
                     setTimeout(() => {
                         const nextCell = document.getElementById(getCellId(rowIdx, colIdx + 1));
                         if (nextCell) nextCell.focus();
@@ -132,7 +149,8 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                 // Додаємо новий рядок тільки якщо це останній рядок
                 if (totalRows < maxRows) {
                     newGrid.push(Array(totalCols).fill(""));
-                    setGrid(newGrid);
+                    updateGridAndNotify(newGrid);
+                    
                     setTimeout(() => {
                         const nextCell = document.getElementById(getCellId(rowIdx + 1, 0));
                         if (nextCell) nextCell.focus();
@@ -159,31 +177,40 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                     newGrid.splice(rowIdx, 1);
                 }
             }
-            setGrid(newGrid);
+            updateGridAndNotify(newGrid);
         }
     };
 
+    // Переписані функції для додавання/видалення рядків та стовпців з використанням updateGridAndNotify
     const addRow = () => {
         if (grid.length < maxRows) {
-            setGrid([...grid, Array(grid[0].length).fill("")]);
+            const newGrid = [...grid, Array(grid[0].length).fill("")];
+            console.log("Adding row, new grid:", newGrid);
+            updateGridAndNotify(newGrid);
         }
     };
 
     const deleteRow = () => {
         if (grid.length > 1) {
-            setGrid(grid.slice(0, -1));
+            const newGrid = grid.slice(0, -1);
+            console.log("Deleting row, new grid:", newGrid);
+            updateGridAndNotify(newGrid);
         }
     };
 
     const addColumn = () => {
         if (grid[0].length < maxCols) {
-            setGrid(grid.map(row => [...row, ""]));
+            const newGrid = grid.map(row => [...row, ""]);
+            console.log("Adding column, new grid:", newGrid);
+            updateGridAndNotify(newGrid);
         }
     };
 
     const deleteColumn = () => {
         if (grid[0].length > 1) {
-            setGrid(grid.map(row => row.slice(0, -1)));
+            const newGrid = grid.map(row => row.slice(0, -1));
+            console.log("Deleting column, new grid:", newGrid);
+            updateGridAndNotify(newGrid);
         }
     };
 
@@ -254,7 +281,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                 </div>
             </div>
 
-            {/* Кнопки копіювання/вставки - тепер винесені за межі matrix-brackets */}
+            {/* Кнопки копіювання/вставки */}
             <div className="matrix-clipboard-controls">
                 <Tippy content="Copy matrix">
                     <button
@@ -289,7 +316,7 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
                         </div>
                     </div>
                     <div className="matrix-c-wrapper">
-                        <p>Collums</p>
+                        <p>Columns</p>
                         <div className="col-controls">
                             <button type="button" className="add-col-button" onClick={addColumn}>Add</button>
                             <button type="button" className="delete-col-button" onClick={deleteColumn}>Del.</button>
