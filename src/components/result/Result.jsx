@@ -9,7 +9,7 @@ import "./Result.css";
 const Result = ({ result, title = "Результат:" }) => {
   // Функція для конвертації результату в текстовий формат (сумісний з форматом вводу)
   const resultToText = () => {
-    if (!result) return "";
+    if (result === undefined || result === null) return "";
     
     // Якщо результат є масивом (матриця)
     if (Array.isArray(result) && Array.isArray(result[0])) {
@@ -53,7 +53,8 @@ const Result = ({ result, title = "Результат:" }) => {
       });
   };
 
-  if (!result) return null;
+  // Змінена перевірка: використовуємо строгу перевірку на undefined та null
+  if (result === undefined || result === null) return null;
 
   return (
     <div className="result show">
@@ -77,7 +78,7 @@ const Result = ({ result, title = "Результат:" }) => {
         ) : (
           // Звичайне відображення для скалярних значень та рядків
           <div className="result-text">
-            {result}
+            {result.toString()}
           </div>
         )}
       </div>

@@ -424,6 +424,7 @@ const Matrices = () => {
           setScalar("1");
         }}
         includeScalar={true}
+        maxMatrices={1}
         maxCols={8}
         maxRows={8}
       />
