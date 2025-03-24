@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { calculateCacheMemoryParameters } from "../api/apiClient"
 import "./../styles/Pages.css";
 import "./../styles/Table.css";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 
 const CacheMemoryCalculator = () => {
   const [inputs, setInputs] = useState({

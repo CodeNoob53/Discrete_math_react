@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Tippy from "@tippyjs/react";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 import MatrixResult from "../components/result/Result";
 import { 
   addVectors, 

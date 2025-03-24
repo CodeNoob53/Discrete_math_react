@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import { solveLinearEquations } from "../api/apiClient";
 import Result from "../components/result/Result";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 import "./../styles/Pages.css";
 
 const SolveLinearEquations = () => {

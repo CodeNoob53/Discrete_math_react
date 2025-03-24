@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import FlashMessage from "../components/flashMessage/FlashMessage"; // Updated import
+import FlashMessage from "../components/FlashMessage/FlashMessage"; // Updated import
 import Result from "../components/result/Result"; // New import for Result
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { calculateSetDifference, calculateSetIntersection, calculateSetUnion } from "../api/apiClient";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 import "./../styles/Pages.css";
 
 const Sets = () => {

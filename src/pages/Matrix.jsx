@@ -7,7 +7,7 @@ import Tippy from "@tippyjs/react";
 import Result from "../components/result/Result";
 import MatrixGridInput from "../components/matrixComponents/MatrixGridInput";
 import FAQModal from "../components/matrixComponents/faq/FAQModal";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 import { handleMatrixSubmit, parseMatrixInput, processMatrix, sequentialAddMatrices, sequentialSubtractMatrices } from "../utils/matrixUtils";
 import { addMatrices, calculateAdjoint, calculateDeterminant, calculateInverseMatrix, calculateRank, divideMatrices, multiplyMatrices, multiplyMatrixByScalar, solveLinearSystem, subtractMatrices } from "../api/apiClient";
 import "tippy.js/dist/tippy.css";

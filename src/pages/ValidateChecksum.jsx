@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { validateChecksum } from "../api/apiClient";
-import FlashMessage from "../components/flashMessage/FlashMessage";
+import FlashMessage from "../components/FlashMessage/FlashMessage";
 import Result from "../components/result/Result";
 import "./../styles/Pages.css";
 
