@@ -158,7 +158,7 @@
 .MathJax {
   font-size: 1.3rem !important;
   display: block;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.5s ease 0.4s; /* Ще більша затримка для формули */
 }
 
