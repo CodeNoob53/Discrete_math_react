@@ -1,159 +1,294 @@
-/*******************************
- *  Контейнер екрана завантаження
- *******************************/
- .loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #1e1e1e; /* темний фон */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    color: white;
-    overflow: hidden;
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 9000;
+  /* Додаємо запасні кольори, якщо змінні не визначені */
+  background-color: #1a1a1a;
+}
+
+/* Застосування теми */
+.loading-screen.dark-theme {
+  background-color: #1a1a1a;
+}
+
+.loading-screen.light-theme {
+  background-color: #f5f5f7;
+}
+
+.loading-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Стилі для логотипу */
+.logo-container {
+  margin-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Стилі для fx частини логотипу */
+.logo-fx {
+  font-size: 3.5rem;
+  font-family: serif;
+  font-style: italic;
+  font-weight: bold;
+  color: #f15a24; /* Оранжевий колір */
+  margin-right: 10px;
+}
+
+/* Стилі для вертикальної лінії */
+.logo-divider {
+  font-size: 3.5rem;
+  /* Додаємо запасний колір, якщо змінна не визначена */
+  color: #ffffff;
+  margin: 0 15px;
+}
+
+.dark-theme .logo-divider {
+  color: #ffffff;
+}
+
+.light-theme .logo-divider {
+  color: #1a1a1a;
+}
+
+/* Стилі для текстової частини логотипу */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-text-main {
+  font-size: 2.2rem;
+  font-weight: bold;
+  /* Додаємо запасний колір, якщо змінна не визначена */
+  color: #ffffff;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.logo-text-sub {
+  font-size: 0.9rem;
+  /* Додаємо запасний колір, якщо змінна не визначена */
+  color: #ffffff;
+  letter-spacing: 4px;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+.dark-theme .logo-text-main,
+.dark-theme .logo-text-sub {
+  color: #ffffff;
+}
+
+.light-theme .logo-text-main,
+.light-theme .logo-text-sub {
+  color: #1a1a1a;
+}
+
+/* Текст статусу завантаження - без фону */
+.loading-text {
+  /* Додаємо запасний колір, якщо змінна не визначена */
+  color: #ffffff;
+  text-align: center;
+  padding: 10px 0;
+  max-width: 100%;
+  width: 80%;
+}
+
+.dark-theme .loading-text {
+  color: #ffffff;
+}
+
+.light-theme .loading-text {
+  color: #1a1a1a;
+}
+
+.loading-text h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f15a24;
+  animation: pulse 1.5s infinite;
+}
+
+.loading-text .page-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Контейнер лоадера внизу екрану */
+.bottom-loader-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 40px;
+}
+
+/* Стилі для нового лоадера */
+.loader {
+  width: 120px;
+  height: 60px;
+  position: relative;
+}
+
+.loader .circle {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #f15a24; /* Оранжевий колір як у логотипі */
+  left: 15%;
+  transform-origin: 50%;
+  animation: circle 0.5s alternate infinite ease;
+}
+
+@keyframes circle {
+  0% {
+    top: 60px;
+    height: 5px;
+    border-radius: 50px 50px 25px 25px;
+    transform: scaleX(1.7);
+  }
+  40% {
+    height: 20px;
+    border-radius: 50%;
+    transform: scaleX(1);
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+.loader .circle:nth-child(2) {
+  left: 40%;
+  animation-delay: 0.2s;
+}
+
+.loader .circle:nth-child(3) {
+  left: 65%;
+  animation-delay: 0.3s;
+}
+
+.loader .circle:nth-child(4) {
+  left: 90%;
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Адаптивність для різних екранів */
+@media (max-width: 768px) {
+  .logo-fx {
+    font-size: 2.8rem;
   }
   
-  /*******************************
-   *  Куб-спінер
-   *******************************/
-  .spinner {
-    width: 70.4px;
-    height: 70.4px;
-    --clr: white;
-    --clr-alpha: rgba(255, 255, 255, 0.1);
-    animation: spinner 1.6s infinite ease;
-    transform-style: preserve-3d;
-    margin-bottom: 20px;
+  .logo-divider {
+    font-size: 2.8rem;
+    margin: 0 10px;
   }
   
-  .spinner > div {
-    background-color: var(--clr-alpha);
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    border: 3.5px solid var(--clr);
+  .logo-text-main {
+    font-size: 1.8rem;
   }
   
-  .spinner div:nth-of-type(1) {
-    transform: translateZ(-35.2px) rotateY(180deg);
+  .logo-text-sub {
+    font-size: 0.8rem;
   }
   
-  .spinner div:nth-of-type(2) {
-    transform: rotateY(-270deg) translateX(50%);
-    transform-origin: top right;
+  .loading-text {
+    width: 90%;
   }
   
-  .spinner div:nth-of-type(3) {
-    transform: rotateY(270deg) translateX(-50%);
-    transform-origin: center left;
+  .loading-text h2 {
+    font-size: 1.3rem;
   }
   
-  .spinner div:nth-of-type(4) {
-    transform: rotateX(90deg) translateY(-50%);
-    transform-origin: top center;
+  .loading-text .page-name {
+    font-size: 0.9rem;
   }
   
-  .spinner div:nth-of-type(5) {
-    transform: rotateX(-90deg) translateY(50%);
-    transform-origin: bottom center;
+  .loader {
+    width: 100px;
+    height: 50px;
   }
   
-  .spinner div:nth-of-type(6) {
-    transform: translateZ(35.2px);
+  .loader .circle {
+    width: 18px;
+    height: 18px;
   }
   
-  @keyframes spinner {
-    0% {
-      transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
-    }
-    50% {
-      transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
-    }
-    100% {
-      transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
-    }
+  .bottom-loader-container {
+    padding-bottom: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-fx {
+    font-size: 2.2rem;
   }
   
-  /*******************************
-   *  Заголовок
-   *******************************/
-  .loading-header {
-    font-size: 3rem;    /* приклад: збільшено */
-    font-weight: bold;
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    margin: 0;
-    padding: 0;
+  .logo-divider {
+    font-size: 2.2rem;
+    margin: 0 8px;
   }
   
-  .loading-sub-header {
-    display: block;
-    font-size: 2rem;
-    margin-top: 0.3em;
-    font-weight: bold;
+  .logo-text-main {
+    font-size: 1.4rem;
   }
   
-  /*******************************
-   *  Формули, що відлітають
-   *******************************/
-  .floating-formula {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    /* 
-      починаємо з центру (щоб координати --start-x, --start-y
-      відраховувалися від нього).  
-    */
-    transform: translate(-50%, -50%);
-    opacity: 0;
+  .logo-text-sub {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+  }
   
+  .loading-text h2 {
     font-size: 1.2rem;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  
-    /* 3с — загальна тривалість анімації */
-    animation: flyAway 3s ease-in-out forwards;
   }
   
-  /*
-    Використовуємо 4 змінні:
-    --start-x, --start-y (де формула "народжується")
-    --end-x, --end-y     (куди вона відлітає і зникає)
-  */
-  @keyframes flyAway {
-    0% {
-      transform: translate(
-        calc(-50% + var(--start-x)),
-        calc(-50% + var(--start-y))
-      ) scale(0);
-      opacity: 0;
-    }
-    20% {
-      /* Швидкий перехід до нормального розміру та видимості */
-      transform: translate(
-        calc(-50% + var(--start-x)),
-        calc(-50% + var(--start-y))
-      ) scale(1);
-      opacity: 1;
-    }
-    80% {
-      /* Переміщається до кінцевої точки, залишаючись видимою */
-      transform: translate(
-        calc(-50% + var(--end-x)),
-        calc(-50% + var(--end-y))
-      ) scale(1);
-      opacity: 1;
-    }
-    100% {
-      /* У фіналі зменшуємо й робимо прозорою */
-      transform: translate(
-        calc(-50% + var(--end-x)),
-        calc(-50% + var(--end-y))
-      ) scale(0);
-      opacity: 0;
-    }
+  .loading-text .page-name {
+    font-size: 0.85rem;
   }
+  
+  .loader {
+    width: 80px;
+    height: 40px;
+  }
+  
+  .loader .circle {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .bottom-loader-container {
+    padding-bottom: 20px;
+  }
+}
