@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import PropTypes from "prop-types";
 
@@ -15,7 +15,7 @@ import { HelpCircle, Trash, Plus } from 'lucide-react';
 
 import "./../styles/Matrix.css";
 
-// Updated universal OperationForm including scalar input support
+// Оновлений OperationForm
 const OperationForm = ({
   title,
   onSubmit,
@@ -35,21 +35,51 @@ const OperationForm = ({
   const [rawInputs, setRawInputs] = useState(matrices.map((m) => m.map((row) => row.join(" ")).join("\n")));
   const [activeMatrixIndex, setActiveMatrixIndex] = useState(null);
   const [resetKey, setResetKey] = useState(0);
-  const [isFAQOpen, setIsFAQOpen] = useState(false); // Додаємо стан для модального вікна
+  const [isFAQOpen, setIsFAQOpen] = useState(false);
+  const [flashMessage, setFlashMessage] = useState({ message: "", type: "info" });
+
+  // Обробка отриманих помилок
+  useEffect(() => {
+    if (error) {
+      if (typeof error === 'string') {
+        setFlashMessage({ message: error, type: "error" });
+      } else if (typeof error === 'object' && error.message) {
+        setFlashMessage({ message: error.message, type: error.type || "error" });
+      }
+    } else {
+      setFlashMessage({ message: "", type: "info" });
+    }
+  }, [error]);
+
+  const clearFlashMessage = () => {
+    setFlashMessage({ message: "", type: "info" });
+  };
 
   const handleClearForm = () => {
-    const defaultMatrices = maxMatrices === 2 ? [[], []] : [[]];
+    // For dynamic forms, default to 2 matrices; for fixed forms use maxMatrices.
+    const defaultMatrices = maxMatrices
+        ? Array.from({ length: maxMatrices }, () => [])
+        : [[], []];
     clearForm();
     setResetKey((prev) => prev + 1);
     setRawInputs(defaultMatrices.map(() => ""));
     setMatrices(defaultMatrices.map(() => parseMatrixInput("")));
     if (includeScalar && setScalar) setScalar("1");
+    clearFlashMessage();
   };
 
   // Функція для додавання нової матриці
   const addMatrix = () => {
     setMatrices([...matrices, []]);
     setRawInputs([...rawInputs, ""]);
+  };
+
+  // Власний обробник для підтвердження форми
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Просто викликаємо onSubmit - компонент Result сам вирішить,
+    // чи показувати анімацію появи, чи анімацію оновлення вмісту
+    onSubmit(e);
   };
 
   return (
@@ -65,8 +95,18 @@ const OperationForm = ({
           FAQ
         </button>
       </div>
-      {error && <FlashMessage message={error} clearMessage={() => {}} type="error" />}
-      <form onSubmit={onSubmit}>
+      
+      {/* Фіксоване повідомлення */}
+      {flashMessage.message && (
+        <FlashMessage 
+          message={flashMessage.message} 
+          clearMessage={clearFlashMessage} 
+          type={flashMessage.type} 
+          show={!!flashMessage.message} 
+        />
+      )}
+      
+      <form onSubmit={handleSubmit}>
         {includeScalar && (
           <div className="scalar-input-container">
             <label htmlFor="scalar-value" className="scalar-label">
@@ -89,7 +129,7 @@ const OperationForm = ({
         )}
         <div className="matrices-container">
           {matrices.map((_, index) => (
-            <div className="matrix-group" key={index}>
+            <div className="matrix-group" key={`matrix-group-${index}-${resetKey}`}>
               <div className="matrix-label-container">
                 <label htmlFor={`matrix-${index}`} className="matrix-label">
                   {includeScalar ? "Matrix:" : `Matrix ${index + 1}:`}
@@ -116,7 +156,7 @@ const OperationForm = ({
               <div className="matrix-input-wrapper">
                 <MatrixGridInput
                   key={`matrix-${index}-${resetKey}`}
-                  value={rawInputs[index]}
+                  value={rawInputs[index] || ""}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (/^[-0-9.\s\n]*$/.test(inputValue)) {
@@ -146,7 +186,7 @@ const OperationForm = ({
                   type="button"
                   className="add-count-button"
                   onClick={(e) => {
-                    e.stopPropagation(); // Запобігаємо подвійному спрацьовуванню
+                    e.stopPropagation();
                     addMatrix();
                   }}
                 >
@@ -165,7 +205,9 @@ const OperationForm = ({
           </button>
         </div>
       </form>
-      {result && <Result result={result} title="Результат:" />}
+      
+      {/* Результат з контролем видимості */}
+      <Result result={result} title="Result:" />
       
       {/* Модальне вікно FAQ */}
       <FAQModal isOpen={isFAQOpen} onClose={() => setIsFAQOpen(false)} />
@@ -207,78 +249,91 @@ const Matrices = () => {
   const [divideInputs, setDivideInputs] = useState([[], []]);
   const [inverseInputs, setInverseInputs] = useState([[]]);
   const [rankInputs, setRankInputs] = useState([[]]);
-  // State for scalar multiplication operation
   const [scalarMultiplyInputs, setScalarMultiplyInputs] = useState([[]]);
-  const [scalarMultiplyResult, setScalarMultiplyResult] = useState("");
-  const [scalarMultiplyError, setScalarMultiplyError] = useState("");
+  const [solveInputs, setSolveInputs] = useState([[]]);
+  
+  // Результати
+  const [addResult, setAddResult] = useState(null);
+  const [subtractResult, setSubtractResult] = useState(null);
+  const [multiplyResult, setMultiplyResult] = useState(null);
+  const [determinantResult, setDeterminantResult] = useState(null);
+  const [adjointResult, setAdjointResult] = useState(null);
+  const [divideResult, setDivideResult] = useState(null);
+  const [inverseResult, setInverseResult] = useState(null);
+  const [rankResult, setRankResult] = useState(null);
+  const [scalarMultiplyResult, setScalarMultiplyResult] = useState(null);
+  const [solveResult, setSolveResult] = useState(null);
+  
+  // Стани помилок та сповіщень
+  const [addError, setAddError] = useState(null);
+  const [subtractError, setSubtractError] = useState(null);
+  const [multiplyError, setMultiplyError] = useState(null);
+  const [determinantError, setDeterminantError] = useState(null);
+  const [adjointError, setAdjointError] = useState(null);
+  const [divideError, setDivideError] = useState(null);
+  const [inverseError, setInverseError] = useState(null);
+  const [rankError, setRankError] = useState(null);
+  const [scalarMultiplyError, setScalarMultiplyError] = useState(null);
+  const [solveError, setSolveError] = useState(null);
+
   const [scalar, setScalar] = useState("1");
 
-  const [addResult, setAddResult] = useState("");
-  const [subtractResult, setSubtractResult] = useState("");
-  const [multiplyResult, setMultiplyResult] = useState("");
-  const [determinantResult, setDeterminantResult] = useState("");
-  const [adjointResult, setAdjointResult] = useState("");
-  const [divideResult, setDivideResult] = useState("");
-  const [inverseResult, setInverseResult] = useState("");
-  const [rankResult, setRankResult] = useState("");
+const clearForm = (setInputs, setResult, setError, maxMatrices = null) => {
+  // Determine default matrices based on maxMatrices and allowAdd
+  const defaultMatrices = Array.from({ length: maxMatrices || 2 }, () => []);
 
-  const [addError, setAddError] = useState("");
-  const [subtractError, setSubtractError] = useState("");
-  const [multiplyError, setMultiplyError] = useState("");
-  const [determinantError, setDeterminantError] = useState("");
-  const [adjointError, setAdjointError] = useState("");
-  const [divideError, setDivideError] = useState("");
-  const [inverseError, setInverseError] = useState("");
-  const [rankError, setRankError] = useState("");
+  setInputs(defaultMatrices);
+  setResult(null);
+  setError(null);
+};
 
-  // New state hooks for solving linear system
-  const [solveInputs, setSolveInputs] = useState([[]]);
-  const [solveResult, setSolveResult] = useState("");
-  const [solveError, setSolveError] = useState("");
-
-  const clearForm = (setInputs, setResult, setError, maxMatrices = null, allowAdd = true) => {
-    let defaultMatrices;
-    if (!allowAdd && maxMatrices === 1) {
-      defaultMatrices = [[]];
-    } else if (!allowAdd && maxMatrices === 2) {
-      defaultMatrices = [[], []];
-    } else {
-      defaultMatrices = [[], []];
-    }
-    setInputs(defaultMatrices);
-    setResult("");
-    setError("");
-  };
-
-  // Handler for scalar multiplication
+  // Обробник для множення на скаляр
   const handleScalarMultiply = (e) => {
     e.preventDefault();
-    setScalarMultiplyError("");
+    setScalarMultiplyError(null);
 
     try {
       const scalarValue = parseFloat(scalar);
       if (isNaN(scalarValue)) {
-        setScalarMultiplyError("Scalar must be a valid number");
+        setScalarMultiplyError({
+          message: "Scalar must be a valid number.",
+          type: "error"
+        });
         return;
       }
+      
       const processedMatrix = processMatrix(scalarMultiplyInputs[0]);
       if (processedMatrix.length === 0 || processedMatrix.some((row) => row.length === 0)) {
-        setScalarMultiplyError("Matrix cannot be empty");
+        setScalarMultiplyError({
+          message: "Matrix cannot be empty.",
+          type: "error"
+        });
         return;
       }
+      
       if (processedMatrix.some((row) => row.some((val) => isNaN(val)))) {
-        setScalarMultiplyError("All matrix elements must be valid numbers");
+        setScalarMultiplyError({
+          message: "All matrix elements must be valid numbers.",
+          type: "error"
+        });
         return;
       }
+      
       multiplyMatrixByScalar(processedMatrix, scalarValue)
         .then((result) => {
           setScalarMultiplyResult(result);
         })
         .catch((error) => {
-          setScalarMultiplyError(error.message || "An error occurred during calculation");
+          setScalarMultiplyError({
+            message: error.message || "An error occurred during calculation.",
+            type: "error"
+          });
         });
     } catch (error) {
-      setScalarMultiplyError("Error processing input: " + error.message);
+      setScalarMultiplyError({
+        message: "Error processing input: " + error.message,
+        type: "error"
+      });
     }
   };
 
@@ -419,8 +474,8 @@ const Matrices = () => {
         error={scalarMultiplyError}
         clearForm={() => {
           setScalarMultiplyInputs([[]]);
-          setScalarMultiplyResult("");
-          setScalarMultiplyError("");
+          setScalarMultiplyResult(null);
+          setScalarMultiplyError(null);
           setScalar("1");
         }}
         includeScalar={true}
@@ -428,6 +483,7 @@ const Matrices = () => {
         maxCols={8}
         maxRows={8}
       />
+      
       <OperationForm
         title="Solve System of Linear Equations (Gaussian Elimination)"
         onSubmit={(e) => {

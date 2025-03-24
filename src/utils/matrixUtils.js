@@ -102,6 +102,7 @@ export const parseMatrixInput = (input, previousGrid = [[""]], defaultRows = 1, 
  * @param {Object} options - Опції валідації
  * @returns {Object} Результат валідації {processedMatrices, error}
  */
+// Оновлена функція validateMatrices з додатковими перевірками та детальнішими повідомленнями
 export const validateMatrices = (matrices, apiCall, options = {}) => {
     const { singleMatrix = false, isPair = false } = options;
 
@@ -111,73 +112,205 @@ export const validateMatrices = (matrices, apiCall, options = {}) => {
 
     console.log("Before validation (processed):", JSON.stringify(processedMatrices));
 
-    for (const matrix of processedMatrices) {
+    // Перевірка на порожні матриці
+    for (let i = 0; i < processedMatrices.length; i++) {
+        const matrix = processedMatrices[i];
         if (matrix.length === 0 || matrix.some(row => row.length === 0)) {
-            return { processedMatrices: [], error: "Matrices cannot be empty." };
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: `Matrix ${i + 1} cannot be empty.`,
+                    type: "error"
+                }
+            };
         }
+        
+        // Перевірка на валідні числа
         if (matrix.some(row => row.some(val => isNaN(val)))) {
-            return { processedMatrices: [], error: "All inputs must be valid numbers." };
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: `Matrix ${i + 1} contains invalid numeric values.`,
+                    type: "error"
+                }
+            };
+        }
+        
+        // Перевірка на консистентність розмірів рядків
+        const rowLengths = matrix.map(row => row.length);
+        if (Math.min(...rowLengths) !== Math.max(...rowLengths)) {
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: `Matrix ${i + 1} has inconsistent row lengths. All rows must have the same number of columns.`,
+                    type: "warning"
+                }
+            };
         }
     }
 
+    // Валідація для операцій з однією матрицею
     if (singleMatrix) {
         if (processedMatrices.length !== 1) {
-            return { processedMatrices: [], error: "Exactly one matrix is required." };
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: "This operation requires exactly one matrix.",
+                    type: "error"
+                }
+            };
         }
+        
+        const matrix = processedMatrices[0];
+        
+        // Перевірка для детермінанту, оберненої та приєднаної матриці
         if (
             (apiCall.name === "calculateDeterminant" || 
              apiCall.name === "calculateAdjoint" || 
-             apiCall.name === "calculateInverseMatrix") &&
-            processedMatrices[0].length !== processedMatrices[0][0].length
+             apiCall.name === "calculateInverseMatrix") 
         ) {
-            return { processedMatrices: [], error: "This operation is only defined for square matrices." };
+            if (matrix.length !== matrix[0].length) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "Operation requires a square matrix (same number of rows and columns).",
+                        type: "error"
+                    }
+                };
+            }
+            
+            // Додаткова перевірка для оберненої матриці
+            if (apiCall.name === "calculateInverseMatrix" && matrix.length === 1 && matrix[0][0] === 0) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "Cannot compute inverse: determinant is zero.",
+                        type: "error"
+                    }
+                };
+            }
         }
+        
+        // Додаткова перевірка для системи лінійних рівнянь
+        if (apiCall.name === "solveLinearSystem") {
+            // Перевірка, що останній стовпець - це стовпець вільних членів
+            if (matrix[0].length < 2) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "System of equations must have at least one variable and constants column.",
+                        type: "error"
+                    }
+                };
+            }
+            
+            // Перевірка сумісності системи рівнянь (можна додати більше перевірок)
+            if (matrix.length > matrix[0].length - 1) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "The system may be overdetermined (more equations than variables).",
+                        type: "warning"
+                    }
+                };
+            }
+        }
+        
         return { processedMatrices, error: null };
     }
 
+    // Валідація для пари матриць
     if (isPair) {
         if (processedMatrices.length !== 2) {
-            return { processedMatrices: [], error: "Exactly two matrices are required." };
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: "This operation requires exactly two matrices.",
+                    type: "error"
+                }
+            };
         }
+        
         const [matrix1, matrix2] = processedMatrices;
 
-        if (apiCall.name === "multiplyMatrices" || apiCall.name === "divideMatrices") {
+        // Спеціальні перевірки для множення матриць
+        if (apiCall.name === "multiplyMatrices") {
             if (matrix1[0].length !== matrix2.length) {
                 return { 
                     processedMatrices: [], 
-                    error: "Number of columns in the first matrix must equal the number of rows in the second." 
+                    error: {
+                        message: "Matrix multiplication error: number of columns in the first matrix must equal the number of rows in the second.",
+                        type: "error"
+                    }
                 };
             }
-            if (apiCall.name === "divideMatrices" && matrix2.length !== matrix2[0].length) {
+        } 
+        // Спеціальні перевірки для ділення матриць
+        else if (apiCall.name === "divideMatrices") {
+            if (matrix1[0].length !== matrix2.length) {
                 return { 
                     processedMatrices: [], 
-                    error: "Second matrix must be square for division (A/B = A*B^(-1))." 
+                    error: {
+                        message: "Matrix division error: dimensions are incompatible.",
+                        type: "error"
+                    }
                 };
             }
-        } else {
+            
+            if (matrix2.length !== matrix2[0].length) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "Division requires a square second matrix (for computing inverse).",
+                        type: "error"
+                    }
+                };
+            }
+        } 
+        // Для додавання та віднімання матриць
+        else {
             if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
                 return { 
                     processedMatrices: [], 
-                    error: "Matrices must have the same dimensions."
+                    error: {
+                        message: "Addition/subtraction requires matrices of the same dimensions.",
+                        type: "error"
+                    }
                 };
             }
         }
+        
         return { processedMatrices, error: null };
     }
 
+    // Валідація для операцій з кількома матрицями
     if (processedMatrices.length < 2) {
         return { 
             processedMatrices: [], 
-            error: "At least two matrices are required." 
+            error: {
+                message: "This operation requires at least two matrices.",
+                type: "error"
+            }
         };
     }
     
+    // Перевірка на однакові розміри для додавання/віднімання
     const [firstMatrix] = processedMatrices;
-    if (processedMatrices.some(m => m.length !== firstMatrix.length || m[0].length !== firstMatrix[0].length)) {
-        return { 
-            processedMatrices: [], 
-            error: "All matrices must have the same dimensions." 
-        };
+    const firstDimensions = `${firstMatrix.length}x${firstMatrix[0].length}`;
+    
+    for (let i = 1; i < processedMatrices.length; i++) {
+        const matrix = processedMatrices[i];
+        const dimensions = `${matrix.length}x${matrix[0].length}`;
+        
+        if (matrix.length !== firstMatrix.length || matrix[0].length !== firstMatrix[0].length) {
+            return { 
+                processedMatrices: [], 
+                error: {
+                    message: `Matrix ${i + 1} has dimensions ${dimensions}, but should be ${firstDimensions} like the first matrix.`,
+                    type: "error"
+                }
+            };
+        }
     }
     
     return { processedMatrices, error: null };
@@ -259,10 +392,17 @@ export const handleMatrixSubmit = async (inputs, apiCall, setResult, setError, o
                 try {
                     const det = await calculateDeterminant(matrix2);
                     if (det === 0) {
-                        throw new Error("Division is impossible: second matrix has zero determinant");
+                        setError({
+                            message: "Division is impossible: second matrix has zero determinant.",
+                            type: "error"
+                        });
+                        return;
                     }
                 } catch (detError) {
-                    setError(detError.message);
+                    setError({
+                        message: detError.message || "Error checking determinant.",
+                        type: "error"
+                    });
                     return;
                 }
             }
@@ -277,6 +417,9 @@ export const handleMatrixSubmit = async (inputs, apiCall, setResult, setError, o
 
     } catch (error) {
         console.error("Operation error:", error);
-        setError(error.response?.data?.message || error.message || "An error occurred.");
+        setError({
+            message: error.response?.data?.message || error.message || "An error occurred during calculation.",
+            type: "error"
+        });
     }
 };

@@ -1,48 +1,123 @@
 .flash-message {
-  margin-bottom: 20px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
-  animation: fadeIn 0.3s ease-in-out;
+  position: fixed; 
+  top: 0px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  width: 90%; 
+  max-width: 600px; 
+  padding: 12px 15px;
+  border-radius: 6px;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10; 
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.flash-message.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(60px);
+}
+
+.flash-message.hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(0);
+}
+
+.flash-message-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.flash-message-icon {
+  display: flex;
+  align-items: center;
 }
 
 .flash-message p {
   margin: 0;
+  flex: 1;
+  line-height: 1.4;
 }
 
-/* Типи повідомлень */
+.flash-message-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  min-width: auto;
+}
+
+.flash-message-close:hover {
+  opacity: 1;
+  filter: brightness(1.3);
+}
+
+/* Типи повідомлень з покращеною палітрою кольорів */
 .flash-message.error {
-  background-color: var(--error-bg);
-  color: #a12626;
-  border: 1px solid #a12626;
+  background-color: rgba(243, 23, 8, 0.726);
+  color: white;
+  backdrop-filter: blur(3px);
+  border: 1px solid #ff0000;
+  border-left: 4px solid #ff0000;
 }
 
 .flash-message.success {
-  background-color: #d1f6d1;
-  color: #26a126;
-  border: 1px solid #26a126;
+  background-color: rgba(76, 175, 80, 0.95);
+  color: white;
+  border-left: 4px solid #1b5e20;
 }
 
 .flash-message.warning {
-  background-color: #f6f6d1;
-  color: #a1a126;
-  border: 1px solid #a1a126;
+  background-color: rgba(255, 152, 0, 0.95);
+  color: white;
+  border-left: 4px solid #e65100;
 }
 
 .flash-message.info {
-  background-color: #d1d1f6;
-  color: #2626a1;
-  border: 1px solid #2626a1;
+  background-color: rgba(33, 150, 243, 0.95);
+  color: white;
+  border-left: 4px solid #0d47a1;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+/* Стилі для темної теми */
+body.dark-theme .flash-message.error {
+  background-color: rgba(244, 67, 54, 0.473);
+}
+
+body.dark-theme .flash-message.success {
+  background-color: rgba(76, 175, 80, 0.9);
+}
+
+body.dark-theme .flash-message.warning {
+  background-color: rgba(255, 152, 0, 0.9);
+}
+
+body.dark-theme .flash-message.info {
+  background-color: rgba(33, 150, 243, 0.9);
+}
+
+/* Адаптивність для малих екранів */
+@media (max-width: 576px) {
+  .flash-message {
+    width: 85%;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    top: 0;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .flash-message-content {
+    gap: 8px;
   }
 }

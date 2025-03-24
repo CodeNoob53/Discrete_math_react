@@ -332,3 +332,12 @@ body.dark-theme .matrix-cell:focus {
   margin-bottom: 5px;
   margin-right: 5px;
 }
+
+/* Стилі для поля вводу скаляра */
+.scalar-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 5px 0;
+}

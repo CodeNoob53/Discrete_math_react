@@ -40,29 +40,12 @@ input[type="text"]:focus {
   outline: none;
 }
 
+/* Стилі для кнопок форми */
 .buttons {
   display: flex;
   gap: 10px;
   justify-content: flex-start;
-}
-
-/* Pages.css */
-.flashMessage {
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 3px;
-  background-color: var(--error-bg);
-  color: var(--error-border);
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: opacity 0.5s ease, max-height 0.5s ease;
-  border: 1px solid var(--error-border);
-}
-
-.flashMessage.show {
-  opacity: 1;
-  max-height: 100px; /* Adjust based on your content */
+  margin-top: 15px; /* Невеликий відступ від матриць */
 }
 
 .formContainer {
@@ -72,6 +55,15 @@ input[type="text"]:focus {
   margin-top: 20px;
   border-radius: 2px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  position: relative; 
+}
+
+/* Відступ для форми, щоб дати місце для фіксованого FlashMessage */
+.formContainer form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 10px; /* Невеликий відступ зверху */
 }
 
 .solving-recurrence-relations {
@@ -292,9 +284,16 @@ input::placeholder {
   margin-bottom: 1rem;
   border-bottom: 1px ridge var(--form-border);
   padding: 0rem 0rem;
-  margin-left: -20px; /* Adjust based on the parent's padding */
-  margin-right: -20px; /* Adjust based on the parent's padding */
-  width: calc(100% + 40px); /* Adjust based on the parent's padding */
+  margin-left: -20px; 
+  margin-right: -20px;
+  width: calc(100% + 40px);
+  position: relative; /* Для коректного позиціонування відносно formContainer */
+}
+
+/* Перегляд місця для повідомлення про помилку у просторі форми */
+.form-message-placeholder {
+  height: 0; /* Не займає місце в звичайному стані */
+  transition: height 0.3s ease;
 }
 
 .faq-button {

@@ -1,57 +1,203 @@
 .result {
   position: relative;
   margin-top: 20px;
-  padding: 15px;
+  padding: 20px;
   background-color: var(--result-bg);
   color: var(--result-text);
   border: 1px solid var(--form-border);
-  border-radius: 3px;
+  border-radius: 2px;
+ 
+  
+  /* Початковий стан для анімації */
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 0.5s ease, max-height 0.5s ease;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, max-height 0.5s ease, transform 0.5s ease, padding 0.5s ease;
+  pointer-events: none; /* Відключаємо взаємодію в початковому стані */
 }
 
 .result.show {
   opacity: 1;
-  max-height: 500px; 
+  max-height: 600px; /* Збільшено для високих матриць */
   transform: translateY(0);
+  pointer-events: auto; /* Включаємо взаємодію в видимому стані */
+}
+
+/* Новий стан для вже видимого контейнера, щоб змінювати тільки вміст */
+.result.content-change {
+  opacity: 1;
+  max-height: 600px;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.result.hide {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
 }
 
 .result h5 {
   margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.1rem;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
   color: var(--secondary-text-color);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  padding-bottom: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s; /* Невелика затримка для поетапної анімації */
+}
+
+.result.show h5, 
+.result.content-change h5 {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Стилі для кнопки копіювання результату */
 .result-copy-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
+  gap: 6px;
+  padding: 6px 10px;
   background-color: var(--form-bg);
   color: var(--secondary-text-color);
   border: 1px solid var(--form-border);
   border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 5;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; /* Затримка для кнопки */
+}
+
+.result.show .result-copy-button,
+.result.content-change .result-copy-button {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .result-copy-button:hover {
   background-color: var(--highlight-color);
   color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.result p {
-  font-size: 1.2rem;
+.result-wrapper {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  border: 1px dashed rgba(128, 128, 128, 0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s; /* Ще більша затримка для послідовної анімації */
+}
+
+.result.show .result-wrapper,
+.result.content-change .result-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Анімація зміни вмісту для result-wrapper */
+.result.content-change .result-wrapper {
+  animation: pulse 0.4s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--highlight-color-rgb, 3, 132, 192), 0.4);
+  }
+  50% {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 5px rgba(var(--highlight-color-rgb, 3, 132, 192), 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--highlight-color-rgb, 3, 132, 192), 0);
+  }
+}
+
+/* Стилі для матричних результатів */
+.result-latex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border-radius: 4px;
+  min-height: 60px;
+  overflow-x: auto;
+}
+
+/* Стилі для скалярних результатів */
+.result-text {
+  font-size: 1.4rem;
   line-height: 1.5;
-  margin-top: 10px;
-  white-space: pre-wrap; /* Якщо потрібно форматувати текст по кількох рядках */
+  margin: 15px 0;
+  text-align: center;
+  font-weight: 500;
+  white-space: pre-wrap;
+}
+
+/* Стилі для покращення відображення MathJax */
+.MathJax {
+  font-size: 1.3rem !important;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.4s; /* Ще більша затримка для формули */
+}
+
+.result.show .MathJax,
+.result.content-change .MathJax {
+  opacity: 1;
+}
+
+/* Адаптивність для маленьких екранів */
+@media (max-width: 768px) {
+  .result {
+    padding: 15px;
+  }
+  
+  .result h5 {
+    font-size: 1.1rem;
+  }
+  
+  .result-copy-button {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .result-text {
+    font-size: 1.2rem;
+  }
+}
+
+/* Для дуже маленьких екранів */
+@media (max-width: 480px) {
+  .result-wrapper {
+    padding: 8px;
+  }
+  
+  .result-latex {
+    padding: 10px 5px;
+  }
+  
+  .MathJax {
+    font-size: 1.1rem !important;
+  }
 }
