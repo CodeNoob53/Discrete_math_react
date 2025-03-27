@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import '../styles/SplashScreen.css';
+import styles from '../styles/SplashScreen.module.css';
 import { useTheme } from '../contexts/ThemeContext';
 
 const SplashScreen = ({ onFinished }) => {
@@ -20,25 +20,25 @@ const SplashScreen = ({ onFinished }) => {
   }, [onFinished]);
 
   return (
-    <div className={`splash-screen ${isDarkTheme ? 'dark-theme' : 'light-theme'} ${animationComplete ? 'fade-out' : ''}`}>
-      <div className="splash-content">
-        <div className="logo-container">
+    <div className={`${styles.splashScreen} ${isDarkTheme ? styles.darkTheme : styles.lightTheme} ${animationComplete ? styles.fadeOut : ''}`}>
+      <div className={styles.splashContent}>
+        <div className={styles.logoContainer}>
           {/* Логотип */}
-          <div className="logo">
-            <span className="logo-fx">fx</span>
-            <div className="logo-divider">|</div>
-            <div className="logo-text">
-              <div className="logo-text-main">DISCRETE MATH</div>
-              <div className="logo-text-sub">CALC EVERYTHING</div>
+          <div className={styles.logo}>
+            <span className={styles.logoFx}>fx</span>
+            <div className={styles.logoDivider}>|</div>
+            <div className={styles.logoText}>
+              <div className={styles.logoTextMain}>DISCRETE MATH</div>
+              <div className={styles.logoTextSub}>CALC EVERYTHING</div>
             </div>
           </div>
         </div>
       </div>
       
       {/* Прогрес-бар внизу екрану */}
-      <div className="splash-progress-container">
-        <div className="loading-bar">
-          <div className="loading-progress"></div>
+      <div className={styles.splashProgressContainer}>
+        <div className={styles.loadingBar}>
+          <div className={styles.loadingProgress}></div>
         </div>
       </div>
     </div>

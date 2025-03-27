@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/LoadingScreen.css';
+import styles from '../styles/LoadingScreen.module.css';
 import { useTheme } from '../contexts/ThemeContext';
 
 const LoadingScreen = () => {
@@ -34,34 +34,34 @@ const LoadingScreen = () => {
   }, [isDarkTheme]); // Додана залежність isDarkTheme
 
   return (
-    <div className={`loading-screen ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
-      <div className="loading-content">
+    <div className={`${styles.loadingScreen} ${isDarkTheme ? styles.darkTheme : styles.lightTheme}`}>
+      <div className={styles.loadingContent}>
         {/* Логотип як у SplashScreen */}
-        <div className="logo-container">
-          <div className="logo">
-            <span className="logo-fx">fx</span>
-            <div className="logo-divider">|</div>
-            <div className="logo-text">
-              <div className="logo-text-main">DISCRETE MATH</div>
-              <div className="logo-text-sub">CALC EVERYTHING</div>
+        <div className={styles.logoContainer}>
+          <div className={styles.logo}>
+            <span className={styles.logoFx}>fx</span>
+            <div className={styles.logoDivider}>|</div>
+            <div className={styles.logoText}>
+              <div className={styles.logoTextMain}>DISCRETE MATH</div>
+              <div className={styles.logoTextSub}>CALC EVERYTHING</div>
             </div>
           </div>
         </div>
         
-        <div className="loading-text">
+        <div className={styles.loadingText}>
           <h2>Завантаження...</h2>
-          <p className="page-name">{pageName}</p>
+          <p className={styles.pageName}>{pageName}</p>
         </div>
       </div>
       
       {/* Винесений лоадер внизу екрану */}
-      <div className="bottom-loader-container">
+      <div className={styles.bottomLoaderContainer}>
         {/* Стилізований лоадер */}
-        <div className="loader">
-          <div className="circle"></div>
-          <div className="circle"></div>
-          <div className="circle"></div>
-          <div className="circle"></div>
+        <div className={styles.loader}>
+          <div className={styles.circle}></div>
+          <div className={styles.circle}></div>
+          <div className={styles.circle}></div>
+          <div className={styles.circle}></div>
         </div>
       </div>
     </div>

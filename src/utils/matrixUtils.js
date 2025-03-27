@@ -234,7 +234,21 @@ export const validateMatrices = (matrices, apiCall, options = {}) => {
         const [matrix1, matrix2] = processedMatrices;
 
         // Спеціальні перевірки для множення матриць
-        if (apiCall.name === "multiplyMatrices") {
+        if (apiCall.name === "multiplyMatrices" || apiCall.toString().includes("multiplyMatrices")) {
+            console.log("Validating matrix multiplication");
+            
+            // Ensure neither matrix is empty and each has at least one row and one column
+            if (!matrix1.length || !matrix2.length || !matrix1[0].length || !matrix2[0].length) {
+                return { 
+                    processedMatrices: [], 
+                    error: {
+                        message: "Matrix multiplication error: one or both matrices are empty.",
+                        type: "error"
+                    }
+                };
+            }
+            
+            console.log("Matrix 1 columns:", matrix1[0].length, "Matrix 2 rows:", matrix2.length);
             if (matrix1[0].length !== matrix2.length) {
                 return { 
                     processedMatrices: [], 
