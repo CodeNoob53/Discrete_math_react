@@ -1,9 +1,3 @@
-
-h3 {
-  color: var(--highlight-color);
-  margin: 0px 0px 0px 10px;
-}
-
 form {
   display: flex;
   flex-direction: column;
@@ -288,6 +282,11 @@ input::placeholder {
   margin-right: -20px;
   width: calc(100% + 40px);
   position: relative; /* Для коректного позиціонування відносно formContainer */
+}
+
+.form-header h3 {
+  color: var(--form-htext);
+  margin: 0px 0px 0px 10px;
 }
 
 /* Перегляд місця для повідомлення про помилку у просторі форми */

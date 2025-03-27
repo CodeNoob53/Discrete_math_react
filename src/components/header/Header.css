@@ -1,0 +1,284 @@
+/* === Загальний контейнер шапки === */
+.header-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1rem;
+  height: var(--header-height);
+  overflow: hidden;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom: 1px double #ffffff;
+  background: var(--header-bg);
+  box-shadow: rgba(0, 0, 0, 0.548) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  transition: all 0.4s ease-in-out;
+  z-index: 1000; /* Забезпечує, що хедер буде над іншими елементами */
+}
+
+/* Верхній ряд: ліворуч (лого+текст) і праворуч (кнопка) */
+.top-row {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 10px;
+  align-content: center;
+  justify-content: space-between;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Ліва секція: лого і вертикальний роздільник */
+.left-section {
+  display: flex;
+  gap: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Посилання на головну (лого) */
+.logo-link {
+  text-decoration: none;
+}
+
+/* Стиль градієнтного тексту "ƒx" */
+.logo-text {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 3rem;
+  margin-top: -5px;
+  background: hsla(16, 100%, 55%, 1);
+  background: linear-gradient(
+    90deg,
+    rgb(253, 80, 17) 0%,
+    rgb(255, 151, 72) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+  padding-left: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.logo-text:hover {
+  filter: brightness(1.5);
+}
+
+/* Вертикальна рисочка (роздільник) */
+.divider {
+  width: 5px;
+  height: 50px;
+  align-self: center;
+  background-color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === Контейнер заголовка та слогана === */
+.title-container {
+  cursor: context-menu;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === Основний заголовок DISCRETE MATH === */
+.main-title {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+  font-size: 2.6rem;
+  align-content: center;
+  transform: translateY(0px);
+  transition: all 0.5s ease-in-out;
+}
+.title-container h1 {
+  padding: 0;
+  margin: 0;
+}
+
+/* При наведенні зміщуємо заголовок вгору */
+.main-title.hovered {
+  font-size: 2rem;
+  transform: translateY(-10px);
+}
+
+/* === Слоган CALC EVERYTHING === */
+.subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  letter-spacing: 0.25em;
+  position: absolute;
+  top: 38px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s ease-in-out;
+}
+
+/* При наведенні показуємо слоган */
+.subtitle.hovered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === Кнопка перемикання теми === */
+.theme-toggle {
+  display: flex;
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid #d3d3d359;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ThemeIcon {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  width: 36px;
+  transition: all 0.3s ease-in-out;
+  color: aliceblue;
+}
+
+/* Анімація обертання з motion blur */
+.theme-toggle.rotating {
+  animation: rotate360 0.5s ease-in-out;
+}
+
+@keyframes rotate360 {
+  0% {
+    transform: rotate(0deg);
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(1px);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: blur(0);
+  }
+}
+
+/* === АДАПТИВНІСТЬ === */
+
+/* Планшети в альбомній орієнтації атакож недоекрани apple mac*/
+@media screen and (max-width: 1199px) {
+  .header-container {
+    height: 65px;
+  }
+
+  .divider {
+    height: 40px;
+    width: 4px;
+  }
+
+  .logo-text {
+    font-size: 2.7rem;
+  }
+
+  .main-title {
+    font-size: 2.2rem;
+  }
+
+  .title-container {
+    width: 300px;
+  }
+}
+
+/* планшети-смартфони (576px - 767px) */
+@media screen and (max-width: 767px) {
+  .header-container {
+    height: 66px;
+  }
+
+  .divider {
+    height: 46px;
+    padding-right: 4px;
+  }
+
+  .logo-text {
+    font-size: 2.5rem;
+    line-height: 1.4;
+  }
+
+  .main-title {
+    font-size: 1.8rem;
+    transform: none;
+    position: static;
+    line-height: 1;
+  }
+
+  .main-title.hovered {
+    font-size: 1.8rem;
+    transform: none;
+  }
+
+  .subtitle {
+    position: static;
+    text-align: start;
+    font-size: 0.75rem;
+    opacity: 1;
+    transform: none;
+  }
+
+  .theme-toggle {
+    padding: 0.4rem;
+  }
+
+  .theme-toggle {
+    padding: 0.4rem;
+  }
+
+  .ThemeIcon {
+    height: 30px;
+    width: 30px;
+  }
+}
+
+/* Малі смартфони (до 575px) */
+@media screen and (max-width: 575px) {
+  .header-container {
+    height: 55px;
+  }
+  .header-container {
+    padding: 0.3rem;
+  }
+
+  .logo-text {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+    position: static;
+    line-height: 1;
+  }
+
+  .main-title.hovered {
+    font-size: 1.5rem;
+    transform: none;
+  }
+
+  .subtitle {
+    font-size: 0.7rem;
+  }
+
+  .divider {
+    height: 40px;
+  }
+
+  .theme-toggle {
+    padding: 0.3rem;
+  }
+}

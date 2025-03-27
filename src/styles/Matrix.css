@@ -7,10 +7,6 @@ body.light-theme .matrix-cell:focus {
   box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3);
 }
 
-body.light-theme .form-header {
-  background-color: #f0f7ff;
-}
-
 body.light-theme .matrix-brackets::before,
 body.light-theme .matrix-brackets::after {
   color: #666;

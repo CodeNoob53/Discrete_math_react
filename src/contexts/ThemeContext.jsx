@@ -1,3 +1,4 @@
+// Переконаємося, що функціонал ThemeContext працює належним чином з новим Header
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 

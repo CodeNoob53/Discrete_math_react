@@ -33,49 +33,63 @@ a:active,
 .no-transition {
   transition: none !important;
 }
+:root {
+  --header-height: 70px;
+}
 
 /* Тема за замовчуванням */
 body.dark-theme {
   --background-color: #1a1a1a;
   --SwitchButton: #f0f0f0;
-  --s-text-color: black;
+  --container-bg: #1a1a1a;
   --matrix-controls: #b8b8b8e6;
-  --header-color: #2c2c2c;
-  --form-header: #353535;
+  --header-bg: linear-gradient(45deg, rgb(22, 22, 22) 0%, rgb(51, 51, 51) 100%);
+  
   --nav-button: #252525;
   --nav-button-hover: #303030;
   --nav-button-hover-shdw: #5bbcfd67;
+
   --subject-item: #2a2a2a;
+
+  --s-text-color: black;
   --text-color: #e0e0e0;
   --secondary-text-color: #b0b0b0;
   --highlight-color: #0384c0;
-  --container-bg: #1a1a1a;
+
   --button-bg: #0384c0;
   --button-hover-bg: #046fa1;
   --btn-border: #4a4a4a;
+
   --error-bg: #3b010133;
   --error-border: #a12626;
+
+  --form-header: #353535;
   --form-bg: #222222;
   --form-border: #3a3a3a;
+  --form-htext: #f0f0f0;
+
   --result-bg: #1d1d1dd2;
   --result-text: #8bc34a;
-  --header-height: 60px;
+
+  --switch-bg: #444444;
+
 }
 
 /* Світла тема */
 body.light-theme {
   --background-color: #f5f5f7;
   --SwitchButton: #1a1a1a;
+  --switch-bg: #b4b4b4;
   --s-text-color: #202124;
   --matrix-controls: #e8e8e8;
-  --header-color: #0099ff;
+  --header-bg: linear-gradient(45deg, rgb(51, 51, 51) 0%, rgb(182, 182, 182) 100%);
   --nav-button: #ffffff;
   --nav-button-hover: #f0f0f0;
   --nav-button-hover-shdw: #007acc4d;
   --subject-item: #ffffff;
   --text-color: #202124;
   --secondary-text-color: #474747;
-  --highlight-color: #007acc;
+  --highlight-color: #0a9bdf;
   --container-bg: #f5f5f7;
   --button-bg: #007acc;
   --button-hover-bg: #005a9e;
@@ -84,9 +98,10 @@ body.light-theme {
   --error-border: #ce2525;
   --form-bg: #ffffff;
   --form-border: #dadce0;
+  --form-header: #999999;
+  --form-htext: #ffffff;
   --result-bg: #fcfdff;
   --result-text: #2e7d32;
-  --header-height: 60px;
 }
 
 
@@ -97,7 +112,7 @@ body.light-theme {
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
-  color: var(--text-color);
+  color: white;
 }
 
 /* Текст для теми */
@@ -112,16 +127,18 @@ body.light-theme {
   width: 60px; /* 60% від попереднього 100px */
   height: 30px; /* Пропорційне зменшення */
   --light: #d8dbe0;
-  --dark: #28292c;
+  --dark: #383838;
 }
 
 .switch-label {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: var(--dark);
+  background-color: var(--switch-bg);
   border-radius: 25px;
   cursor: pointer;
+
+  box-shadow: inset 0px 3px 15px 0px rgba(0,0,0,0.9);
   border: 2px solid var(--light);
 }
 
@@ -153,7 +170,7 @@ body.light-theme {
 }
 
 .checkbox:checked + .switch-label {
-  border-color: rgb(223, 255, 159);
+  border-color: rgb(243, 147, 38);
 }
 
 

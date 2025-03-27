@@ -10,67 +10,7 @@
   max-width: 650px;
   margin: auto;
 }
-/* Header styles */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background-color: var(--header-color);
-  color: var(--text-color);
-  box-shadow: rgba(0, 0, 0, 0.32) 0px 1px 3px, rgba(0, 0, 0, 0.44) 0px 1px 2px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  transition: font-size 0.3s;
-}
-
-h4 {
-  color: var(--highlight-color);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  padding-right: 20PX;
-}
-
-.home-icon {
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.home-icon:hover {
-  color: var(--highlight-color);
-}
-
-.header-text {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.material-icons {
-  font-size: 2rem;
-  margin-right: 8px;
-}
-
-.header-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--text-color);
-  text-align: center;
-  flex: 2;
-  margin: 0;
-}
+/* Видаляємо старі стилі header, вони тепер у Header.css */
 
 /* === Група: Контейнер === */
 .main {
@@ -80,7 +20,6 @@ h4 {
   padding-bottom: 10px;
   width: 100%;
   box-sizing: border-box; /* Запобігає збільшенню розміру через padding */
-  /* Видаляємо перевизначення overflow: auto; */
 }
 
 /* Кастомний скролбар */
