@@ -31,6 +31,7 @@
 .left-section {
   display: flex;
   gap: 10px;
+  min-width: 255px;
   transition: all 0.3s ease-in-out;
 }
 

@@ -28,7 +28,6 @@ body.dark-theme .matrix-cell:focus {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 колонки однакової ширини */
   gap: 10px;
-  margin-bottom: 20px;
   width: 100%;
 }
 
@@ -217,6 +216,9 @@ body.dark-theme .matrix-cell:focus {
 
 /* Для дуже малих екранів */
 @media (max-width: 570px) {
+  .form-header h3 {
+    font-size: 1rem;
+  }
   .matrix-cell {
     width: 35px;
     height: 30px;
@@ -233,8 +235,13 @@ body.dark-theme .matrix-cell:focus {
     position: relative;
   }
 
+  .matrix-wrapper {
+    padding: 5px 10px;
+    min-height: 150px; /* Зменшено для маленьких екранів */
+  }
+
   .matrix-label-container {
-    flex-direction: column;
+
     align-items: flex-start;
     gap: 8px;
   }
