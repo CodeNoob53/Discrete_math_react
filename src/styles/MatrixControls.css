@@ -2,7 +2,8 @@
 .add-row-button,
 .add-col-button,
 .delete-row-button,
-.delete-col-button {
+.delete-col-button,
+.special-matrix-button {
   min-width: 50px;
   padding: 6px 8px;
   transition: all 0.2s ease;

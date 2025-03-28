@@ -59,6 +59,36 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [setActiveMatrixIndex]);
+    // Додамо відстеження стану клавіатури
+const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+// Відстежуємо появу клавіатури через події фокусу на полях вводу
+useEffect(() => {
+  const handleFocus = () => {
+    // При фокусі на полі вводу вважаємо, що клавіатура відкрита
+    setIsKeyboardVisible(true);
+  };
+
+  const handleBlur = () => {
+    // При втраті фокусу вважаємо, що клавіатура закрита
+    setIsKeyboardVisible(false);
+  };
+
+  // Додаємо слухачі подій до всіх полів вводу матриці
+  const inputFields = matrixRef.current?.querySelectorAll('input') || [];
+  inputFields.forEach(input => {
+    input.addEventListener('focus', handleFocus);
+    input.addEventListener('blur', handleBlur);
+  });
+
+  return () => {
+    // Очищення слухачів
+    inputFields.forEach(input => {
+      input.removeEventListener('focus', handleFocus);
+      input.removeEventListener('blur', handleBlur);
+    });
+  };
+}, [grid]); // Перераховуємо при зміні грід, оскільки поля можуть змінюватися
 
     const getCellId = (rowIdx, colIdx) => `cell-${formId}-${index}-${rowIdx}-${colIdx}`;
 
@@ -250,6 +280,33 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
             console.error("Помилка при вставці матриці:", err);
         }
     };
+    
+    // Функція для створення одиничної матриці
+    const createIdentityMatrix = () => {
+        const size = Math.max(grid.length, grid[0].length);
+        const newGrid = Array(size).fill().map((_, rowIdx) => 
+            Array(size).fill().map((_, colIdx) => rowIdx === colIdx ? "1" : "0")
+        );
+        updateGridAndNotify(newGrid);
+    };
+    
+    // Функція для створення нульової матриці
+    const createZeroMatrix = () => {
+        const rows = grid.length;
+        const cols = grid[0].length;
+        const newGrid = Array(rows).fill().map(() => Array(cols).fill("0"));
+        updateGridAndNotify(newGrid);
+    };
+    
+    // Функція для транспонування матриці
+    const transposeMatrix = () => {
+        const rows = grid.length;
+        const cols = grid[0].length;
+        const newGrid = Array(cols).fill().map((_, colIdx) => 
+            Array(rows).fill().map((_, rowIdx) => grid[rowIdx][colIdx] || "0")
+        );
+        updateGridAndNotify(newGrid);
+    };
 
     return (
         <div className="matrix-wrapper" ref={matrixRef}>
@@ -307,19 +364,54 @@ const MatrixGridInput = ({ value, onChange, index, formId, isActive, setActiveMa
 
             {/* Контроли для матриці */}
             {isActive && (
-                <div className="matrix-controls">
+                <div className={`matrix-controls ${isKeyboardVisible ? 'keyboard-active' : ''}`}>
                     <div className="matrix-c-wrapper">
                         <p>Rows</p>
                         <div className="row-controls">
-                            <button type="button" className="add-row-button" onClick={addRow}>Add</button>
-                            <button type="button" className="delete-row-button" onClick={deleteRow}>Del.</button>
+                            <button type="button" className="add-row-button" onClick={addRow} aria-label="Додати рядок">Add</button>
+                            <button type="button" className="delete-row-button" onClick={deleteRow} aria-label="Видалити рядок">Del.</button>
                         </div>
                     </div>
                     <div className="matrix-c-wrapper">
                         <p>Columns</p>
                         <div className="col-controls">
-                            <button type="button" className="add-col-button" onClick={addColumn}>Add</button>
-                            <button type="button" className="delete-col-button" onClick={deleteColumn}>Del.</button>
+                            <button type="button" className="add-col-button" onClick={addColumn} aria-label="Додати стовпець">Add</button>
+                            <button type="button" className="delete-col-button" onClick={deleteColumn} aria-label="Видалити стовпець">Del.</button>
+                        </div>
+                    </div>
+                    <div className="matrix-c-wrapper">
+                        <p>Special</p>
+                        <div className="special-controls">
+                            <Tippy content="Одинична матриця">
+                                <button 
+                                    type="button" 
+                                    className="special-matrix-button" 
+                                    onClick={createIdentityMatrix}
+                                    aria-label="Створити одиничну матрицю"
+                                >
+                                    I
+                                </button>
+                            </Tippy>
+                            <Tippy content="Нульова матриця">
+                                <button 
+                                    type="button" 
+                                    className="special-matrix-button" 
+                                    onClick={createZeroMatrix}
+                                    aria-label="Створити нульову матрицю"
+                                >
+                                    0
+                                </button>
+                            </Tippy>
+                            <Tippy content="Транспонувати матрицю">
+                                <button 
+                                    type="button" 
+                                    className="special-matrix-button" 
+                                    onClick={transposeMatrix}
+                                    aria-label="Транспонувати матрицю"
+                                >
+                                    T
+                                </button>
+                            </Tippy>
                         </div>
                     </div>
                 </div>
